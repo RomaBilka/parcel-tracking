@@ -6,6 +6,7 @@ import (
 
 const NOVA_POSHTA = "NovaPoshta"
 const NP_SHOPPING = "NPShopping"
+const UPS = "UPS"
 
 func Determine(str string) (string, error) {
 	ok, err := deliveries.IsNovaPoshta(str)
@@ -20,6 +21,13 @@ func Determine(str string) (string, error) {
 		return "", err
 	} else if ok {
 		return NP_SHOPPING, nil
+	}
+
+	ok, err = deliveries.IsUPS(str)
+	if err != nil {
+		return "", err
+	} else if ok {
+		return UPS, nil
 	}
 
 	return "", nil
