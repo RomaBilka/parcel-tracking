@@ -3,21 +3,24 @@ package deliveries
 import "regexp"
 
 func IsUPS(str string) (bool, error) {
-	matched, err := regexp.MatchString(`^1Z[\d]{16}`, str)
+	//1Z**************** length 18
+	matched, err := regexp.MatchString(`(?i)^1Z[\d]{16}$`, str)
 	if err != nil {
 		return false, err
 	} else if matched {
 		return matched, nil
 	}
 
-	matched, err = regexp.MatchString(`^8[\d]{17}`, str)
+	//8***************** length 18
+	matched, err = regexp.MatchString(`^8[\d]{17}$`, str)
 	if err != nil {
 		return false, err
 	} else if matched {
 		return matched, nil
 	}
 
-	matched, err = regexp.MatchString(`^9[\d]{17}`, str)
+	//9***************** length 18
+	matched, err = regexp.MatchString(`^9[\d]{17}$`, str)
 	if err != nil {
 		return false, err
 	} else if matched {
@@ -26,4 +29,3 @@ func IsUPS(str string) (bool, error) {
 
 	return false, nil
 }
-
