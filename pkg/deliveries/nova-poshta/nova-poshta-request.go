@@ -1,4 +1,4 @@
-package nova_posta
+package nova_poshta
 
 type novaPoshtaRequest struct {
 	ApiKey           string      `json:"apiKey,omitempty"`
@@ -7,13 +7,13 @@ type novaPoshtaRequest struct {
 	MethodProperties interface{} `json:"methodProperties,omitempty"`
 }
 
-type trackingDocuments struct {
-	Documents         []trackingDocument `json:"Documents,omitempty"`
+type TrackingDocuments struct {
+	Documents         []TrackingDocument `json:"Documents,omitempty"`
 	CheckWeightMethod string             `json:"CheckWeightMethod"`
 	CalculatedWeight  string             `json:"CalculatedWeight"`
 }
 
-type trackingDocument struct {
+type TrackingDocument struct {
 	DocumentNumber string `json:"DocumentNumber,omitempty"`
 	Phone          string `json:"Phone,omitempty"`
 }
