@@ -12,7 +12,7 @@
 | DHL             | The tracking number is assigned to your shipment by DHL, and can be either a 10 or 11 digit number.       |?|
 | Meest Express   | CV123456789US, MYCV123456789PL, MYCV123456789DE |[Tracking API](https://wiki.meest-group.com/uk/4-vidstezhennia-vidpravlen)|
 | Novaposhta      | 14 digits start 59.., 20.., 1..|[Tracking API](https://developers.novaposhta.ua/view/model/a99d2f28-8512-11ec-8ced-005056b2dbe1/method/a9ae7bc9-8512-11ec-8ced-005056b2dbe1)|
-| NPShopping      | NP**************NPG  (************** is a 14 digits)|Does not support|
+| NPShopping      | NP99999999999999NPG  (99999999999999 is a 14 digits)|Does not support|
 | Amazon          | Amazon Logistics tracking numbers starting with TBA, TBM, TBC. For example TBA619632698000, TBC038034537009, TBAONT500361196.|?|
 
 [More](https://onlinetrackingnumbers.com/v4/)
