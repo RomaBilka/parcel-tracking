@@ -3,7 +3,8 @@ package deliveries
 import "regexp"
 
 func IsNpShopping(str string) (bool, error) {
-	matched, err := regexp.MatchString(`^[\d]{14}$`, str)
+	//NP99999999999999NPG
+	matched, err := regexp.MatchString(`(?i)^NP[\d]{14}NPG$`, str)
 	if err != nil {
 		return false, err
 	} else if matched {

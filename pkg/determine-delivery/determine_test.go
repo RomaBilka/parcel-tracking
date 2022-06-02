@@ -28,6 +28,11 @@ func TestDetermine(t *testing.T) {
 			delivery: MEEST_EXPRESS,
 		},
 		{
+			name:     "NPShopping",
+			trackId:  "NP99999999999999NPG",
+			delivery: NP_SHOPPING,
+		},
+		{
 			name:     "unknown",
 			trackId:  "59000",
 			delivery: "",
