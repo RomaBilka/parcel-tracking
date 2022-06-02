@@ -23,6 +23,11 @@ func TestDetermine(t *testing.T) {
 			delivery: NOVA_POSHTA,
 		},
 		{
+			name:     "MeestExpress",
+			trackId:  "CV999999999ZZ",
+			delivery: MEEST_EXPRESS,
+		},
+		{
 			name:     "unknown",
 			trackId:  "59000",
 			delivery: "",
