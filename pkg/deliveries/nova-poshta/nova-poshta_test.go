@@ -6,7 +6,7 @@ import (
 )
 
 func TestTrackingDocument(t *testing.T) {
-	np := NewNovaPoshta("")
+	np := NewNovaPoshta( "https://api.novaposhta.ua/v2.0/json/", "")
 
 	document := TrackingDocument{
 		DocumentNumber: "",

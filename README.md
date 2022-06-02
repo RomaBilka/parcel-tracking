@@ -1,7 +1,6 @@
 # parcel-tracking
 
-
-###expected providers:
+###expected providers
 
 
 |    Providers    | Tracking ID  | API |

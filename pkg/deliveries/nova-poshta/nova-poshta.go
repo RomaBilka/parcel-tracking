@@ -12,12 +12,14 @@ type responseInterface interface {
 }
 
 type novaPoshta struct {
-	apiKey string
+	apiKey     string
+	requestURL string
 }
 
-func NewNovaPoshta(apiKey string) *novaPoshta {
+func NewNovaPoshta(requestURL, apiKey string) *novaPoshta {
 	return &novaPoshta{
-		apiKey: apiKey,
+		apiKey:     apiKey,
+		requestURL: requestURL,
 	}
 }
 
@@ -52,7 +54,7 @@ func (np *novaPoshta) makeRequest(r novaPoshtaRequest, npResponse responseInterf
 	reader := bytes.NewReader(data)
 
 	client := &http.Client{}
-	req, err := http.NewRequest(method, "https://api.novaposhta.ua/v2.0/json/", reader)
+	req, err := http.NewRequest(method, np.requestURL, reader)
 
 	if err != nil {
 		return npResponse, err
