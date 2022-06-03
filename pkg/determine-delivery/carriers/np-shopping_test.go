@@ -1,4 +1,4 @@
-package deliveries
+package carriers
 
 import (
 	"testing"
@@ -37,8 +37,7 @@ func TestIsNpShopping(t *testing.T) {
 	for i := range testCases {
 		testCase := testCases[i]
 		t.Run(testCase.name, func(t *testing.T) {
-			ok, err := IsNpShopping(testCase.trackId)
-			assert.NoError(t, err)
+			ok := IsNpShopping(testCase.trackId)
 			assert.Equal(t, testCase.ok, ok)
 		})
 	}
