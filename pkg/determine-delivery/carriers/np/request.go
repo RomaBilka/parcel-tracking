@@ -1,4 +1,4 @@
-package nova_poshta
+package np
 
 type novaPoshtaRequest struct {
 	ApiKey           string      `json:"apiKey,omitempty"`

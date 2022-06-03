@@ -1,4 +1,4 @@
-package carriers
+package me
 
 import (
 	"testing"
@@ -6,7 +6,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestIsMeestExpress(t *testing.T) {
+func TestME_Detect(t *testing.T) {
 	testCases := []struct {
 		name    string
 		trackId string
@@ -47,7 +47,8 @@ func TestIsMeestExpress(t *testing.T) {
 	for i := range testCases {
 		testCase := testCases[i]
 		t.Run(testCase.name, func(t *testing.T) {
-			ok := IsMeestExpress(testCase.trackId)
+			m := ME{testCase.trackId}
+			ok := m.Detect()
 			assert.Equal(t, testCase.ok, ok)
 		})
 	}

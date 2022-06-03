@@ -1,4 +1,4 @@
-package carriers
+package ups
 
 import "regexp"
 
@@ -17,19 +17,23 @@ func init() {
 	start9 = regexp.MustCompile(`^9[\d]{17}$`)
 }
 
-func IsUPS(str string) bool {
+type UPS struct {
+	TrackId string
+}
 
-	matched := start1z.MatchString(str)
+func (u *UPS) Detect() bool {
+
+	matched := start1z.MatchString(u.TrackId)
 	if matched {
 		return true
 	}
 
-	matched = start8.MatchString(str)
+	matched = start8.MatchString(u.TrackId)
 	if matched {
 		return true
 	}
 
-	matched = start9.MatchString(str)
+	matched = start9.MatchString(u.TrackId)
 	if matched {
 		return true
 	}

@@ -42,8 +42,7 @@ func TestDetermine(t *testing.T) {
 	for i := range testCases {
 		testCase := testCases[i]
 		t.Run(testCase.name, func(t *testing.T) {
-			delivery, err := Determine(testCase.trackId)
-			assert.NoError(t, err)
+			delivery := Detect(testCase.trackId)
 			assert.Equal(t, testCase.delivery, delivery)
 		})
 	}

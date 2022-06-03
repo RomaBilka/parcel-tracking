@@ -1,4 +1,4 @@
-package carriers
+package np
 
 import (
 	"testing"
@@ -6,40 +6,40 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestIsUPS(t *testing.T) {
+func TestNP_Detect(t *testing.T) {
 	testCases := []struct {
 		name    string
 		trackId string
 		ok      bool
 	}{
 		{
-			name:    "1Z true",
-			trackId: "1z0000000000000001",
+			name:    "59 true",
+			trackId: "59000000000001",
 			ok:      true,
 		},
 		{
-			name:    "8 true",
-			trackId: "800000000000000001",
+			name:    "20 true",
+			trackId: "20000000000001",
 			ok:      true,
 		},
 		{
-			name:    "9 true",
-			trackId: "900000000000000001",
+			name:    "1 true",
+			trackId: "10000000000000",
 			ok:      true,
 		},
 		{
-			name:    "1Z false",
-			trackId: "1z000000000000000000000000",
+			name:    "59 false",
+			trackId: "5900000000000",
 			ok:      false,
 		},
 		{
-			name:    "8 false",
-			trackId: "80000000000000000000",
+			name:    "20 false",
+			trackId: "2000000000000",
 			ok:      false,
 		},
 		{
-			name:    "9 false",
-			trackId: "90000000000000000",
+			name:    "1 false",
+			trackId: "1000000000000",
 			ok:      false,
 		},
 		{
@@ -52,7 +52,8 @@ func TestIsUPS(t *testing.T) {
 	for i := range testCases {
 		testCase := testCases[i]
 		t.Run(testCase.name, func(t *testing.T) {
-			ok := IsUPS(testCase.trackId)
+			n := NP{testCase.trackId}
+			ok := n.Detect()
 			assert.Equal(t, testCase.ok, ok)
 		})
 	}

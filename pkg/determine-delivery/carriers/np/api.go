@@ -1,4 +1,4 @@
-package nova_poshta
+package np
 
 import (
 	"bytes"
@@ -12,14 +12,14 @@ type responseInterface interface {
 }
 
 type novaPoshta struct {
-	apiKey     string
-	requestURL string
+	apiKey string
+	apiURL string
 }
 
-func NewNovaPoshta(requestURL, apiKey string) *novaPoshta {
+func NewNovaPoshta(apiURL, apiKey string) *novaPoshta {
 	return &novaPoshta{
-		apiKey:     apiKey,
-		requestURL: requestURL,
+		apiKey: apiKey,
+		apiURL: apiURL,
 	}
 }
 
@@ -54,7 +54,7 @@ func (np *novaPoshta) makeRequest(r novaPoshtaRequest, npResponse responseInterf
 	reader := bytes.NewReader(data)
 
 	client := &http.Client{}
-	req, err := http.NewRequest(method, np.requestURL, reader)
+	req, err := http.NewRequest(method, np.apiURL, reader)
 
 	if err != nil {
 		return npResponse, err

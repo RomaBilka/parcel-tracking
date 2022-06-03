@@ -1,4 +1,4 @@
-package carriers
+package me
 
 import "regexp"
 
@@ -13,14 +13,17 @@ func init() {
 	startMYCV = regexp.MustCompile(`(?i)^MYCV[\d]{9}[a-z][a-z]$`)
 }
 
-func IsMeestExpress(str string) bool {
+type ME struct {
+	TrackId string
+}
 
-	matched := startCV.MatchString(str)
+func (m *ME) Detect() bool {
+	matched := startCV.MatchString(m.TrackId)
 	if matched {
 		return true
 	}
 
-	matched = startMYCV.MatchString(str)
+	matched = startMYCV.MatchString(m.TrackId)
 	if matched {
 		return true
 	}

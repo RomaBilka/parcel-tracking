@@ -1,4 +1,4 @@
-package carriers
+package np
 
 import "regexp"
 
@@ -17,18 +17,22 @@ func init() {
 	start1 = regexp.MustCompile(`^1[\d]{13}$`)
 }
 
-func IsNovaPoshta(str string) bool {
-	matched := start59.MatchString(str)
+type NP struct {
+	TrackId string
+}
+
+func (n *NP) Detect() bool {
+	matched := start59.MatchString(n.TrackId)
 	if matched {
 		return true
 	}
 
-	matched = start20.MatchString(str)
+	matched = start20.MatchString(n.TrackId)
 	if matched {
 		return true
 	}
 
-	matched = start1.MatchString(str)
+	matched = start1.MatchString(n.TrackId)
 	if matched {
 		return true
 	}

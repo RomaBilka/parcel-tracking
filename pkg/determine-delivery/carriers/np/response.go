@@ -1,4 +1,4 @@
-package nova_poshta
+package np
 
 import (
 	"fmt"
@@ -7,7 +7,6 @@ import (
 
 type NovaPoshtaResponse struct {
 	Success      bool                `json:"success"`
-	Data         []map[string]string `json:"data"`
 	Errors       []string            `json:"errors,omitempty"`
 	Warnings     interface{}         `json:"warnings,omitempty"`
 	Info         []map[string]string `json:"info,omitempty"`

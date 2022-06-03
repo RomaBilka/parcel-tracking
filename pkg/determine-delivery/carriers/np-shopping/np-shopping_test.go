@@ -1,4 +1,4 @@
-package carriers
+package np_shopping
 
 import (
 	"testing"
@@ -6,7 +6,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestIsNpShopping(t *testing.T) {
+func TestNPShopping_Detect(t *testing.T) {
 	testCases := []struct {
 		name    string
 		trackId string
@@ -37,7 +37,8 @@ func TestIsNpShopping(t *testing.T) {
 	for i := range testCases {
 		testCase := testCases[i]
 		t.Run(testCase.name, func(t *testing.T) {
-			ok := IsNpShopping(testCase.trackId)
+			n := NPShopping{testCase.trackId}
+			ok := n.Detect()
 			assert.Equal(t, testCase.ok, ok)
 		})
 	}

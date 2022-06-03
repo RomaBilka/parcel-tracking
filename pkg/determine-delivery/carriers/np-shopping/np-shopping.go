@@ -1,4 +1,4 @@
-package carriers
+package np_shopping
 
 import "regexp"
 
@@ -9,8 +9,12 @@ func init() {
 	npShopping = regexp.MustCompile(`(?i)^NP[\d]{14}NPG$`)
 }
 
-func IsNpShopping(str string) bool {
-	matched:=npShopping.MatchString(str)
+type NPShopping struct {
+	TrackId string
+}
+
+func (n *NPShopping) Detect() bool {
+	matched := npShopping.MatchString(n.TrackId)
 	if matched {
 		return true
 	}

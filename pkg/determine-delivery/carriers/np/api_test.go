@@ -1,4 +1,4 @@
-package nova_poshta
+package np
 
 import (
 	"fmt"
@@ -6,7 +6,7 @@ import (
 )
 
 func TestTrackingDocument(t *testing.T) {
-	np := NewNovaPoshta( "https://api.novaposhta.ua/v2.0/json/", "")
+	np := NewNovaPoshta("https://api.novaposhta.ua/v2.0/json/", "")
 
 	document := TrackingDocument{
 		DocumentNumber: "",
