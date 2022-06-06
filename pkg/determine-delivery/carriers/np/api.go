@@ -1,15 +1,12 @@
 package np
 
 import (
-	"bytes"
 	"encoding/json"
-	"io"
-	"net/http"
+
+	"github.com/valyala/fasthttp"
 )
 
-type responseInterface interface {
-	getError() error
-}
+const URL = "/v2.0/json/"
 
 type novaPoshta struct {
 	apiKey string
@@ -30,20 +27,45 @@ func (np *novaPoshta) TrackingDocument(methodProperties TrackingDocuments) ([]Tr
 	}
 	req.MethodProperties = methodProperties
 
-	res := &TrackingDocumentsResponse{}
-	_, err := np.makeRequest(req, res, http.MethodGet)
+	trackingDocumentsResponse := &TrackingDocumentsResponse{}
+	b, err := np.makeRequest(req, fasthttp.MethodGet)
 	if err != nil {
 		return []TrackingDocumentResponse{}, err
 	}
 
-	err = res.getError()
+	err = json.Unmarshal(b, trackingDocumentsResponse)
 	if err != nil {
 		return []TrackingDocumentResponse{}, err
 	}
 
-	return res.Data, err
+	return trackingDocumentsResponse.Data, err
 }
 
+func (np *novaPoshta) makeRequest(r novaPoshtaRequest, method string) ([]byte, error) {
+	body := make([]byte, 0)
+	r.ApiKey = np.apiKey
+
+	data, err := json.Marshal(r)
+	if err != nil {
+		return body, err
+	}
+
+	req := fasthttp.AcquireRequest()
+	req.SetBody(data)
+	req.Header.SetMethod(method)
+	req.Header.SetContentType("application/json")
+	req.SetRequestURI(np.apiURL + URL)
+	res := fasthttp.AcquireResponse()
+	if err := fasthttp.Do(req, res); err != nil {
+		return body, err
+	}
+	fasthttp.ReleaseRequest(req)
+	body = res.Body()
+
+	return body, nil
+}
+
+/*
 func (np *novaPoshta) makeRequest(r novaPoshtaRequest, npResponse responseInterface, method string) (responseInterface, error) {
 	r.ApiKey = np.apiKey
 
@@ -77,3 +99,4 @@ func (np *novaPoshta) makeRequest(r novaPoshtaRequest, npResponse responseInterf
 
 	return npResponse, nil
 }
+*/

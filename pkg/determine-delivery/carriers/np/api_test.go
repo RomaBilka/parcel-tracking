@@ -6,10 +6,11 @@ import (
 )
 
 func TestTrackingDocument(t *testing.T) {
-	np := NewNovaPoshta("https://api.novaposhta.ua/v2.0/json/", "")
+	np := NewNovaPoshta("https://api.novaposhta.ua", "")
 
 	document := TrackingDocument{
 		DocumentNumber: "",
+		Phone:          "",
 	}
 	methodProperties := TrackingDocuments{}
 	methodProperties.Documents = append(methodProperties.Documents, document)
