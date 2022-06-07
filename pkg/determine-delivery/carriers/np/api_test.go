@@ -39,6 +39,24 @@ func TestTrackingDocument2(t *testing.T) {
 			},
 			expectedErr: nil,
 		},
+		{
+			name: "Tracked by number",
+			file: "fixtures/tracked_by_number_and_phone.json",
+			document: TrackingDocument{
+				DocumentNumber: "",
+				Phone:          "",
+			},
+			expectedErr: nil,
+		},
+		{
+			name: "Tracked by number",
+			file: "fixtures/invalid_number.json",
+			document: TrackingDocument{
+				DocumentNumber: "",
+				Phone:          "",
+			},
+			expectedErr: nil,
+		},
 	}
 	for _, testCase := range testCases {
 		t.Run(testCase.name, func(t *testing.T) {
