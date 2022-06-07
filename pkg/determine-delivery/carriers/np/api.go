@@ -64,39 +64,3 @@ func (np *novaPoshta) makeRequest(r novaPoshtaRequest, method string) ([]byte, e
 
 	return body, nil
 }
-
-/*
-func (np *novaPoshta) makeRequest(r novaPoshtaRequest, npResponse responseInterface, method string) (responseInterface, error) {
-	r.ApiKey = np.apiKey
-
-	data, err := json.Marshal(r)
-	if err != nil {
-		return npResponse, err
-	}
-	reader := bytes.NewReader(data)
-
-	client := &http.Client{}
-	req, err := http.NewRequest(method, np.apiURL, reader)
-
-	if err != nil {
-		return npResponse, err
-	}
-
-	resp, err := client.Do(req)
-	if err != nil {
-		return npResponse, err
-	}
-
-	b, err := io.ReadAll(resp.Body)
-	if err != nil {
-		return npResponse, err
-	}
-
-	err = json.Unmarshal(b, npResponse)
-	if err != nil {
-		return npResponse, err
-	}
-
-	return npResponse, nil
-}
-*/

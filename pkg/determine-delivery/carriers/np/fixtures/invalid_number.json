@@ -1,0 +1,27 @@
+{
+  "success":false,
+  "data":[
+
+  ],
+  "errors":[
+    "Document number is not correct"
+  ],
+  "warnings":[
+    "Invalid DocumentNumber: 445"
+  ],
+  "info":[
+
+  ],
+  "messageCodes":[
+
+  ],
+  "errorCodes":[
+    "20001401442"
+  ],
+  "warningCodes":[
+
+  ],
+  "infoCodes":[
+
+  ]
+}
