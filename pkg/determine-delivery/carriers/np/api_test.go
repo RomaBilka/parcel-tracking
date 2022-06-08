@@ -6,6 +6,8 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestTrackingDocument(t *testing.T) {
@@ -28,7 +30,7 @@ func TestTrackingDocument2(t *testing.T) {
 		name        string
 		file        string
 		document    TrackingDocument
-		expectedErr error
+		error bool
 	}{
 		{
 			name: "Tracked by number",
@@ -37,7 +39,7 @@ func TestTrackingDocument2(t *testing.T) {
 				DocumentNumber: "",
 				Phone:          "",
 			},
-			expectedErr: nil,
+			error: false,
 		},
 		{
 			name: "Tracked by number",
@@ -46,7 +48,7 @@ func TestTrackingDocument2(t *testing.T) {
 				DocumentNumber: "",
 				Phone:          "",
 			},
-			expectedErr: nil,
+			error: false,
 		},
 		{
 			name: "Tracked by number",
@@ -55,7 +57,7 @@ func TestTrackingDocument2(t *testing.T) {
 				DocumentNumber: "",
 				Phone:          "",
 			},
-			expectedErr: nil,
+			error: true,
 		},
 	}
 	for _, testCase := range testCases {
@@ -79,8 +81,11 @@ func TestTrackingDocument2(t *testing.T) {
 			methodProperties.CheckWeightMethod = "3"
 
 			data, err := np.TrackingDocument(methodProperties)
+			assert.NoError(t, err)
 
-			fmt.Println(data, err)
+			if len(data.Errors)>0 {
+				assert.True(t, testCase.error)
+			}
 		})
 	}
 }

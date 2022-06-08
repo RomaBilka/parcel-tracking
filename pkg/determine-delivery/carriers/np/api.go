@@ -20,7 +20,7 @@ func NewNovaPoshta(apiURL, apiKey string) *novaPoshta {
 	}
 }
 
-func (np *novaPoshta) TrackingDocument(methodProperties TrackingDocuments) ([]TrackingDocumentResponse, error) {
+func (np *novaPoshta) TrackingDocument(methodProperties TrackingDocuments) (*TrackingDocumentsResponse, error) {
 	req := novaPoshtaRequest{
 		ModelName:    "TrackingDocument",
 		CalledMethod: "getStatusDocuments",
@@ -30,15 +30,15 @@ func (np *novaPoshta) TrackingDocument(methodProperties TrackingDocuments) ([]Tr
 	trackingDocumentsResponse := &TrackingDocumentsResponse{}
 	b, err := np.makeRequest(req, fasthttp.MethodGet)
 	if err != nil {
-		return []TrackingDocumentResponse{}, err
+		return trackingDocumentsResponse, err
 	}
 
 	err = json.Unmarshal(b, trackingDocumentsResponse)
 	if err != nil {
-		return []TrackingDocumentResponse{}, err
+		return trackingDocumentsResponse, err
 	}
 
-	return trackingDocumentsResponse.Data, err
+	return trackingDocumentsResponse, err
 }
 
 func (np *novaPoshta) makeRequest(r novaPoshtaRequest, method string) ([]byte, error) {
