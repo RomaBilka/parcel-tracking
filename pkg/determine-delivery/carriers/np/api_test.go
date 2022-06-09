@@ -27,10 +27,10 @@ func TestTrackingDocument(t *testing.T) {
 
 func TestTrackingDocument2(t *testing.T) {
 	testCases := []struct {
-		name        string
-		file        string
-		document    TrackingDocument
-		error bool
+		name     string
+		file     string
+		document TrackingDocument
+		error    bool
 	}{
 		{
 			name: "Tracked by number",
@@ -83,7 +83,7 @@ func TestTrackingDocument2(t *testing.T) {
 			data, err := np.TrackingDocument(methodProperties)
 			assert.NoError(t, err)
 
-			if len(data.Errors)>0 {
+			if len(data.Errors) > 0 {
 				assert.True(t, testCase.error)
 			}
 		})
