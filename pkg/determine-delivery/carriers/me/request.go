@@ -1,6 +1,6 @@
 package me
 
-type param struct{
+type param struct {
 	meestExpressRequest `xml:"param"`
 }
 

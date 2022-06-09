@@ -47,7 +47,7 @@ func (me *meestExpress) makeRequest(r meestExpressRequest, method string) ([]byt
 	p := param{r}
 
 	xmlString, _ := xml.MarshalIndent(p, "", " ")
-	data:= append([]byte(xml.Header) , xmlString...)
+	data := append([]byte(xml.Header), xmlString...)
 
 	req := fasthttp.AcquireRequest()
 	req.SetBody(data)
