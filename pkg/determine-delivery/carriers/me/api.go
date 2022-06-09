@@ -5,7 +5,6 @@ import (
 	"encoding/hex"
 	"encoding/xml"
 	"fmt"
-	"io/ioutil"
 
 	"github.com/valyala/fasthttp"
 )
@@ -37,7 +36,7 @@ func (me *meestExpress) ShipmentsTrack(trackNumber string) {
 	//xml.Unmarshal(b, shipmentsTrackResponse)
 	//fmt.Println(shipmentsTrackResponse)
 	fmt.Println(b, err)
-	_ = ioutil.WriteFile("test.xml", b, 0644)
+	//_ = ioutil.WriteFile("test.xml", b, 0644)
 }
 
 func (me *meestExpress) makeRequest(r meestExpressRequest, method string) ([]byte, error) {
