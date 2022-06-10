@@ -9,7 +9,7 @@ type meestExpressResponse struct {
 
 type ShipmentsTrackResponse struct {
 	meestExpressResponse
-	ResultTable []ShipmentTrackResponse `xml:"result_table"`
+	ResultTable []ShipmentTrackResponse `xml:"result_table>items"`
 }
 
 type ShipmentTrackResponse struct {

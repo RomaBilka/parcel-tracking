@@ -1,0 +1,237 @@
+<return>
+    <api>API-1C</api>
+    <apiversion>1</apiversion>
+    <result_table>
+        <items>
+            <ShipmentIdRef>0xa969003048d2b47311e3fc6109445fb1</ShipmentIdRef>
+            <DocumentIdRef>0xa969003048d2b47311e3fc6109445fb4</DocumentIdRef>
+            <AgentsIdRef>0xb95653547d06ad014b2580d2c4be55b2</AgentsIdRef>
+            <ShipmentNumberSender>001-0255371</ShipmentNumberSender>
+            <ShipmentNumberTransit/>
+            <ShipmentClientID/>
+            <DateTimeAction>2016-06-25 15:05: 53</DateTimeAction>
+            <Country>УКРАЇНА</Country>
+            <City>Дніпродзержинськ</City>
+            <ActionId>6</ActionId>
+            <StatusCode>606</StatusCode>
+            <ActionMessages_UA>
+                Поступлення відправлення на відділення
+            </ActionMessages_UA>
+            <ActionMessages_RU>
+                Поступление отправления на отделение
+            </ActionMessages_RU>
+            <ActionMessages_EN>
+                Accepted by the branch
+            </ActionMessages_EN>
+            <DetailMessages_UA>Дніпродзержинськ</DetailMessages_UA>
+            <DetailMessages_RU>Дніпродзержинськ</DetailMessages_RU>
+            <DetailMessages_EN>Дніпродзержинськ</DetailMessages_EN>
+            <DetailPlacesAction>1/1</DetailPlacesAction>
+            <CountryDel>UA</CountryDel>
+            <Recipient_Country/>
+            <Deliverydate/>
+        </items>
+        <items>
+            <ShipmentIdRef>0xa969003048d2b47311e3fc6109445fb1</ShipmentIdRef>
+            <DocumentIdRef>0xa969003048d2b47311e3fd1122373886</DocumentIdRef>
+            <AgentsIdRef>0xb95653547d06ad014b2580d2c4be55b2</AgentsIdRef>
+            <ShipmentNumberSender>001-0255371</ShipmentNumberSender>
+            <ShipmentNumberTransit/>
+            <ShipmentClientID/>
+            <DateTimeAction>2016-06-26 12: 06: 19</DateTimeAction>
+            <Country>УКРАЇНА</Country>
+            <City>Дніпродзержинськ</City>
+            <ActionId>20</ActionId>
+            <StatusCode>2028</StatusCode>
+            <ActionMessages_UA>
+                Відправлення було згруповане для переміщення на сортувальний центр
+            </ActionMessages_UA>
+            <ActionMessages_RU>
+                Отправление было сгруппировано для перемещения на сортировочный центр
+            </ActionMessages_RU>
+            <ActionMessages_EN>
+                Sending been grouped to move to the sorting center
+            </ActionMessages_EN>
+            <DetailMessages_UA>Рівне-Орлова</DetailMessages_UA>
+            <DetailMessages_RU>Рівне-Орлова</DetailMessages_RU>
+            <DetailMessages_EN>Рівне-Орлова</DetailMessages_EN>
+            <DetailPlacesAction>1/1</DetailPlacesAction>
+            <CountryDel>UA</CountryDel>
+            <Recipient_Country/>
+            <Deliverydate/>
+        </items>
+        <items>
+            <ShipmentIdRef>0xa969003048d2b47311e3fc6109445fb1</ShipmentIdRef>
+            <DocumentIdRef>0xa969003048d2b47311e3fd3817200b40</DocumentIdRef>
+            <AgentsIdRef>0xb95653547d06ad014b2580d2c4be55b2</AgentsIdRef>
+            <ShipmentNumberSender>001-0255371</ShipmentNumberSender>
+            <ShipmentNumberTransit/>
+            <ShipmentClientID/>
+            <DateTimeAction>2014-06-26 16: 45: 13</DateTimeAction>
+            <Country>УКРАЇНА</Country>
+            <City>Дніпропетровськ</City>
+            <ActionId>21</ActionId>
+            <StatusCode>2129</StatusCode>
+            <ActionMessages_UA>
+                Розгрупування відправлення для сортування
+            </ActionMessages_UA>
+            <ActionMessages_RU>
+                Разгруппирование отправления для сортировки
+            </ActionMessages_RU>
+            <ActionMessages_EN>
+                Ungroup sendings for sorting
+            </ActionMessages_EN>
+            <DetailMessages_UA>Рівне-Орлова</DetailMessages_UA>
+            <DetailMessages_RU>Рівне-Орлова</DetailMessages_RU>
+            <DetailMessages_EN>Рівне-Орлова</DetailMessages_EN>
+            <DetailPlacesAction>1/1</DetailPlacesAction>
+            <CountryDel>UA</CountryDel>
+            <Recipient_Country/>
+            <Deliverydate/>
+        </items>
+        <items>
+            <ShipmentIdRef>0xa969003048d2b47311e3fc6109445fb1</ShipmentIdRef>
+            <DocumentIdRef>0xa969003048d2b47311e3fd281624df62</DocumentIdRef>
+            <AgentsIdRef>0xb95653547d06ad014b2580d2c4be55b2</AgentsIdRef>
+            <ShipmentNumberSender>001-0255371</ShipmentNumberSender>
+            <ShipmentNumberTransit/>
+            <ShipmentClientID/>
+            <DateTimeAction>2016-06-26 19: 40: 24</DateTimeAction>
+            <Country>УКРАЇНА</Country>
+            <City>Дніпропетровськ</City>
+            <ActionId>8</ActionId>
+            <StatusCode>808</StatusCode>
+            <ActionMessages_UA>
+                Відправлення залишило сортувальний центр у напрямку
+            </ActionMessages_UA>
+            <ActionMessages_RU>
+                Отправление оставило сортировочный центр в направлении
+            </ActionMessages_RU>
+            <ActionMessages_EN>
+                The sending has left the sorting center in the direction of
+            </ActionMessages_EN>
+            <DetailMessages_UA>Рівне-Орлова</DetailMessages_UA>
+            <DetailMessages_RU>Рівне-Орлова</DetailMessages_RU>
+            <DetailMessages_EN>Рівне-Орлова</DetailMessages_EN>
+            <DetailPlacesAction>1/1</DetailPlacesAction>
+            <CountryDel>UA</CountryDel>
+            <Recipient_Country/>
+            <Deliverydate/>
+        </items>
+        <items>
+            <ShipmentIdRef>0xa969003048d2b47311e3fc6109445fb1</ShipmentIdRef>
+            <DocumentIdRef>0xa969003048d2b47311e3fdd02038f378</DocumentIdRef>
+            <AgentsIdRef>0xb95653547d06ad014b2580d2c4be55b2</AgentsIdRef>
+            <ShipmentNumberSender>001-0255371</ShipmentNumberSender>
+            <ShipmentNumberTransit/>
+            <ShipmentClientID/>
+            <DateTimeAction>2016-06-27 10: 53: 29</DateTimeAction>
+            <Country>УКРАЇНА</Country>
+            <City>Рівне</City>
+            <ActionId>12</ActionId>
+            <StatusCode>1214</StatusCode>
+            <ActionMessages_UA>
+                Відправлення прибуло на сортувальний центр
+            </ActionMessages_UA>
+            <ActionMessages_RU>
+                Отправление прибыло на сортировочный центр
+            </ActionMessages_RU>
+            <ActionMessages_EN>
+                Sending arrived at the sorting center
+            </ActionMessages_EN>
+            <DetailMessages_UA>Рівне</DetailMessages_UA>
+            <DetailMessages_RU>Ровно</DetailMessages_RU>
+            <DetailMessages_EN>Рівне</DetailMessages_EN>
+            <DetailPlacesAction>1/1</DetailPlacesAction>
+            <CountryDel>UA</CountryDel>
+            <Recipient_Country/>
+            <Deliverydate/>
+        </items>
+        <items>
+            <ShipmentIdRef>0xa969003048d2b47311e3fc6109445fb1</ShipmentIdRef>
+            <DocumentIdRef>0xa969003048d2b47311e4004330588938</DocumentIdRef>
+            <AgentsIdRef>0xb95653547d06ad014b2580d2c4be55b2</AgentsIdRef>
+            <ShipmentNumberSender>001-0255371</ShipmentNumberSender>
+            <ShipmentNumberTransit/>
+            <ShipmentClientID/>
+            <DateTimeAction>2016-06-30 13: 42: 11</DateTimeAction>
+            <Country>УКРАЇНА</Country>
+            <City>Рівне</City>
+            <ActionId>8</ActionId>
+            <StatusCode>808</StatusCode>
+            <ActionMessages_UA>
+                Відправлення залишило сортувальний центр у напрямку
+            </ActionMessages_UA>
+            <ActionMessages_RU>
+                Отправление оставило сортировочный центр в направлении
+            </ActionMessages_RU>
+            <ActionMessages_EN>
+                The sending has left the sorting center in the direction of
+            </ActionMessages_EN>
+            <DetailMessages_UA>Рівне-Орлова</DetailMessages_UA>
+            <DetailMessages_RU>Рівне-Орлова</DetailMessages_RU>
+            <DetailMessages_EN>Рівне-Орлова</DetailMessages_EN>
+            <DetailPlacesAction>1/1</DetailPlacesAction>
+            <CountryDel>UA</CountryDel>
+            <Recipient_Country/>
+            <Deliverydate/>
+        </items>
+        <items>
+            <ShipmentIdRef>0xa969003048d2b47311e3fc6109445fb1</ShipmentIdRef>
+            <DocumentIdRef>0xa969003048d2b47311e400488fed8bb8</DocumentIdRef>
+            <AgentsIdRef>0xb95653547d06ad014b2580d2c4be55b2</AgentsIdRef>
+            <ShipmentNumberSender>001-0255371</ShipmentNumberSender>
+            <ShipmentNumberTransit/>
+            <ShipmentClientID/>
+            <DateTimeAction>2016-06-30 14: 20: 43</DateTimeAction>
+            <Country>УКРАЇНА</Country>
+            <City>Рівне</City>
+            <ActionId>12</ActionId>
+            <StatusCode>1214</StatusCode>
+            <ActionMessages_UA>
+                Відправлення прибуло на сортувальний центр
+            </ActionMessages_UA>
+            <ActionMessages_RU>
+                Отправление прибыло на сортировочный центр
+            </ActionMessages_RU>
+            <ActionMessages_EN>
+                Sending arrived at the sorting center
+            </ActionMessages_EN>
+            <DetailMessages_UA>Рівне</DetailMessages_UA>
+            <DetailMessages_RU>Ровно</DetailMessages_RU>
+            <DetailMessages_EN>Рівне</DetailMessages_EN>
+            <DetailPlacesAction>1/1</DetailPlacesAction>
+            <CountryDel>UA</CountryDel>
+            <Recipient_Country/>
+            <Deliverydate/>
+        </items>
+        <items>
+            <ShipmentIdRef>0xa969003048d2b47311e3fc6109445fb1</ShipmentIdRef>
+            <DocumentIdRef>0xa969003048d2b47311e4005a09440c8e</DocumentIdRef>
+            <AgentsIdRef>0xb95653547d06ad014b2580d2c4be55b2</AgentsIdRef>
+            <ShipmentNumberSender>001-0255371</ShipmentNumberSender>
+            <ShipmentNumberTransit/>
+            <ShipmentClientID/>
+            <DateTimeAction>2016-06-30 16: 25: 43</DateTimeAction>
+            <Country>УКРАЇНА</Country>
+            <City>Рівне</City>
+            <ActionId>16</ActionId>
+            <StatusCode>1622</StatusCode>
+            <ActionMessages_UA>ДОРУЧЕНО</ActionMessages_UA>
+            <ActionMessages_RU>ДОСТАВЛЕНО</ActionMessages_RU>
+            <ActionMessages_EN>DELIVERED</ActionMessages_EN>
+            <DetailMessages_UA/>
+            <DetailMessages_RU/>
+            <DetailMessages_EN/>
+            <DetailPlacesAction>1/1</DetailPlacesAction>
+            <CountryDel>UA</CountryDel>
+            <Recipient_Country/>
+            <Deliverydate>2016-06-30 16: 25: 43</Deliverydate>
+        </items>
+    </result_table>
+    <result_uuid/>
+    <errors>
+        <code>000</code>
+        <name></name>
+    </errors>
+</return>

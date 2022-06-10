@@ -4,7 +4,6 @@ import (
 	"crypto/md5"
 	"encoding/hex"
 	"encoding/xml"
-	"fmt"
 
 	"github.com/valyala/fasthttp"
 )
@@ -25,18 +24,24 @@ func NewMeestExpress(agentUID, login, password, apiURL string) *meestExpress {
 	}
 }
 
-func (me *meestExpress) ShipmentsTrack(trackNumber string) {
+func (me *meestExpress) ShipmentsTrack(trackNumber string) (*ShipmentsTrackResponse, error){
 	req := meestExpressRequest{
 		Function: "SHIPMENTS_TRACK",
 		Where:    me.agentUID + "," + trackNumber,
 	}
 
 	b, err := me.makeRequest(req, fasthttp.MethodPost)
-	//shipmentsTrackResponse:=ShipmentsTrackResponse{}
-	//xml.Unmarshal(b, shipmentsTrackResponse)
-	//fmt.Println(shipmentsTrackResponse)
-	fmt.Println(b, err)
-	//_ = ioutil.WriteFile("test.xml", b, 0644)
+	if err != nil {
+		return &ShipmentsTrackResponse{}, err
+	}
+	shipmentsTrackResponse:=&ShipmentsTrackResponse{}
+
+	err=xml.Unmarshal(b, shipmentsTrackResponse)
+	if err != nil {
+		return &ShipmentsTrackResponse{}, err
+	}
+
+	return shipmentsTrackResponse, nil
 }
 
 func (me *meestExpress) makeRequest(r meestExpressRequest, method string) ([]byte, error) {
@@ -64,6 +69,7 @@ func (me *meestExpress) makeRequest(r meestExpressRequest, method string) ([]byt
 
 	return body, nil
 }
+
 func (me *meestExpress) getHash(r meestExpressRequest) string {
 	hash := md5.Sum([]byte(r.Login + me.password + r.Function + r.Where + r.Order))
 

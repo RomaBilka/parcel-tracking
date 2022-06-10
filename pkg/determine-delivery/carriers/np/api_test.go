@@ -25,7 +25,7 @@ func TestTrackingDocument(t *testing.T) {
 	fmt.Println(data, err)
 }
 
-func TestTrackingDocument2(t *testing.T) {
+func TestFixturesTrackingDocument(t *testing.T) {
 	testCases := []struct {
 		name     string
 		file     string
