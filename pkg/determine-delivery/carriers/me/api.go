@@ -24,7 +24,7 @@ func NewMeestExpress(agentUID, login, password, apiURL string) *meestExpress {
 	}
 }
 
-func (me *meestExpress) ShipmentsTrack(trackNumber string) (*ShipmentsTrackResponse, error){
+func (me *meestExpress) ShipmentsTrack(trackNumber string) (*ShipmentsTrackResponse, error) {
 	req := meestExpressRequest{
 		Function: "SHIPMENTS_TRACK",
 		Where:    me.agentUID + "," + trackNumber,
@@ -34,9 +34,9 @@ func (me *meestExpress) ShipmentsTrack(trackNumber string) (*ShipmentsTrackRespo
 	if err != nil {
 		return &ShipmentsTrackResponse{}, err
 	}
-	shipmentsTrackResponse:=&ShipmentsTrackResponse{}
+	shipmentsTrackResponse := &ShipmentsTrackResponse{}
 
-	err=xml.Unmarshal(b, shipmentsTrackResponse)
+	err = xml.Unmarshal(b, shipmentsTrackResponse)
 	if err != nil {
 		return &ShipmentsTrackResponse{}, err
 	}

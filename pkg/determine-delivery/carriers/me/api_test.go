@@ -15,19 +15,17 @@ func TestTrackingDocument(t *testing.T) {
 	me.ShipmentsTrack("TESTIK11")
 }
 
-
-
 func TestFixturesTrackingDocument(t *testing.T) {
 	testCases := []struct {
-		name     string
-		file     string
-		document string
-		errorCode    string
+		name      string
+		file      string
+		document  string
+		errorCode string
 	}{
 		{
-			name: "Tracked by number",
-			file: "fixtures/tracked_by_number.xml",
-			document: "TESTIK11",
+			name:      "Tracked by number",
+			file:      "fixtures/tracked_by_number.xml",
+			document:  "TESTIK11",
 			errorCode: "000",
 		},
 	}
@@ -47,7 +45,7 @@ func TestFixturesTrackingDocument(t *testing.T) {
 
 			me := NewMeestExpress("0xA79E003048D2B47311E26B7D4A430FFC", "public", "PUBLIC", server.URL)
 
-			r, err:=me.ShipmentsTrack(testCase.document)
+			r, err := me.ShipmentsTrack(testCase.document)
 			assert.NoError(t, err)
 			assert.Equal(t, testCase.errorCode, r.Errors.Code)
 		})
