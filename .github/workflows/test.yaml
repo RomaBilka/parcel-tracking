@@ -26,3 +26,6 @@ jobs:
 
       - name: Test Race
         run: go test -v ./... -race
+
+      - name: Test Cover
+        run: go test ./... -cover
