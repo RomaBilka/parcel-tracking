@@ -1,36 +1,34 @@
 package determine_delivery
 
 import (
-	"github.com/RomaBilka/parcel-tracking/pkg/determine-delivery/carriers/me"
-	"github.com/RomaBilka/parcel-tracking/pkg/determine-delivery/carriers/np"
-	np_shopping "github.com/RomaBilka/parcel-tracking/pkg/determine-delivery/carriers/np-shopping"
-	"github.com/RomaBilka/parcel-tracking/pkg/determine-delivery/carriers/ups"
+	"errors"
+
+	"github.com/RomaBilka/parcel-tracking/pkg/determine-delivery/carriers"
 )
 
-const NOVA_POSHTA = "NovaPoshta"
-const NP_SHOPPING = "NPShopping"
-const UPS = "UPS"
-const MEEST_EXPRESS = "MeestExpress"
-
-//var carriers map[string]D
-
 type D interface {
-	Detect() bool
+	Detect(string) bool
+	GetCarrier() carriers.Carrier
 }
 
-func Detect(str string) string {
-	carriers := make(map[string]D)
+type Detector struct {
+	carries []D
+}
 
-	carriers[NOVA_POSHTA] = &np.NP{TrackId: str}
-	carriers[NP_SHOPPING] = &np_shopping.NPShopping{TrackId: str}
-	carriers[UPS] = &ups.UPS{TrackId: str}
-	carriers[MEEST_EXPRESS] = &me.ME{TrackId: str}
+func NewDetector() *Detector {
+	return &Detector{}
+}
 
-	for k, carrier := range carriers {
-		if carrier.Detect() {
-			return k
+func (d *Detector) Registry(c D) {
+	d.carries = append(d.carries, c)
+}
+
+func (d *Detector) Detect(trackId string) (carriers.Carrier, error) {
+	for _, carrier := range d.carries {
+		if carrier.Detect(trackId) {
+			return carrier.GetCarrier(), nil
 		}
 	}
 
-	return ""
+	return nil, errors.New("Carrier not found")
 }

@@ -52,8 +52,8 @@ func TestNP_Detect(t *testing.T) {
 	for i := range testCases {
 		testCase := testCases[i]
 		t.Run(testCase.name, func(t *testing.T) {
-			n := NP{testCase.trackId}
-			ok := n.Detect()
+			n := NewDetector(NewCarrier(NewApi("", "")))
+			ok := n.Detect(testCase.trackId)
 			assert.Equal(t, testCase.ok, ok)
 		})
 	}

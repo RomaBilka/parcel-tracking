@@ -11,7 +11,7 @@ import (
 )
 
 func TestTrackingDocument(t *testing.T) {
-	np := NewNovaPoshta("https://api.novaposhta.ua", "")
+	np := NewApi("https://api.novaposhta.ua", "")
 
 	document := TrackingDocument{
 		DocumentNumber: "445",
@@ -74,7 +74,7 @@ func TestFixturesTrackingDocument(t *testing.T) {
 			}))
 			defer server.Close()
 
-			np := NewNovaPoshta(server.URL, "")
+			np := NewApi(server.URL, "")
 
 			methodProperties := TrackingDocuments{}
 			methodProperties.Documents = append(methodProperties.Documents, testCase.document)

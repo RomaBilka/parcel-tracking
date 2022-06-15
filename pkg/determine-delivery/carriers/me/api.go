@@ -8,15 +8,15 @@ import (
 	"github.com/valyala/fasthttp"
 )
 
-type meestExpress struct {
+type Api struct {
 	agentUID string
 	login    string
 	password string
 	apiURL   string
 }
 
-func NewMeestExpress(agentUID, login, password, apiURL string) *meestExpress {
-	return &meestExpress{
+func NewApi(agentUID, login, password, apiURL string) *Api {
+	return &Api{
 		agentUID: agentUID,
 		login:    login,
 		password: password,
@@ -24,7 +24,7 @@ func NewMeestExpress(agentUID, login, password, apiURL string) *meestExpress {
 	}
 }
 
-func (me *meestExpress) ShipmentsTrack(trackNumber string) (*ShipmentsTrackResponse, error) {
+func (me *Api) ShipmentsTrack(trackNumber string) (*ShipmentsTrackResponse, error) {
 	req := meestExpressRequest{
 		Function: "SHIPMENTS_TRACK",
 		Where:    me.agentUID + "," + trackNumber,
@@ -44,7 +44,7 @@ func (me *meestExpress) ShipmentsTrack(trackNumber string) (*ShipmentsTrackRespo
 	return shipmentsTrackResponse, nil
 }
 
-func (me *meestExpress) makeRequest(r meestExpressRequest, method string) ([]byte, error) {
+func (me *Api) makeRequest(r meestExpressRequest, method string) ([]byte, error) {
 	body := make([]byte, 0)
 
 	r.Login = me.login
@@ -70,7 +70,7 @@ func (me *meestExpress) makeRequest(r meestExpressRequest, method string) ([]byt
 	return body, nil
 }
 
-func (me *meestExpress) getHash(r meestExpressRequest) string {
+func (me *Api) getHash(r meestExpressRequest) string {
 	hash := md5.Sum([]byte(r.Login + me.password + r.Function + r.Where + r.Order))
 
 	return hex.EncodeToString(hash[:])

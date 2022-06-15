@@ -8,19 +8,19 @@ import (
 
 const URL = "/v2.0/json/"
 
-type novaPoshta struct {
+type Api struct {
 	apiKey string
 	apiURL string
 }
 
-func NewNovaPoshta(apiURL, apiKey string) *novaPoshta {
-	return &novaPoshta{
+func NewApi(apiURL, apiKey string) *Api {
+	return &Api{
 		apiKey: apiKey,
 		apiURL: apiURL,
 	}
 }
 
-func (np *novaPoshta) TrackingDocument(methodProperties TrackingDocuments) (*TrackingDocumentsResponse, error) {
+func (np *Api) TrackingDocument(methodProperties TrackingDocuments) (*TrackingDocumentsResponse, error) {
 	req := novaPoshtaRequest{
 		ModelName:    "TrackingDocument",
 		CalledMethod: "getStatusDocuments",
@@ -41,7 +41,7 @@ func (np *novaPoshta) TrackingDocument(methodProperties TrackingDocuments) (*Tra
 	return trackingDocumentsResponse, err
 }
 
-func (np *novaPoshta) makeRequest(r novaPoshtaRequest, method string) ([]byte, error) {
+func (np *Api) makeRequest(r novaPoshtaRequest, method string) ([]byte, error) {
 	body := make([]byte, 0)
 	r.ApiKey = np.apiKey
 

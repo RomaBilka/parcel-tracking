@@ -10,7 +10,7 @@ import (
 )
 
 func TestTrackingDocument(t *testing.T) {
-	me := NewMeestExpress("0xA79E003048D2B47311E26B7D4A430FFC", "public", "PUBLIC", "https://apii.meest-group.com/T/1C_Query.php")
+	me := NewApi("0xA79E003048D2B47311E26B7D4A430FFC", "public", "PUBLIC", "https://apii.meest-group.com/T/1C_Query.php")
 
 	_, err := me.ShipmentsTrack("TESTIK11")
 	assert.NoError(t, err)
@@ -44,7 +44,7 @@ func TestFixturesTrackingDocument(t *testing.T) {
 			}))
 			defer server.Close()
 
-			me := NewMeestExpress("0xA79E003048D2B47311E26B7D4A430FFC", "public", "PUBLIC", server.URL)
+			me := NewApi("0xA79E003048D2B47311E26B7D4A430FFC", "public", "PUBLIC", server.URL)
 
 			r, err := me.ShipmentsTrack(testCase.document)
 			assert.NoError(t, err)

@@ -3,6 +3,7 @@ package me
 import (
 	"testing"
 
+	"github.com/RomaBilka/parcel-tracking/pkg/determine-delivery/carriers/np"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -47,8 +48,8 @@ func TestME_Detect(t *testing.T) {
 	for i := range testCases {
 		testCase := testCases[i]
 		t.Run(testCase.name, func(t *testing.T) {
-			m := ME{testCase.trackId}
-			ok := m.Detect()
+			m := NewDetector(np.NewCarrier(np.NewApi("", "")))
+			ok := m.Detect(testCase.trackId)
 			assert.Equal(t, testCase.ok, ok)
 		})
 	}

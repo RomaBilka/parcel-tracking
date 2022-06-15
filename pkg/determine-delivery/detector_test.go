@@ -3,47 +3,59 @@ package determine_delivery
 import (
 	"testing"
 
+	"github.com/RomaBilka/parcel-tracking/pkg/determine-delivery/carriers/me"
+	"github.com/RomaBilka/parcel-tracking/pkg/determine-delivery/carriers/np"
+	np_shopping "github.com/RomaBilka/parcel-tracking/pkg/determine-delivery/carriers/np-shopping"
+	"github.com/RomaBilka/parcel-tracking/pkg/determine-delivery/carriers/ups"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestDetermine(t *testing.T) {
 	testCases := []struct {
-		name     string
-		trackId  string
-		delivery string
+		name    string
+		trackId string
+		isError bool
 	}{
 		{
-			name:     "UPU",
-			trackId:  "1z0000000000000001",
-			delivery: UPS,
+			name:    "UPU",
+			trackId: "1z0000000000000001",
 		},
 		{
-			name:     "NovaPoshta",
-			trackId:  "59000000000001",
-			delivery: NOVA_POSHTA,
+			name:    "NovaPoshta",
+			trackId: "59000000000001",
 		},
 		{
-			name:     "MeestExpress",
-			trackId:  "CV999999999ZZ",
-			delivery: MEEST_EXPRESS,
+			name:    "MeestExpress",
+			trackId: "CV999999999ZZ",
 		},
 		{
-			name:     "NPShopping",
-			trackId:  "NP99999999999999NPG",
-			delivery: NP_SHOPPING,
+			name:    "NPShopping",
+			trackId: "NP99999999999999NPG",
 		},
 		{
-			name:     "unknown",
-			trackId:  "59000",
-			delivery: "",
+			name:    "unknown",
+			trackId: "59000",
+			isError: true,
 		},
 	}
+
+	detector := NewDetector()
+	detector.Registry(np.NewDetector(np.NewCarrier(np.NewApi("", ""))))
+	detector.Registry(me.NewDetector(me.NewMECarrier(me.NewApi("", "", "", ""))))
+	detector.Registry(np_shopping.NewDetector(np_shopping.NewCarrier(np_shopping.NewApi())))
+	detector.Registry(ups.NewDetector(ups.NewCarrier(ups.NewApi())))
 
 	for i := range testCases {
 		testCase := testCases[i]
 		t.Run(testCase.name, func(t *testing.T) {
-			delivery := Detect(testCase.trackId)
-			assert.Equal(t, testCase.delivery, delivery)
+
+			_, err := detector.Detect(testCase.trackId)
+			if !testCase.isError {
+				assert.NoError(t, err)
+			}
+			if testCase.isError {
+				assert.Error(t, err)
+			}
 		})
 	}
 }

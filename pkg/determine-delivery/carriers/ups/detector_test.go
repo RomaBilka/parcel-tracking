@@ -52,8 +52,8 @@ func TestIsUPS(t *testing.T) {
 	for i := range testCases {
 		testCase := testCases[i]
 		t.Run(testCase.name, func(t *testing.T) {
-			u := UPS{testCase.trackId}
-			ok := u.Detect()
+			u := NewDetector(NewCarrier(NewApi()))
+			ok := u.Detect(testCase.trackId)
 			assert.Equal(t, testCase.ok, ok)
 		})
 	}
