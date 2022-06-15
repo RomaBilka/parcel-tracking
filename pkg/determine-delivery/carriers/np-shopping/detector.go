@@ -25,11 +25,8 @@ func NewDetector(carrier carriers.Carrier) *Detector {
 
 func (d *Detector) Detect(trackId string) bool {
 	matched := npShopping.MatchString(trackId)
-	if matched {
-		return true
-	}
 
-	return false
+	return matched
 }
 
 func (d *Detector) GetCarrier() carriers.Carrier {

@@ -34,11 +34,8 @@ func (d *Detector) Detect(trackId string) bool {
 	}
 
 	matched = startMYCV.MatchString(trackId)
-	if matched {
-		return true
-	}
 
-	return false
+	return matched
 }
 
 func (d *Detector) GetCarrier() carriers.Carrier {

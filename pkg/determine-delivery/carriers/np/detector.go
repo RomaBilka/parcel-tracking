@@ -43,11 +43,8 @@ func (d *Detector) Detect(trackId string) bool {
 	}
 
 	matched = start1.MatchString(trackId)
-	if matched {
-		return true
-	}
 
-	return false
+	return matched
 }
 
 func (d *Detector) GetCarrier() carriers.Carrier {

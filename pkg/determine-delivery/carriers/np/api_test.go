@@ -70,7 +70,8 @@ func TestFixturesTrackingDocument(t *testing.T) {
 					t.Fatal(err)
 				}
 
-				w.Write(b)
+				_, err = w.Write(b)
+				assert.NoError(t, err)
 			}))
 			defer server.Close()
 
