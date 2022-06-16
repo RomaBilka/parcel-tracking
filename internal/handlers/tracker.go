@@ -1,27 +1,64 @@
 package handlers
 
 import (
+	"encoding/json"
+	"fmt"
 	"net/http"
 
 	determine_delivery "github.com/RomaBilka/parcel-tracking/pkg/determine-delivery"
 	"github.com/RomaBilka/parcel-tracking/pkg/determine-delivery/carriers"
 )
 
-type T *interface {
-	Registry(c determine_delivery.D)
+type Detector interface {
+	Registry(determine_delivery.C)
 	Detect(string) (carriers.Carrier, error)
 }
 
 type Tracker struct {
-	detector determine_delivery.D
+	detector Detector
 }
 
-func NewTracker(detector determine_delivery.D) *Tracker {
+func NewTracker(detector Detector) *Tracker {
 	return &Tracker{
 		detector: detector,
 	}
 }
 
 func (t *Tracker) Tracking(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodGet {
+		w.WriteHeader(http.StatusMethodNotAllowed)
+		return
+	}
 
+	trackingId, ok := r.URL.Query()["tracking_id"]
+	if !ok {
+		w.WriteHeader(http.StatusBadRequest)
+		fmt.Fprintf(w, "%s", "tracking_id is empty")
+		return
+	}
+
+	carrier, err := t.detector.Detect(trackingId[0])
+
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		fmt.Fprintf(w, "%s", err.Error())
+		return
+	}
+
+	parcel, err := carrier.Tracking(trackingId[0])
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		fmt.Fprintf(w, "%s", err.Error())
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+	err = json.NewEncoder(w).Encode(parcel)
+
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		fmt.Fprintf(w, "%s", err.Error())
+	}
+
+	return
 }
