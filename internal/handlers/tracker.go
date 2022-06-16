@@ -59,6 +59,4 @@ func (t *Tracker) Tracking(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusBadRequest)
 		fmt.Fprintf(w, "%s", err.Error())
 	}
-
-	return
 }
