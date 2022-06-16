@@ -8,7 +8,7 @@ type Carrier struct {
 	api *Api
 }
 
-func NewMECarrier(api *Api) *Carrier {
+func NewCarrier(api *Api) *Carrier {
 	return &Carrier{
 		api: api,
 	}

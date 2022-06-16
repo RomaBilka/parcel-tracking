@@ -13,5 +13,26 @@ func NewCarrier(api *Api) *Carrier {
 }
 
 func (c *Carrier) Tracking(trackingId string) ([]carriers.Parcel, error) {
-	return []carriers.Parcel{}, nil
+	parcels := []carriers.Parcel{}
+
+	document := TrackingDocument{
+		DocumentNumber: trackingId,
+	}
+	methodProperties := TrackingDocuments{}
+	methodProperties.Documents = append(methodProperties.Documents, document)
+	methodProperties.CheckWeightMethod = "3"
+
+	documents, err := c.api.TrackingDocument(methodProperties)
+	if err != nil {
+		return parcels, err
+	}
+
+	for _, d := range documents.Data {
+		parcels = append(parcels, carriers.Parcel{
+			Number:  d.Number,
+			Address: d.CityRecipient,
+		})
+	}
+
+	return parcels, nil
 }

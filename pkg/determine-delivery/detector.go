@@ -6,20 +6,20 @@ import (
 	"github.com/RomaBilka/parcel-tracking/pkg/determine-delivery/carriers"
 )
 
-type D interface {
+type C interface {
 	Detect(string) bool
 	GetCarrier() carriers.Carrier
 }
 
 type Detector struct {
-	carries []D
+	carries []C
 }
 
 func NewDetector() *Detector {
 	return &Detector{}
 }
 
-func (d *Detector) Registry(c D) {
+func (d *Detector) Registry(c C) {
 	d.carries = append(d.carries, c)
 }
 
@@ -30,5 +30,5 @@ func (d *Detector) Detect(trackId string) (carriers.Carrier, error) {
 		}
 	}
 
-	return nil, errors.New("Carrier not found")
+	return nil, errors.New("Carrier not detected")
 }
