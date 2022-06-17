@@ -15,5 +15,20 @@ func NewCarrier(api *Api) *Carrier {
 }
 
 func (c *Carrier) Tracking(trackingId string) ([]carriers.Parcel, error) {
-	return []carriers.Parcel{}, nil
+	parcels := []carriers.Parcel{}
+
+	documents, err := c.api.ShipmentsTrack(trackingId)
+	if err != nil {
+		return parcels, err
+	}
+
+	for _, d := range documents.ResultTable {
+		parcels = append(parcels, carriers.Parcel{
+			Number:  d.ShipmentNumberSender,
+			Address: d.CountryDel,
+			Status:  d.ActionMessages_UA + " " + d.DetailMessages_UA,
+		})
+	}
+
+	return parcels, nil
 }

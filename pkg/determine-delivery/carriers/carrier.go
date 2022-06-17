@@ -7,4 +7,5 @@ type Carrier interface {
 type Parcel struct {
 	Number  string
 	Address string
+	Status  string
 }
