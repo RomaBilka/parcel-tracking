@@ -24,10 +24,10 @@ var opts struct {
 
 func main() {
 	o := opts
-	_, err := flags.Parse(&o)
-	if err != nil {
+	flags.Parse(&o)
+	/*if err != nil {
 		panic(err)
-	}
+	}*/
 
 	detector := determine_delivery.NewDetector()
 	detector.Registry(np.NewCarrier(np.NewApi(o.NP_API_URL, o.NP_API_Key)))
