@@ -2,7 +2,6 @@ package np
 
 import "github.com/RomaBilka/parcel-tracking/pkg/determine-delivery/carriers"
 
-
 func (c *Carrier) Track(trackingId string) ([]carriers.Parcel, error) {
 	parcels := []carriers.Parcel{}
 

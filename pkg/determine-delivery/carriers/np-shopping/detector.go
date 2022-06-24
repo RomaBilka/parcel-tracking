@@ -11,7 +11,6 @@ func init() {
 	npShopping = regexp.MustCompile(`(?i)^NP[\d]{14}NPG$`)
 }
 
-
 func (c *Carrier) Detect(trackId string) bool {
 	matched := npShopping.MatchString(trackId)
 

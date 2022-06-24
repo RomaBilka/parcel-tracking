@@ -6,7 +6,6 @@ import (
 	"github.com/RomaBilka/parcel-tracking/pkg/determine-delivery/carriers"
 )
 
-
 type Detector struct {
 	carries []carriers.Carrier
 }
