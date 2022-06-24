@@ -6,27 +6,23 @@ import (
 	"github.com/RomaBilka/parcel-tracking/pkg/determine-delivery/carriers"
 )
 
-type C interface {
-	Detect(string) bool
-	GetCarrier() carriers.Carrier
-}
 
 type Detector struct {
-	carries []C
+	carries []carriers.Carrier
 }
 
 func NewDetector() *Detector {
 	return &Detector{}
 }
 
-func (d *Detector) Registry(c C) {
+func (d *Detector) Registry(c carriers.Carrier) {
 	d.carries = append(d.carries, c)
 }
 
 func (d *Detector) Detect(trackId string) (carriers.Carrier, error) {
 	for _, carrier := range d.carries {
 		if carrier.Detect(trackId) {
-			return carrier.GetCarrier(), nil
+			return carrier, nil
 		}
 	}
 

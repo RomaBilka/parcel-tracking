@@ -5,12 +5,11 @@ import (
 	"fmt"
 	"net/http"
 
-	determine_delivery "github.com/RomaBilka/parcel-tracking/pkg/determine-delivery"
 	"github.com/RomaBilka/parcel-tracking/pkg/determine-delivery/carriers"
 )
 
 type Detector interface {
-	Registry(determine_delivery.C)
+	Registry(carrier carriers.Carrier)
 	Detect(string) (carriers.Carrier, error)
 }
 
@@ -45,7 +44,7 @@ func (t *Tracker) Tracking(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	parcel, err := carrier.Tracking(trackingId[0])
+	parcel, err := carrier.Track(trackingId[0])
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		fmt.Fprintf(w, "%s", err.Error())

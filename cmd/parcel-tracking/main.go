@@ -12,8 +12,8 @@ import (
 
 func main() {
 	detector := determine_delivery.NewDetector()
-	detector.Registry(np.NewDetector(np.NewCarrier(np.NewApi("https://api.novaposhta.ua", ""))))
-	detector.Registry(me.NewDetector(me.NewCarrier(me.NewApi("0xA79E003048D2B47311E26B7D4A430FFC", "public", "PUBLIC", "https://apii.meest-group.com/T/1C_Query.php"))))
+	detector.Registry(np.NewCarrier(np.NewApi("https://api.novaposhta.ua", "")))
+	detector.Registry(me.NewCarrier(me.NewApi("0xA79E003048D2B47311E26B7D4A430FFC", "public", "PUBLIC", "https://apii.meest-group.com/T/1C_Query.php")))
 
 	tracker := handlers.NewTracker(detector)
 	http.HandleFunc("/tracking", tracker.Tracking)

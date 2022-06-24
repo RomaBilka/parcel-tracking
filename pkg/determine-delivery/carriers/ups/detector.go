@@ -2,8 +2,6 @@ package ups
 
 import (
 	"regexp"
-
-	"github.com/RomaBilka/parcel-tracking/pkg/determine-delivery/carriers"
 )
 
 var start1z *regexp.Regexp
@@ -21,15 +19,7 @@ func init() {
 	start9 = regexp.MustCompile(`^9[\d]{17}$`)
 }
 
-type Detector struct {
-	carrier carriers.Carrier
-}
-
-func NewDetector(carrier carriers.Carrier) *Detector {
-	return &Detector{carrier: carrier}
-}
-
-func (d *Detector) Detect(trackId string) bool {
+func (c *Carrier) Detect(trackId string) bool {
 
 	matched := start1z.MatchString(trackId)
 	if matched {
@@ -44,8 +34,4 @@ func (d *Detector) Detect(trackId string) bool {
 	matched = start9.MatchString(trackId)
 
 	return matched
-}
-
-func (d *Detector) GetCarrier() carriers.Carrier {
-	return d.carrier
 }

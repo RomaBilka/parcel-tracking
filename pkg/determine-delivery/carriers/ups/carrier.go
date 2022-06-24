@@ -12,6 +12,6 @@ func NewCarrier(api *Api) *Carrier {
 	}
 }
 
-func (c *Carrier) Tracking(trackingId string) ([]carriers.Parcel, error) {
+func (c *Carrier) Track(trackingId string) ([]carriers.Parcel, error) {
 	return []carriers.Parcel{}, nil
 }

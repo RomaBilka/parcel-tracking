@@ -1,7 +1,16 @@
 package carriers
 
+type Tracker interface {
+	Track(string) ([]Parcel, error)
+}
+
+type Detector interface {
+	Detect(string) bool
+}
+
 type Carrier interface {
-	Tracking(string) ([]Parcel, error)
+	Tracker
+	Detector
 }
 
 type Parcel struct {
