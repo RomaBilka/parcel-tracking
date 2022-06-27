@@ -1,8 +1,14 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"net/http"
+	"os"
+	"os/signal"
+	"syscall"
+
+	"golang.org/x/sync/errgroup"
 
 	"github.com/RomaBilka/parcel-tracking/internal/handlers"
 	determine_delivery "github.com/RomaBilka/parcel-tracking/pkg/determine-delivery"
@@ -24,10 +30,10 @@ var opts struct {
 
 func main() {
 	o := opts
-	flags.Parse(&o)
-	/*if err != nil {
+	_, err := flags.Parse(&o)
+	if err != nil {
 		panic(err)
-	}*/
+	}
 
 	detector := determine_delivery.NewDetector()
 	detector.Registry(np.NewCarrier(np.NewApi(o.NP_API_URL, o.NP_API_Key)))
@@ -36,6 +42,21 @@ func main() {
 	tracker := handlers.NewTracker(detector)
 	http.HandleFunc("/tracking", tracker.Tracking)
 
-	fmt.Println("Server is listening...")
-	_ = http.ListenAndServe(":"+o.Port, nil)
+	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
+	defer stop()
+	httpServer := &http.Server{
+		Addr: ":" + o.Port,
+	}
+	g, gCtx := errgroup.WithContext(ctx)
+	g.Go(func() error {
+		fmt.Println("Server is listening...")
+		return httpServer.ListenAndServe()
+	})
+	g.Go(func() error {
+		<-gCtx.Done()
+		return httpServer.Shutdown(context.Background())
+	})
+	if err := g.Wait(); err != nil {
+		fmt.Printf("exit reason: %s \n", err)
+	}
 }
