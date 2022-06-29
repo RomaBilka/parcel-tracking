@@ -1,10 +1,7 @@
 package main
 
 import (
-	"fmt"
-
 	determine_delivery "github.com/RomaBilka/parcel-tracking/pkg/determine-delivery"
-	"github.com/RomaBilka/parcel-tracking/pkg/determine-delivery/carriers"
 	"github.com/RomaBilka/parcel-tracking/pkg/determine-delivery/carriers/me"
 	"github.com/RomaBilka/parcel-tracking/pkg/determine-delivery/carriers/np"
 	"github.com/aws/aws-lambda-go/lambda"
@@ -26,7 +23,7 @@ type Event struct {
 	TrackTd string `json:"track_id"`
 }
 
-func HandleLambdaEvent(event Event) ([]carriers.Parcel, error) {
+func HandleLambdaEvent(event Event) (Event, error) {
 
 	o := opts
 	_, err := flags.Parse(&o)
@@ -37,22 +34,21 @@ func HandleLambdaEvent(event Event) ([]carriers.Parcel, error) {
 	detector := determine_delivery.NewDetector()
 	detector.Registry(np.NewCarrier(np.NewApi(o.NP_API_URL, o.NP_API_Key)))
 	detector.Registry(me.NewCarrier(me.NewApi(o.ME_ID, o.ME_Login, o.ME_Password, o.ME_API_URL)))
+	
+	return event, nil
+	/*
+		carrier, err := detector.Detect(event.TrackTd)
 
-	fmt.Println(event)
-	return []carriers.Parcel{}, nil
+		if err != nil {
+			return []carriers.Parcel{}, err
+		}
 
-	carrier, err := detector.Detect(event.TrackTd)
+		parcel, err := carrier.Track(event.TrackTd)
+		if err != nil {
+			return []carriers.Parcel{}, err
+		}
 
-	if err != nil {
-		return []carriers.Parcel{}, err
-	}
-
-	parcel, err := carrier.Track(event.TrackTd)
-	if err != nil {
-		return []carriers.Parcel{}, err
-	}
-
-	return parcel, nil
+		return parcel, nil*/
 }
 
 func main() {
