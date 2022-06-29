@@ -4,6 +4,7 @@ import (
 	"context"
 
 	determine_delivery "github.com/RomaBilka/parcel-tracking/pkg/determine-delivery"
+	"github.com/RomaBilka/parcel-tracking/pkg/determine-delivery/carriers"
 	"github.com/RomaBilka/parcel-tracking/pkg/determine-delivery/carriers/me"
 	"github.com/RomaBilka/parcel-tracking/pkg/determine-delivery/carriers/np"
 	"github.com/aws/aws-lambda-go/events"
@@ -22,11 +23,7 @@ var opts struct {
 	ME_ID       string `long:"ME_ID" description:"meest express ID" required:"true" default:"0xA79E003048D2B47311E26B7D4A430FFC" env:"ME_ID"`
 }
 
-type Event struct {
-	TrackTd string `json:"track_id"`
-}
-
-func HandleLambdaEvent(ctx context.Context, request events.APIGatewayProxyRequest) (string, error) {
+func HandleLambdaEvent(ctx context.Context, request events.APIGatewayProxyRequest) ([]carriers.Parcel, error) {
 
 	o := opts
 	_, err := flags.Parse(&o)
@@ -38,50 +35,19 @@ func HandleLambdaEvent(ctx context.Context, request events.APIGatewayProxyReques
 	detector.Registry(np.NewCarrier(np.NewApi(o.NP_API_URL, o.NP_API_Key)))
 	detector.Registry(me.NewCarrier(me.NewApi(o.ME_ID, o.ME_Login, o.ME_Password, o.ME_API_URL)))
 
-	return request.QueryStringParameters["track_id"], nil
-	/*
-		carrier, err := detector.Detect(event.TrackTd)
+	carrier, err := detector.Detect(request.QueryStringParameters["track_id"])
 
-		if err != nil {
-			return []carriers.Parcel{}, err
-		}
-
-		parcel, err := carrier.Track(event.TrackTd)
-		if err != nil {
-			return []carriers.Parcel{}, err
-		}
-
-		return parcel, nil*/
-}
-
-/*
-
-func HandleLambdaEvent(event Event) (Event, error) {
-
-	o := opts
-	_, err := flags.Parse(&o)
 	if err != nil {
-		panic(err)
+		return []carriers.Parcel{}, err
 	}
 
-	detector := determine_delivery.NewDetector()
-	detector.Registry(np.NewCarrier(np.NewApi(o.NP_API_URL, o.NP_API_Key)))
-	detector.Registry(me.NewCarrier(me.NewApi(o.ME_ID, o.ME_Login, o.ME_Password, o.ME_API_URL)))
+	parcel, err := carrier.Track(request.QueryStringParameters["track_id"])
+	if err != nil {
+		return []carriers.Parcel{}, err
+	}
 
-
-		carrier, err := detector.Detect(event.TrackTd)
-
-		if err != nil {
-			return []carriers.Parcel{}, err
-		}
-
-		parcel, err := carrier.Track(event.TrackTd)
-		if err != nil {
-			return []carriers.Parcel{}, err
-		}
-
-		return parcel, nil
-}*/
+	return parcel, nil
+}
 
 func main() {
 	lambda.Start(HandleLambdaEvent)
