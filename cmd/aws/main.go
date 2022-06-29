@@ -23,7 +23,7 @@ type Event struct {
 	TrackTd string `json:"track_id"`
 }
 
-func HandleLambdaEvent(event Event) (Event, error) {
+func HandleLambdaEvent(event Event) (string, error) {
 
 	o := opts
 	_, err := flags.Parse(&o)
@@ -34,8 +34,8 @@ func HandleLambdaEvent(event Event) (Event, error) {
 	detector := determine_delivery.NewDetector()
 	detector.Registry(np.NewCarrier(np.NewApi(o.NP_API_URL, o.NP_API_Key)))
 	detector.Registry(me.NewCarrier(me.NewApi(o.ME_ID, o.ME_Login, o.ME_Password, o.ME_API_URL)))
-	
-	return event, nil
+
+	return event.TrackTd, nil
 	/*
 		carrier, err := detector.Detect(event.TrackTd)
 
