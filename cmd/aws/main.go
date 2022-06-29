@@ -1,6 +1,8 @@
 package main
 
 import (
+	"fmt"
+
 	determine_delivery "github.com/RomaBilka/parcel-tracking/pkg/determine-delivery"
 	"github.com/RomaBilka/parcel-tracking/pkg/determine-delivery/carriers"
 	"github.com/RomaBilka/parcel-tracking/pkg/determine-delivery/carriers/me"
@@ -36,6 +38,9 @@ func HandleLambdaEvent(event Event) ([]carriers.Parcel, error) {
 	detector.Registry(np.NewCarrier(np.NewApi(o.NP_API_URL, o.NP_API_Key)))
 	detector.Registry(me.NewCarrier(me.NewApi(o.ME_ID, o.ME_Login, o.ME_Password, o.ME_API_URL)))
 
+	fmt.Println(event)
+	return []carriers.Parcel{}, nil
+	
 	carrier, err := detector.Detect(event.TrackTd)
 
 	if err != nil {
