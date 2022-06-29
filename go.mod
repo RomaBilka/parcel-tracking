@@ -3,6 +3,7 @@ module github.com/RomaBilka/parcel-tracking
 go 1.18
 
 require (
+	github.com/aws/aws-lambda-go v1.32.0
 	github.com/jessevdk/go-flags v1.5.0
 	github.com/stretchr/testify v1.7.2
 	github.com/valyala/fasthttp v1.37.0
@@ -11,7 +12,6 @@ require (
 
 require (
 	github.com/andybalholm/brotli v1.0.4 // indirect
-	github.com/aws/aws-lambda-go v1.32.0 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/klauspost/compress v1.15.6 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
