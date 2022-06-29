@@ -40,7 +40,7 @@ func HandleLambdaEvent(event Event) ([]carriers.Parcel, error) {
 
 	fmt.Println(event)
 	return []carriers.Parcel{}, nil
-	
+
 	carrier, err := detector.Detect(event.TrackTd)
 
 	if err != nil {
