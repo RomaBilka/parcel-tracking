@@ -1,9 +1,12 @@
 package main
 
 import (
+	"context"
+
 	determine_delivery "github.com/RomaBilka/parcel-tracking/pkg/determine-delivery"
 	"github.com/RomaBilka/parcel-tracking/pkg/determine-delivery/carriers/me"
 	"github.com/RomaBilka/parcel-tracking/pkg/determine-delivery/carriers/np"
+	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-lambda-go/lambda"
 	"github.com/jessevdk/go-flags"
 )
@@ -23,7 +26,7 @@ type Event struct {
 	TrackTd string `json:"track_id"`
 }
 
-func HandleLambdaEvent(event Event) (Event, error) {
+func HandleLambdaEvent(ctx context.Context, request events.APIGatewayProxyRequest) (string, error) {
 
 	o := opts
 	_, err := flags.Parse(&o)
@@ -35,7 +38,7 @@ func HandleLambdaEvent(event Event) (Event, error) {
 	detector.Registry(np.NewCarrier(np.NewApi(o.NP_API_URL, o.NP_API_Key)))
 	detector.Registry(me.NewCarrier(me.NewApi(o.ME_ID, o.ME_Login, o.ME_Password, o.ME_API_URL)))
 
-	return event, nil
+	return request.QueryStringParameters["track_id"], nil
 	/*
 		carrier, err := detector.Detect(event.TrackTd)
 
@@ -50,6 +53,35 @@ func HandleLambdaEvent(event Event) (Event, error) {
 
 		return parcel, nil*/
 }
+
+/*
+
+func HandleLambdaEvent(event Event) (Event, error) {
+
+	o := opts
+	_, err := flags.Parse(&o)
+	if err != nil {
+		panic(err)
+	}
+
+	detector := determine_delivery.NewDetector()
+	detector.Registry(np.NewCarrier(np.NewApi(o.NP_API_URL, o.NP_API_Key)))
+	detector.Registry(me.NewCarrier(me.NewApi(o.ME_ID, o.ME_Login, o.ME_Password, o.ME_API_URL)))
+
+
+		carrier, err := detector.Detect(event.TrackTd)
+
+		if err != nil {
+			return []carriers.Parcel{}, err
+		}
+
+		parcel, err := carrier.Track(event.TrackTd)
+		if err != nil {
+			return []carriers.Parcel{}, err
+		}
+
+		return parcel, nil
+}*/
 
 func main() {
 	lambda.Start(HandleLambdaEvent)
