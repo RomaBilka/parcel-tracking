@@ -30,7 +30,6 @@ func (c *Carrier) Detect(trackId string) bool {
 		return true
 	}
 
-	matched = start1.MatchString(trackId)
-
-	return matched
+	return start1.MatchString(trackId)
+	//return matched
 }

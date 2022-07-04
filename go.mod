@@ -4,6 +4,7 @@ go 1.18
 
 require (
 	github.com/aws/aws-lambda-go v1.32.0
+	github.com/google/go-querystring v1.1.0
 	github.com/jessevdk/go-flags v1.5.0
 	github.com/stretchr/testify v1.7.2
 	github.com/valyala/fasthttp v1.37.0
