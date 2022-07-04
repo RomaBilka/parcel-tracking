@@ -46,5 +46,5 @@ func Tracking(t parcelTracker) http.HandlerFunc {
 func writeErrorResponse(w http.ResponseWriter, code int, err error) {
 	w.WriteHeader(code)
 	b, _ := json.Marshal(models.Error{Message: err.Error()})
-	fmt.Fprintf(w, string(b))
+	fmt.Fprint(w, string(b))
 }
