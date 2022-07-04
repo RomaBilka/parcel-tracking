@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/RomaBilka/parcel-tracking/api/models"
 	"github.com/RomaBilka/parcel-tracking/pkg/determine-delivery/carriers"
 )
 
@@ -44,5 +45,6 @@ func Tracking(t parcelTracker) http.HandlerFunc {
 
 func writeErrorResponse(w http.ResponseWriter, code int, err error) {
 	w.WriteHeader(code)
-	fmt.Fprintf(w, "%s", err.Error())
+	b, _ := json.Marshal(models.Error{Message: err.Error()})
+	fmt.Fprintf(w, string(b))
 }
