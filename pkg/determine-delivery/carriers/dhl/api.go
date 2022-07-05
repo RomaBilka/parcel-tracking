@@ -2,7 +2,6 @@ package dhl
 
 import (
 	"encoding/json"
-	"fmt"
 
 	"github.com/google/go-querystring/query"
 	"github.com/valyala/fasthttp"
@@ -25,8 +24,8 @@ func (api *Api) TrackingDocument(trackNumber string) (*response, error) {
 		TrackingNumber: trackNumber,
 	}
 
-	b, err := api.makeRequest(req, fasthttp.MethodGet, "track/shipments")
-	fmt.Println(string(b))
+	b, err := api.makeRequest(req, fasthttp.MethodGet, "/track/shipments")
+
 	if err != nil {
 		return nil, err
 	}
@@ -35,8 +34,8 @@ func (api *Api) TrackingDocument(trackNumber string) (*response, error) {
 	if err := json.Unmarshal(b, r); err != nil {
 		return nil, err
 	}
-	fmt.Println(r)
-	return r, err
+
+	return r, nil
 }
 
 func (api *Api) makeRequest(r request, method, endPoint string) ([]byte, error) {
@@ -49,7 +48,6 @@ func (api *Api) makeRequest(r request, method, endPoint string) ([]byte, error) 
 	req.Header.SetMethod(method)
 	req.Header.Add("DHL-API-Key", api.apiKey)
 	req.SetRequestURI(api.apiURL + endPoint + "?" + v.Encode())
-
 	res := fasthttp.AcquireResponse()
 	if err := fasthttp.Do(req, res); err != nil {
 		return nil, err
@@ -59,5 +57,4 @@ func (api *Api) makeRequest(r request, method, endPoint string) ([]byte, error) 
 	body := res.Body()
 
 	return body, nil
-
 }

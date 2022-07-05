@@ -1,0 +1,74 @@
+{
+  "shipments":[
+    {
+      "serviceUrl":"https://www.dhl.de/de/privatkunden.html?piececode=00340434292135100186&cid=c_dhl_de_352_20205002_151_M040",
+      "rerouteUrl":"https://www.dhl.de/de/privatkunden.html?piececode=00340434292135100186&verfuegen_selected_tab=FIRST&cid=c_dhl_de_352_20205001_150_M040",
+      "id":"00340434292135100186",
+      "service":"parcel-de",
+      "origin":{
+        "address":{
+          "countryCode":"DE"
+        }
+      },
+      "destination":{
+        "address":{
+          "countryCode":"DE"
+        }
+      },
+      "status":{
+        "timestamp":"2022-06-27T19:30:00",
+        "statusCode":"pre-transit",
+        "status":"The instruction data for this shipment have been provided by the sender to DHL electronically",
+        "description":"The instruction data for this shipment have been provided by the sender to DHL electronically"
+      },
+      "details":{
+        "product":{
+          "productName":"DHL PAKET (parcel)"
+        },
+        "proofOfDeliverySignedAvailable":false,
+        "totalNumberOfPieces":1,
+        "pieceIds":[
+          "340434292135100186"
+        ],
+        "weight":{
+          "value":2,
+          "unitText":"kg"
+        },
+        "dimensions":{
+          "width":{
+            "value":0.3,
+            "unitText":"m"
+          },
+          "height":{
+            "value":0.14,
+            "unitText":"m"
+          },
+          "length":{
+            "value":0.38,
+            "unitText":"m"
+          }
+        }
+      },
+      "events":[
+        {
+          "timestamp":"2022-06-27T19:30:00",
+          "statusCode":"pre-transit",
+          "status":"The instruction data for this shipment have been provided by the sender to DHL electronically",
+          "description":"The instruction data for this shipment have been provided by the sender to DHL electronically"
+        }
+      ]
+    }
+  ],
+  "possibleAdditionalShipmentsUrl":[
+    "/track/shipments?trackingNumber=00340434292135100186&service=freight",
+    "/track/shipments?trackingNumber=00340434292135100186&service=dgf",
+    "/track/shipments?trackingNumber=00340434292135100186&service=ecommerce",
+    "/track/shipments?trackingNumber=00340434292135100186&service=parcel-nl",
+    "/track/shipments?trackingNumber=00340434292135100186&service=parcel-pl",
+    "/track/shipments?trackingNumber=00340434292135100186&service=post-de",
+    "/track/shipments?trackingNumber=00340434292135100186&service=sameday",
+    "/track/shipments?trackingNumber=00340434292135100186&service=parcel-uk",
+    "/track/shipments?trackingNumber=00340434292135100186&service=ecommerce-apac",
+    "/track/shipments?trackingNumber=00340434292135100186&service=ecommerce-europe"
+  ]
+}

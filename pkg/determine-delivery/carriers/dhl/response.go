@@ -36,19 +36,19 @@ type shipments struct {
 	} `json:"estimatedDeliveryTimeFrame"`
 
 	Details struct {
-		TotalNumberOfPieces int      `json:"totalNumberOfPieces"`
-		PieceIds            []string `json:"pieceIds"`
-		Weight              struct {
-			Value    float64 `json:"value"`
-			UnitText string  `json:"unitText"`
-		} `json:"weight"`
-		Volume        map[string]string `json:"volume"`
-		LoadingMeters string            `json:"loadingMeters"`
+		TotalNumberOfPieces int        `json:"totalNumberOfPieces"`
+		PieceIds            []string   `json:"pieceIds"`
+		Width               dimensions `json:"width"`
+		LoadingMeters       float64    `json:"loadingMeters"`
+
+		Volume struct {
+			Value string `json:"volume"`
+		} `json:"volume"`
 
 		Dimensions struct {
-			Width  map[string]string `json:"width"`
-			Height map[string]string `json:"height"`
-			Length map[string]string `json:"length"`
+			Width  dimensions `json:"width"`
+			Height dimensions `json:"height"`
+			Length dimensions `json:"length"`
 		} `json:"dimensions"`
 
 		References struct {
@@ -56,7 +56,7 @@ type shipments struct {
 			Type   string `json:"type"`
 		} `json:"references"`
 
-		Routes struct {
+		Routes []struct {
 			VesselName             string `json:"dgf:vesselName"`
 			VoyageFlightNumber     string `json:"dgf:voyageFlightNumber"`
 			EstimatedDepartureDate string `json:"dgf:estimatedDepartureDate"`
@@ -84,24 +84,7 @@ type shipments struct {
 		} `json:"dgf:placeOfDelivery"`
 	} `json:"details"`
 
-	Events struct {
-		Timestamp   string   `json:"timestamp"`
-		StatusCode  string   `json:"statusCode"`
-		Status      string   `json:"status"`
-		Description string   `json:"description"`
-		PieceIds    []string `json:"pieceIds"`
-		Remark      string   `json:"remark"`
-		NextSteps   string   `json:"nextSteps"`
-
-		Location struct {
-			Address struct {
-				CountryCode     string `json:"countryCode"`
-				PostalCode      string `json:"postalCode"`
-				AddressLocality string `json:"addressLocality"`
-				StreetAddress   string `json:"streetAddress"`
-			} `json:"address"`
-		} `json:"location"`
-	} `json:"events"`
+	Events []events `json:"events"`
 }
 
 type airport struct {
@@ -115,4 +98,28 @@ type address struct {
 	PostalCode      string `json:"postalCode"`
 	AddressLocality string `json:"addressLocality"`
 	StreetAddress   string `json:"streetAddress"`
+}
+
+type dimensions struct {
+	Value    float64 `json:"value"`
+	UnitText string  `json:"unitText"`
+}
+
+type events struct {
+	Timestamp   string   `json:"timestamp"`
+	StatusCode  string   `json:"statusCode"`
+	Status      string   `json:"status"`
+	Description string   `json:"description"`
+	PieceIds    []string `json:"pieceIds"`
+	Remark      string   `json:"remark"`
+	NextSteps   string   `json:"nextSteps"`
+
+	Location struct {
+		Address struct {
+			CountryCode     string `json:"countryCode"`
+			PostalCode      string `json:"postalCode"`
+			AddressLocality string `json:"addressLocality"`
+			StreetAddress   string `json:"streetAddress"`
+		} `json:"address"`
+	} `json:"location"`
 }
