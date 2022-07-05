@@ -19,9 +19,18 @@ func (c *Carrier) Detect(trackId string) bool {
 func (c *Carrier) Track(trackNumber string) ([]carriers.Parcel, error) {
 	parcels := make([]carriers.Parcel, 1)
 
-	/*
-		document, err := c.api.TrackingDocument(trackNumber)
+	response, err := c.api.TrackingDocument(trackNumber)
+	if err != nil {
+		return nil, err
+	}
 
-	*/
+	for _, d := range response.Shipments {
+		parcels = append(parcels, carriers.Parcel{
+			Number:  d.Id,
+			Address: d.Status.Location.StreetAddress,
+			Status:  d.Status.Status,
+		})
+	}
+
 	return parcels, nil
 }

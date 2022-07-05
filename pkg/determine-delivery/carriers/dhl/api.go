@@ -2,6 +2,7 @@ package dhl
 
 import (
 	"encoding/json"
+	"errors"
 
 	"github.com/google/go-querystring/query"
 	"github.com/valyala/fasthttp"
@@ -56,5 +57,9 @@ func (api *Api) makeRequest(r request, method, endPoint string) ([]byte, error) 
 	fasthttp.ReleaseRequest(req)
 	body := res.Body()
 
-	return body, nil
+	if res.StatusCode() == fasthttp.StatusOK {
+		return body, nil
+	}
+
+	return nil, errors.New(fasthttp.StatusMessage(res.StatusCode()))
 }

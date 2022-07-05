@@ -27,7 +27,14 @@ type shipments struct {
 	} `json:"destination"`
 
 	Status struct {
-		Timestamp string `json:"timestamp"`
+		Timestamp   string   `json:"timestamp"`
+		Location    address  `json:"address"`
+		StatusCode  string   `json:"statusCode"`
+		Status      string   `json:"status"`
+		Description string   `json:"description"`
+		PieceIds    []string `json:"pieceIds"`
+		Remark      string   `json:"remark"`
+		NextSteps   string   `json:"nextSteps"`
 	} `json:"status"`
 
 	EstimatedDeliveryTimeFrame struct {
