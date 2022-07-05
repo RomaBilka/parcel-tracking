@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"github.com/RomaBilka/parcel-tracking/api/models"
+	"github.com/RomaBilka/parcel-tracking/api"
 	"github.com/RomaBilka/parcel-tracking/pkg/determine-delivery/carriers"
 	"github.com/aws/aws-lambda-go/events"
 )
@@ -22,7 +22,7 @@ func HandleLambdaEvent(t parcelTracker) Handler {
 
 		p, err := t.TrackParcel(ctx, id)
 		if err != nil {
-			return response(http.StatusBadRequest, models.Error{Message: err.Error()})
+			return response(http.StatusBadRequest, api.Error{Message: err.Error()})
 		}
 		return response(http.StatusOK, p)
 	}
