@@ -1,11 +1,11 @@
 name: Vet
-
 on:
   push:
-    branches: [ * ]
+    branches:
+      - '**'
   pull_request:
-    branches: [ * ]
-
+    branches:
+      - '**'
 jobs:
   build:
     runs-on: ubuntu-latest
