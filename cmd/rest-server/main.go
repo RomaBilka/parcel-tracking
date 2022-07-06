@@ -8,21 +8,26 @@ import (
 	"os/signal"
 	"syscall"
 
-	"github.com/RomaBilka/parcel-tracking/cmd"
-	"github.com/RomaBilka/parcel-tracking/internal/handlers"
+	"github.com/RomaBilka/parcel-tracking/api/rest/handlers"
+	"github.com/RomaBilka/parcel-tracking/dependencies"
 	"golang.org/x/sync/errgroup"
 )
 
 func main() {
-	tracker := handlers.NewTracker(cmd.GetDetector())
-	http.HandleFunc("/tracking", tracker.Tracking)
+	deps, err := dependencies.InitDeps()
+	if err != nil {
+		panic(err)
+	}
+
+	http.HandleFunc("/tracking", handlers.Tracking(deps.ParcelTracker))
 
 	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
 	defer stop()
 
 	httpServer := &http.Server{
-		Addr: ":" + cmd.O.Port,
+		Addr: ":" + deps.Config.Port,
 	}
+
 	g, gCtx := errgroup.WithContext(ctx)
 	g.Go(func() error {
 		fmt.Println("Server is listening...")
