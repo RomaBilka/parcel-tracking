@@ -15,7 +15,6 @@ paths:
       parameters:
         - in: query
           name: "tracking_id"
-          description: "Id of parcel"
           required: true
           schema:
             type: "string"
