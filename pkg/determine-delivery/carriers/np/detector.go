@@ -31,5 +31,4 @@ func (c *Carrier) Detect(trackId string) bool {
 	}
 
 	return start1.MatchString(trackId)
-	//return matched
 }
