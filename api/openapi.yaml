@@ -11,7 +11,7 @@ paths:
     get:
       tags:
         - "Tracker"
-      summary: "Find parcel"
+      summary: "Track а parcel by tracking Id"
       parameters:
         - in: query
           name: "tracking_id"
