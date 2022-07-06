@@ -1,6 +1,13 @@
 package dhl
 
-import "github.com/RomaBilka/parcel-tracking/pkg/determine-delivery/carriers"
+import (
+	"regexp"
+
+	"github.com/RomaBilka/parcel-tracking/pkg/determine-delivery/carriers"
+)
+
+//10 digits numerical only
+var digits10 = regexp.MustCompile(`[\d]{10}$`)
 
 type Carrier struct {
 	api *Api
