@@ -1,5 +1,7 @@
 name: Deploy to lambda
-on: [push]
+on:
+  pull_request:
+    types: [closed]
 jobs:
 
   deploy_zip:
