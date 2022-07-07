@@ -1,5 +1,11 @@
 package dhl
 
+type errorResponse struct {
+	Status int    `json:"status"`
+	Title  string `json:"title"`
+	Detail string `json:"detail"`
+}
+
 type response struct {
 	Url                            string      `json:"url"`
 	PrevUrl                        string      `json:"prevUrl"`
