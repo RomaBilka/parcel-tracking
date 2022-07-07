@@ -22,14 +22,14 @@ func Tracking(t parcelTracker) http.HandlerFunc {
 			return
 		}
 
-		trackingId, ok := r.URL.Query()["tracking_id"]
-		if !ok {
-			writeErrorResponse(w, http.StatusBadRequest, errors.New("tracking id is empty"))
+		trackingId := r.URL.Query().Get("track_id")
+		if trackingId == "" {
+			writeErrorResponse(w, http.StatusBadRequest, errors.New("track_id cannot be empty"))
 			return
 		}
 
 		ctx := r.Context()
-		parcel, err := t.TrackParcel(ctx, trackingId[0])
+		parcel, err := t.TrackParcel(ctx, trackingId)
 		if err != nil {
 			writeErrorResponse(w, http.StatusBadRequest, err)
 			return
