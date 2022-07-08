@@ -13,34 +13,22 @@ func TestME_Detect(t *testing.T) {
 		ok      bool
 	}{
 		{
-			name:    "CV true",
-			trackId: "CV999999999ZZ",
-			ok:      true,
+			name: "CV true", trackId: "CV999999999ZZ", ok: true,
 		},
 		{
-			name:    "cv true",
-			trackId: "cv999999999zz",
-			ok:      true,
+			name: "cv true", trackId: "cv999999999zz", ok: true,
 		},
 		{
-			name:    "CV_1 false",
-			trackId: "CV999999999ZZz",
-			ok:      false,
+			name: "CV_1 false", trackId: "CV999999999ZZz", ok: false,
 		},
 		{
-			name:    "CV_2 false",
-			trackId: "CV9999999999ZZ",
-			ok:      false,
+			name: "CV_2 false", trackId: "CV9999999999ZZ", ok: false,
 		},
 		{
-			name:    "MYCV true",
-			trackId: "MYCV999999999ZZ",
-			ok:      true,
+			name: "MYCV true", trackId: "MYCV999999999ZZ", ok: true,
 		},
 		{
-			name:    "unknown",
-			trackId: "ZZZZ999999999ZZ",
-			ok:      false,
+			name: "unknown", trackId: "ZZZZ999999999ZZ", ok: false,
 		},
 	}
 

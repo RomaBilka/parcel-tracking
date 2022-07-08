@@ -13,39 +13,25 @@ func TestIsUPS(t *testing.T) {
 		ok      bool
 	}{
 		{
-			name:    "1Z true",
-			trackId: "1z0000000000000001",
-			ok:      true,
+			name: "1Z true", trackId: "1z0000000000000001", ok: true,
 		},
 		{
-			name:    "8 true",
-			trackId: "800000000000000001",
-			ok:      true,
+			name: "8 true", trackId: "800000000000000001", ok: true,
 		},
 		{
-			name:    "9 true",
-			trackId: "900000000000000001",
-			ok:      true,
+			name: "9 true", trackId: "900000000000000001", ok: true,
 		},
 		{
-			name:    "1Z false",
-			trackId: "1z000000000000000000000000",
-			ok:      false,
+			name: "1Z false", trackId: "1z000000000000000000000000", ok: false,
 		},
 		{
-			name:    "8 false",
-			trackId: "80000000000000000000",
-			ok:      false,
+			name: "8 false", trackId: "80000000000000000000", ok: false,
 		},
 		{
-			name:    "9 false",
-			trackId: "90000000000000000",
-			ok:      false,
+			name: "9 false", trackId: "90000000000000000", ok: false,
 		},
 		{
-			name:    "unknown",
-			trackId: "01234567891011",
-			ok:      false,
+			name: "unknown", trackId: "01234567891011", ok: false,
 		},
 	}
 

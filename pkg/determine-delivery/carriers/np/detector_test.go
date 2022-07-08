@@ -13,39 +13,25 @@ func TestNP_Detect(t *testing.T) {
 		ok      bool
 	}{
 		{
-			name:    "59 true",
-			trackId: "59000000000001",
-			ok:      true,
+			name: "59 true", trackId: "59000000000001", ok: true,
 		},
 		{
-			name:    "20 true",
-			trackId: "20000000000001",
-			ok:      true,
+			name: "20 true", trackId: "20000000000001", ok: true,
 		},
 		{
-			name:    "1 true",
-			trackId: "10000000000000",
-			ok:      true,
+			name: "1 true", trackId: "10000000000000", ok: true,
 		},
 		{
-			name:    "59 false",
-			trackId: "5900000000000",
-			ok:      false,
+			name: "59 false", trackId: "5900000000000", ok: false,
 		},
 		{
-			name:    "20 false",
-			trackId: "2000000000000",
-			ok:      false,
+			name: "20 false", trackId: "2000000000000", ok: false,
 		},
 		{
-			name:    "1 false",
-			trackId: "1000000000000",
-			ok:      false,
+			name: "1 false", trackId: "1000000000000", ok: false,
 		},
 		{
-			name:    "unknown",
-			trackId: "01234567891011",
-			ok:      false,
+			name: "unknown", trackId: "01234567891011", ok: false,
 		},
 	}
 

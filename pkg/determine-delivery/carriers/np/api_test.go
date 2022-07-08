@@ -1,7 +1,7 @@
 package np
 
 import (
-	"fmt"
+	"errors"
 	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
@@ -10,27 +10,13 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestTrackingDocument(t *testing.T) {
-	np := NewApi("https://api.novaposhta.ua", "")
-
-	document := TrackingDocument{
-		DocumentNumber: "445",
-		Phone:          "",
-	}
-	methodProperties := TrackingDocuments{}
-	methodProperties.Documents = append(methodProperties.Documents, document)
-	methodProperties.CheckWeightMethod = "3"
-
-	data, err := np.TrackingDocument(methodProperties)
-	fmt.Println(data, err)
-}
-
 func TestFixturesTrackingDocument(t *testing.T) {
 	testCases := []struct {
 		name     string
 		file     string
 		document TrackingDocument
-		error    bool
+		ok       bool
+		error    error
 	}{
 		{
 			name: "Tracked by number",
@@ -39,7 +25,8 @@ func TestFixturesTrackingDocument(t *testing.T) {
 				DocumentNumber: "",
 				Phone:          "",
 			},
-			error: false,
+			ok:    true,
+			error: nil,
 		},
 		{
 			name: "Tracked by number",
@@ -48,7 +35,8 @@ func TestFixturesTrackingDocument(t *testing.T) {
 				DocumentNumber: "",
 				Phone:          "",
 			},
-			error: false,
+			ok:    true,
+			error: nil,
 		},
 		{
 			name: "Tracked by number",
@@ -57,7 +45,8 @@ func TestFixturesTrackingDocument(t *testing.T) {
 				DocumentNumber: "",
 				Phone:          "",
 			},
-			error: true,
+			ok:    false,
+			error: errors.New("Document number is not correct"),
 		},
 	}
 	for _, testCase := range testCases {
@@ -81,11 +70,12 @@ func TestFixturesTrackingDocument(t *testing.T) {
 			methodProperties.Documents = append(methodProperties.Documents, testCase.document)
 			methodProperties.CheckWeightMethod = "3"
 
-			data, err := np.TrackingDocument(methodProperties)
-			assert.NoError(t, err)
+			_, err := np.TrackingDocument(methodProperties)
 
-			if len(data.Errors) > 0 {
-				assert.True(t, testCase.error)
+			if testCase.ok {
+				assert.NoError(t, err)
+			} else {
+				assert.Error(t, err, testCase.error)
 			}
 		})
 	}
