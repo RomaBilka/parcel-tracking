@@ -21,11 +21,7 @@ func NewCarrier(api *Api) *Carrier {
 }
 
 func (c *Carrier) Detect(trackId string) bool {
-	if npShopping.MatchString(trackId) {
-		return true
-	}
-
-	return false
+	return npShopping.MatchString(trackId)
 }
 
 func (c *Carrier) Track(trackingId string) ([]carriers.Parcel, error) {

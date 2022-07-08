@@ -39,7 +39,7 @@ func (np *Api) TrackingDocument(methodProperties TrackingDocuments) (*TrackingDo
 		return nil, err
 	}
 
-	if trackingDocumentsResponse.Success == false {
+	if !trackingDocumentsResponse.Success {
 		return nil, errors.New(trackingDocumentsResponse.Errors[0])
 	}
 

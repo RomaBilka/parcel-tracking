@@ -6,13 +6,15 @@ import (
 	"github.com/RomaBilka/parcel-tracking/pkg/determine-delivery/carriers"
 )
 
-//Starts with CV, 9 numbers and 2 letters at the end
-//CV999999999ZZ
-var startCV = regexp.MustCompile(`(?i)^CV[\d]{9}[a-z]{2}$`)
+var patterns = map[string]*regexp.Regexp{
+	//Starts with CV, 9 numbers and 2 letters at the end
+	//CV999999999ZZ
+	"startCV": regexp.MustCompile(`(?i)^CV[\d]{9}[a-z]{2}$`),
 
-//Starts with MYCV, 9 numbers and 2 letters at the end
-//MYCV999999999ZZ
-var startMYCV = regexp.MustCompile(`(?i)^MYCV[\d]{9}[a-z]{2}$`)
+	//Starts with MYCV, 9 numbers and 2 letters at the end
+	//MYCV999999999ZZ
+	"startMYCV": regexp.MustCompile(`(?i)^MYCV[\d]{9}[a-z]{2}$`),
+}
 
 type Carrier struct {
 	api *Api
@@ -25,12 +27,10 @@ func NewCarrier(api *Api) *Carrier {
 }
 
 func (c *Carrier) Detect(trackId string) bool {
-	if startCV.MatchString(trackId) {
-		return true
-	}
-
-	if startMYCV.MatchString(trackId) {
-		return true
+	for _, pattern := range patterns {
+		if pattern.MatchString(trackId) {
+			return true
+		}
 	}
 
 	return false

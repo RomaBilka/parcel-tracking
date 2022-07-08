@@ -6,30 +6,26 @@ import (
 	"github.com/RomaBilka/parcel-tracking/pkg/determine-delivery/carriers"
 )
 
-//Starts with 1Z, length 18
-var start1z = regexp.MustCompile(`(?i)^1Z[\d]{16}$`)
+var patterns = map[string]*regexp.Regexp{
+	//Starts with 1Z, length 18
+	"start1z": regexp.MustCompile(`(?i)^1Z[\d]{16}$`),
 
-//Starts with 8, length 18
-var start8 = regexp.MustCompile(`^8[\d]{17}$`)
+	//Starts with 8, length 18
+	"start8": regexp.MustCompile(`^8[\d]{17}$`),
 
-//Starts with 9, length 18
-var start9 = regexp.MustCompile(`^9[\d]{17}$`)
+	//Starts with 9, length 18
+	"start9": regexp.MustCompile(`^9[\d]{17}$`),
+}
 
 type Carrier struct {
 	api *Api
 }
 
 func (c *Carrier) Detect(trackId string) bool {
-	if start1z.MatchString(trackId) {
-		return true
-	}
-
-	if start8.MatchString(trackId) {
-		return true
-	}
-
-	if start9.MatchString(trackId) {
-		return true
+	for _, pattern := range patterns {
+		if pattern.MatchString(trackId) {
+			return true
+		}
 	}
 
 	return false
