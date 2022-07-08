@@ -12,11 +12,11 @@ import (
 )
 
 func TestHandleLambdaEvent(t *testing.T) {
-	testID := "testID-string"
+	testId := "testId-string"
 
 	tests := []struct {
 		name             string
-		trackID          string
+		trackId          string
 		setupTrackerMock func(tracker *parcelTrackerMock)
 		expResp          events.APIGatewayProxyResponse
 		expErr           error
@@ -31,9 +31,9 @@ func TestHandleLambdaEvent(t *testing.T) {
 		},
 		{
 			name:    "failed to track parcel",
-			trackID: testID,
+			trackId: testId,
 			setupTrackerMock: func(tracker *parcelTrackerMock) {
-				tracker.On("TrackParcel", mock.Anything, testID).Once().
+				tracker.On("TrackParcel", mock.Anything, testId).Once().
 					Return(carriers.Parcel{}, assert.AnError)
 			},
 			expResp: events.APIGatewayProxyResponse{
@@ -43,9 +43,9 @@ func TestHandleLambdaEvent(t *testing.T) {
 		},
 		{
 			name:    "success",
-			trackID: testID,
+			trackId: testId,
 			setupTrackerMock: func(tracker *parcelTrackerMock) {
-				tracker.On("TrackParcel", mock.Anything, testID).Once().
+				tracker.On("TrackParcel", mock.Anything, testId).Once().
 					Return(carriers.Parcel{Number: "number", Address: "address", Status: "status"}, nil)
 			},
 			expResp: events.APIGatewayProxyResponse{
@@ -60,7 +60,7 @@ func TestHandleLambdaEvent(t *testing.T) {
 			tracker := &parcelTrackerMock{}
 			tc.setupTrackerMock(tracker)
 
-			req := events.APIGatewayProxyRequest{QueryStringParameters: map[string]string{"track_id": tc.trackID}}
+			req := events.APIGatewayProxyRequest{QueryStringParameters: map[string]string{"track_id": tc.trackId}}
 			gotResp, gotErr := Tracking(tracker)(context.Background(), req)
 
 			assert.Equal(t, tc.expResp, gotResp)
@@ -73,7 +73,7 @@ type parcelTrackerMock struct {
 	mock.Mock
 }
 
-func (m *parcelTrackerMock) TrackParcel(ctx context.Context, parcelID string) (carriers.Parcel, error) {
-	ret := m.Called(ctx, parcelID)
+func (m *parcelTrackerMock) TrackParcel(ctx context.Context, parcelId string) (carriers.Parcel, error) {
+	ret := m.Called(ctx, parcelId)
 	return ret.Get(0).(carriers.Parcel), ret.Error(1)
 }

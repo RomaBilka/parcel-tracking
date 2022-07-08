@@ -19,13 +19,13 @@ func NewParcelsTracker(detector Detector) *ParcelsTracker {
 	return &ParcelsTracker{detector: detector}
 }
 
-func (p ParcelsTracker) TrackParcel(_ context.Context, parcelID string) (carriers.Parcel, error) {
-	carrier, err := p.detector.Detect(parcelID)
+func (p ParcelsTracker) TrackParcel(_ context.Context, parcelId string) (carriers.Parcel, error) {
+	carrier, err := p.detector.Detect(parcelId)
 	if err != nil {
 		return carriers.Parcel{}, err
 	}
 
-	parcels, err := carrier.Track(parcelID)
+	parcels, err := carrier.Track(parcelId)
 	if err != nil {
 		return carriers.Parcel{}, err
 	}

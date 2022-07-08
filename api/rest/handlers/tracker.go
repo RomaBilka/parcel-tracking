@@ -12,7 +12,7 @@ import (
 )
 
 type parcelTracker interface {
-	TrackParcel(ctx context.Context, parcelID string) (carriers.Parcel, error)
+	TrackParcel(ctx context.Context, parcelId string) (carriers.Parcel, error)
 }
 
 func Tracking(t parcelTracker) http.HandlerFunc {
