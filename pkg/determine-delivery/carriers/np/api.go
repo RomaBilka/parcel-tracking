@@ -34,8 +34,7 @@ func (np *Api) TrackingDocument(methodProperties TrackingDocuments) (*TrackingDo
 		return nil, err
 	}
 
-	err = json.Unmarshal(b, trackingDocumentsResponse)
-	if err != nil {
+	if err := json.Unmarshal(b, trackingDocumentsResponse); err != nil {
 		return nil, err
 	}
 

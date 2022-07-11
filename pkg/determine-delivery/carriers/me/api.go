@@ -37,8 +37,7 @@ func (me *Api) ShipmentsTrack(trackNumber string) (*ShipmentsTrackResponse, erro
 	}
 	shipmentsTrackResponse := &ShipmentsTrackResponse{}
 
-	err = xml.Unmarshal(b, shipmentsTrackResponse)
-	if err != nil {
+	if err := xml.Unmarshal(b, shipmentsTrackResponse); err != nil {
 		return nil, err
 	}
 

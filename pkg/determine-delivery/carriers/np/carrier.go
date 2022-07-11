@@ -54,12 +54,12 @@ func (c *Carrier) Track(trackingId string) ([]carriers.Parcel, error) {
 	}
 
 	parcels := make([]carriers.Parcel, len(documents.Data))
-	for _, d := range documents.Data {
-		parcels = append(parcels, carriers.Parcel{
+	for i, d := range documents.Data {
+		parcels[i] = carriers.Parcel{
 			Number:  d.Number,
 			Address: d.CityRecipient + " " + d.WarehouseRecipient,
 			Status:  d.Status,
-		})
+		}
 	}
 
 	return parcels, nil
