@@ -6,7 +6,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestIsUPS(t *testing.T) {
+func TestDetect(t *testing.T) {
 	testCases := []struct {
 		name    string
 		trackId string
