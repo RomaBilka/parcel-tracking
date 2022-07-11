@@ -13,7 +13,7 @@ paths:
       summary: "Track а parcel by tracking Id"
       parameters:
         - in: query
-          name: "tracking_id"
+          name: "track_id"
           required: true
           schema:
             type: "string"

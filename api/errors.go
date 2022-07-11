@@ -1,5 +1,5 @@
 package api
 
 type Error struct {
-	Message string
+	Message string `json:"message"`
 }
