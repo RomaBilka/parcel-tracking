@@ -15,7 +15,6 @@ func TestFixturesTrackingDocument(t *testing.T) {
 		name     string
 		file     string
 		document TrackingDocument
-		ok       bool
 		error    error
 	}{
 		{
@@ -25,7 +24,6 @@ func TestFixturesTrackingDocument(t *testing.T) {
 				DocumentNumber: "",
 				Phone:          "",
 			},
-			ok:    true,
 			error: nil,
 		},
 		{
@@ -35,7 +33,6 @@ func TestFixturesTrackingDocument(t *testing.T) {
 				DocumentNumber: "",
 				Phone:          "",
 			},
-			ok:    true,
 			error: nil,
 		},
 		{
@@ -45,7 +42,6 @@ func TestFixturesTrackingDocument(t *testing.T) {
 				DocumentNumber: "",
 				Phone:          "",
 			},
-			ok:    false,
 			error: errors.New("Document number is not correct"),
 		},
 	}
@@ -71,12 +67,7 @@ func TestFixturesTrackingDocument(t *testing.T) {
 			methodProperties.CheckWeightMethod = "3"
 
 			_, err := np.TrackingDocument(methodProperties)
-
-			if testCase.ok {
-				assert.NoError(t, err)
-			} else {
-				assert.Error(t, err, testCase.error)
-			}
+			assert.Equal(t, testCase.error, err)
 		})
 	}
 }
