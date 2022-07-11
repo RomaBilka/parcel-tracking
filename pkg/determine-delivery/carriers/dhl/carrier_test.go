@@ -3,10 +3,12 @@ package dhl
 import (
 	"testing"
 
+	"github.com/RomaBilka/parcel-tracking/pkg/determine-delivery/carriers"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/mock"
 )
 
-func TestDetect(t *testing.T) {
+func TestCarrier_Detect(t *testing.T) {
 	testCases := []struct {
 		name    string
 		trackId string
@@ -64,4 +66,59 @@ func TestDetect(t *testing.T) {
 			assert.Equal(t, testCase.ok, ok)
 		})
 	}
+}
+
+func TestCarrier_Track(t *testing.T) {
+	testCases := []struct {
+		name         string
+		trackNumber  string
+		setupApiMock func(api *apiMock, trackNumber string)
+		parcel       carriers.Parcel
+	}{
+		{
+			name:        "Ok response",
+			trackNumber: "",
+			setupApiMock: func(api *apiMock, trackNumber string) {
+				shipments := make([]shipment, 1)
+				s := shipment{
+					Id: trackNumber,
+				}
+				s.Status.Location = address{StreetAddress: "UA"}
+				s.Status.Status = "Ok"
+				shipments[0] = s
+				res := &response{
+					Shipments: shipments,
+				}
+
+				api.On("TrackingDocument", trackNumber).Once().Return(res, nil)
+			},
+			parcel: carriers.Parcel{Number: "", Address: "UA", Status: "Ok"},
+		},
+	}
+
+	for _, testCase := range testCases {
+		t.Run(testCase.name, func(t *testing.T) {
+			api := &apiMock{}
+			testCase.setupApiMock(api, testCase.trackNumber)
+
+			c := NewCarrier(api)
+			parcels, err := c.Track(testCase.trackNumber)
+			
+			assert.NoError(t, err)
+			assert.Equal(t, testCase.parcel, parcels[0])
+		})
+	}
+
+}
+
+type apiMock struct {
+	mock.Mock
+}
+
+func (m *apiMock) TrackingDocument(trackNumber string) (*response, error) {
+	arg := m.Called(trackNumber)
+	if arg.Get(0) == nil {
+		return nil, arg.Error(1)
+	}
+	return arg.Get(0).(*response), arg.Error(1)
 }
