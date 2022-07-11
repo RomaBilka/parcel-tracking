@@ -3,6 +3,7 @@ package dependencies
 import (
 	"github.com/RomaBilka/parcel-tracking/logic"
 	determine_delivery "github.com/RomaBilka/parcel-tracking/pkg/determine-delivery"
+	"github.com/RomaBilka/parcel-tracking/pkg/determine-delivery/carriers/dhl"
 	"github.com/RomaBilka/parcel-tracking/pkg/determine-delivery/carriers/me"
 	"github.com/RomaBilka/parcel-tracking/pkg/determine-delivery/carriers/np"
 )
@@ -19,10 +20,13 @@ func InitDeps() (*Deps, error) {
 	}
 
 	detector := determine_delivery.NewDetector()
-	detector.Registry(np.NewCarrier(np.NewApi(config.NovaPoshta.URL, config.NovaPoshta.ApiKey)))
+	detector.Registry(np.NewCarrier(np.NewApi(config.NovaPoshta.ApiURL, config.NovaPoshta.ApiKey)))
 
-	meApi := me.NewApi(config.MeestExpress.ID, config.MeestExpress.Login, config.MeestExpress.Password, config.MeestExpress.URL)
+	meApi := me.NewApi(config.MeestExpress.ID, config.MeestExpress.Login, config.MeestExpress.Password, config.MeestExpress.ApiURL)
 	detector.Registry(me.NewCarrier(meApi))
+
+	dhlApi := dhl.NewApi(config.DHL.ApiURL, config.DHL.ApiKey)
+	detector.Registry(dhl.NewCarrier(dhlApi))
 
 	return &Deps{
 		Config:        config,

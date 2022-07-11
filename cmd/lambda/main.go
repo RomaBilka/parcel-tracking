@@ -11,5 +11,5 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	lambda.Start(handlers.HandleLambdaEvent(deps.ParcelTracker))
+	lambda.Start(handlers.Tracking(deps.ParcelTracker))
 }
