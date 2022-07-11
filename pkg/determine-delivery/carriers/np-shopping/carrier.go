@@ -10,11 +10,14 @@ import (
 //NP99999999999999NPG
 var npShopping = regexp.MustCompile(`(?i)^NP[\d]{14}NPG$`)
 
-type Carrier struct {
-	api *Api
+type api interface {
 }
 
-func NewCarrier(api *Api) *Carrier {
+type Carrier struct {
+	api api
+}
+
+func NewCarrier(api api) *Carrier {
 	return &Carrier{
 		api: api,
 	}

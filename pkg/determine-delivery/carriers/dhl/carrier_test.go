@@ -103,7 +103,7 @@ func TestCarrier_Track(t *testing.T) {
 
 			c := NewCarrier(api)
 			parcels, err := c.Track(testCase.trackNumber)
-			
+
 			assert.NoError(t, err)
 			assert.Equal(t, testCase.parcel, parcels[0])
 		})
