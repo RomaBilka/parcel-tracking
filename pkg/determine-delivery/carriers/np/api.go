@@ -21,7 +21,7 @@ func NewApi(apiURL, apiKey string) *Api {
 	}
 }
 
-func (np *Api) TrackingDocument(methodProperties TrackingDocuments) (*TrackingDocumentsResponse, error) {
+func (api *Api) TrackingDocument(methodProperties TrackingDocuments) (*TrackingDocumentsResponse, error) {
 	req := novaPoshtaRequest{
 		ModelName:    "TrackingDocument",
 		CalledMethod: "getStatusDocuments",
@@ -29,7 +29,7 @@ func (np *Api) TrackingDocument(methodProperties TrackingDocuments) (*TrackingDo
 	req.MethodProperties = methodProperties
 
 	trackingDocumentsResponse := &TrackingDocumentsResponse{}
-	b, err := np.makeRequest(req, fasthttp.MethodGet)
+	b, err := api.makeRequest(req, fasthttp.MethodGet)
 	if err != nil {
 		return nil, err
 	}
@@ -45,8 +45,8 @@ func (np *Api) TrackingDocument(methodProperties TrackingDocuments) (*TrackingDo
 	return trackingDocumentsResponse, err
 }
 
-func (np *Api) makeRequest(r novaPoshtaRequest, method string) ([]byte, error) {
-	r.ApiKey = np.apiKey
+func (api *Api) makeRequest(r novaPoshtaRequest, method string) ([]byte, error) {
+	r.ApiKey = api.apiKey
 
 	data, err := json.Marshal(r)
 	if err != nil {
@@ -59,7 +59,7 @@ func (np *Api) makeRequest(r novaPoshtaRequest, method string) ([]byte, error) {
 	req.SetBody(data)
 	req.Header.SetMethod(method)
 	req.Header.SetContentType("application/json")
-	req.SetRequestURI(np.apiURL + URL)
+	req.SetRequestURI(api.apiURL + URL)
 
 	res := fasthttp.AcquireResponse()
 	defer fasthttp.ReleaseResponse(res)

@@ -6,7 +6,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestDetect(t *testing.T) {
+func TestCarrier_Detect(t *testing.T) {
 	testCases := []struct {
 		name    string
 		trackId string
