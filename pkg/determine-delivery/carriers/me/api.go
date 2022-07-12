@@ -9,6 +9,8 @@ import (
 	"github.com/valyala/fasthttp"
 )
 
+const statusOk = "000"
+
 type Api struct {
 	agentUID string
 	login    string
@@ -41,7 +43,7 @@ func (me *Api) ShipmentsTrack(trackNumber string) (*ShipmentsTrackResponse, erro
 		return nil, err
 	}
 
-	if shipmentsTrackResponse.Errors.Code != "000" {
+	if shipmentsTrackResponse.Errors.Code != statusOk {
 		return nil, errors.New(shipmentsTrackResponse.Errors.Name)
 	}
 
