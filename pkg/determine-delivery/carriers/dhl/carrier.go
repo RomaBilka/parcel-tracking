@@ -50,6 +50,7 @@ var patterns = map[string]*regexp.Regexp{
 
 	//Numeric only with the length 7,9,10 or 14
 	//Example: 123456789
+	//9 and 10 in UPS as well !!!
 	"numbers7":    regexp.MustCompile(`^[\d]{7}$`),
 	"numbers9_10": regexp.MustCompile(`^[\d]{9,10}$`),
 	"numbers14":   regexp.MustCompile(`^[\d]{14}$`),
