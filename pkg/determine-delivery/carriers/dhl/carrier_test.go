@@ -79,16 +79,14 @@ func TestCarrier_Track(t *testing.T) {
 			name:        "Ok response",
 			trackNumber: "",
 			setupApiMock: func(api *apiMock, trackNumber string) {
-				shipments := make([]shipment, 1)
 				s := shipment{
 					Id: trackNumber,
 				}
 				s.Status.Location = address{StreetAddress: "UA"}
 				s.Status.Status = "Ok"
-				shipments[0] = s
-				res := &response{
-					Shipments: shipments,
-				}
+
+				res := &response{}
+				res.Shipments = append(res.Shipments, s)
 
 				api.On("TrackingDocument", trackNumber).Once().Return(res, nil)
 			},

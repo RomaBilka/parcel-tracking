@@ -3,7 +3,9 @@ package np
 import (
 	"testing"
 
+	"github.com/RomaBilka/parcel-tracking/pkg/determine-delivery/carriers"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/mock"
 )
 
 func TestCarrier_Detect(t *testing.T) {
@@ -28,4 +30,65 @@ func TestCarrier_Detect(t *testing.T) {
 			assert.Equal(t, testCase.ok, ok)
 		})
 	}
+}
+
+func TestCarrier_Track(t *testing.T) {
+	testCases := []struct {
+		name         string
+		trackNumber  string
+		setupApiMock func(api *apiMock, trackNumber string)
+		parcel       carriers.Parcel
+	}{
+		{
+			name:        "Ok response",
+			trackNumber: "",
+			setupApiMock: func(api *apiMock, trackNumber string) {
+				res := &TrackingDocumentsResponse{}
+
+				trackingDocument := TrackingDocument{
+					DocumentNumber: trackNumber,
+				}
+				methodProperties := TrackingDocuments{}
+				methodProperties.Documents = append(methodProperties.Documents, trackingDocument)
+				methodProperties.CheckWeightMethod = "3"
+
+				document := TrackingDocumentResponse{
+					Number:             trackNumber,
+					CityRecipient:      "City Recipient",
+					WarehouseRecipient: "Warehouse Recipient",
+					Status:             "Ok",
+				}
+
+				res.Data = append(res.Data, document)
+
+				api.On("TrackingDocument", methodProperties).Once().Return(res, nil)
+			},
+			parcel: carriers.Parcel{Number: "", Address: "City Recipient Warehouse Recipient", Status: "Ok"},
+		},
+	}
+
+	for _, testCase := range testCases {
+		t.Run(testCase.name, func(t *testing.T) {
+			api := &apiMock{}
+			testCase.setupApiMock(api, testCase.trackNumber)
+
+			c := NewCarrier(api)
+			parcels, err := c.Track(testCase.trackNumber)
+
+			assert.NoError(t, err)
+			assert.Equal(t, testCase.parcel, parcels[0])
+		})
+	}
+}
+
+type apiMock struct {
+	mock.Mock
+}
+
+func (m *apiMock) TrackingDocument(methodProperties TrackingDocuments) (*TrackingDocumentsResponse, error) {
+	arg := m.Called(methodProperties)
+	if arg.Get(0) == nil {
+		return nil, arg.Error(1)
+	}
+	return arg.Get(0).(*TrackingDocumentsResponse), arg.Error(1)
 }
