@@ -4,9 +4,12 @@ import (
 	"crypto/md5"
 	"encoding/hex"
 	"encoding/xml"
+	"errors"
 
 	"github.com/valyala/fasthttp"
 )
+
+const statusOk = "000"
 
 type Api struct {
 	agentUID string
@@ -32,21 +35,22 @@ func (me *Api) ShipmentsTrack(trackNumber string) (*ShipmentsTrackResponse, erro
 
 	b, err := me.makeRequest(req, fasthttp.MethodPost)
 	if err != nil {
-		return &ShipmentsTrackResponse{}, err
+		return nil, err
 	}
 	shipmentsTrackResponse := &ShipmentsTrackResponse{}
 
-	err = xml.Unmarshal(b, shipmentsTrackResponse)
-	if err != nil {
-		return &ShipmentsTrackResponse{}, err
+	if err := xml.Unmarshal(b, shipmentsTrackResponse); err != nil {
+		return nil, err
+	}
+
+	if shipmentsTrackResponse.Errors.Code != statusOk {
+		return nil, errors.New(shipmentsTrackResponse.Errors.Name)
 	}
 
 	return shipmentsTrackResponse, nil
 }
 
 func (me *Api) makeRequest(r meestExpressRequest, method string) ([]byte, error) {
-	body := make([]byte, 0)
-
 	r.Login = me.login
 	r.Sign = me.getHash(r)
 	p := param{r}
@@ -55,19 +59,21 @@ func (me *Api) makeRequest(r meestExpressRequest, method string) ([]byte, error)
 	data := append([]byte(xml.Header), xmlString...)
 
 	req := fasthttp.AcquireRequest()
+	defer fasthttp.ReleaseRequest(req)
+
 	req.SetBody(data)
 	req.Header.SetMethod(method)
 	req.Header.SetContentType("text/xml")
 	req.SetRequestURI(me.apiURL)
+
 	res := fasthttp.AcquireResponse()
+	defer fasthttp.ReleaseResponse(res)
+
 	if err := fasthttp.Do(req, res); err != nil {
-		return body, err
+		return nil, err
 	}
 
-	fasthttp.ReleaseRequest(req)
-	body = res.Body()
-
-	return body, nil
+	return res.Body(), nil
 }
 
 func (me *Api) getHash(r meestExpressRequest) string {
