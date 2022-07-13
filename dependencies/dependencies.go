@@ -6,11 +6,13 @@ import (
 	"github.com/RomaBilka/parcel-tracking/pkg/determine-delivery/carriers/dhl"
 	"github.com/RomaBilka/parcel-tracking/pkg/determine-delivery/carriers/me"
 	"github.com/RomaBilka/parcel-tracking/pkg/determine-delivery/carriers/np"
+	"go.uber.org/zap"
 )
 
 type Deps struct {
 	Config        *Config
 	ParcelTracker *logic.ParcelsTracker
+	Logger        *zap.Logger
 }
 
 func InitDeps() (*Deps, error) {
@@ -28,8 +30,18 @@ func InitDeps() (*Deps, error) {
 	dhlApi := dhl.NewApi(config.DHL.ApiURL, config.DHL.ApiKey)
 	detector.Registry(dhl.NewCarrier(dhlApi))
 
+	logger, err := zap.NewProduction()
+	if err != nil {
+		return nil, err
+	}
+
 	return &Deps{
 		Config:        config,
 		ParcelTracker: logic.NewParcelsTracker(detector),
+		Logger:        logger,
 	}, nil
+}
+
+func (d Deps) TearDown() {
+	_ = d.Logger.Sync()
 }
