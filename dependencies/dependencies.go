@@ -5,6 +5,7 @@ import (
 	determine_delivery "github.com/RomaBilka/parcel-tracking/pkg/determine-delivery"
 	"github.com/RomaBilka/parcel-tracking/pkg/determine-delivery/carriers/me"
 	"github.com/RomaBilka/parcel-tracking/pkg/determine-delivery/carriers/np"
+	"github.com/RomaBilka/parcel-tracking/pkg/determine-delivery/carriers/usps"
 )
 
 type Deps struct {
@@ -23,6 +24,9 @@ func InitDeps() (*Deps, error) {
 
 	meApi := me.NewApi(config.MeestExpress.ID, config.MeestExpress.Login, config.MeestExpress.Password, config.MeestExpress.URL)
 	detector.Registry(me.NewCarrier(meApi))
+
+	uspsAPIv2 := usps.NewApi(config.USPS.UserID, config.USPS.Password, config.USPS.URL)
+	detector.Registry(usps.NewCarrier(uspsAPIv2))
 
 	return &Deps{
 		Config:        config,
