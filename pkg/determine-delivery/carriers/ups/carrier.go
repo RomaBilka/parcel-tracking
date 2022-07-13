@@ -17,11 +17,7 @@ var patterns = map[string]*regexp.Regexp{
 	"start9": regexp.MustCompile(`^9[\d]{17}$`),
 }
 
-type api interface {
-}
-
 type Carrier struct {
-	api api
 }
 
 func (c *Carrier) Detect(trackId string) bool {
@@ -34,10 +30,8 @@ func (c *Carrier) Detect(trackId string) bool {
 	return false
 }
 
-func NewCarrier(api *Api) *Carrier {
-	return &Carrier{
-		api: api,
-	}
+func NewCarrier() *Carrier {
+	return &Carrier{}
 }
 
 func (c *Carrier) Track(trackingId string) ([]carriers.Parcel, error) {

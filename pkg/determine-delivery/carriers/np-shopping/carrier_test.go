@@ -20,7 +20,7 @@ func TestCarrier_Detect(t *testing.T) {
 
 	for _, testCase := range testCases {
 		t.Run(testCase.name, func(t *testing.T) {
-			n := NewCarrier(NewApi())
+			n := NewCarrier()
 			ok := n.Detect(testCase.trackId)
 			assert.Equal(t, testCase.ok, ok)
 		})
