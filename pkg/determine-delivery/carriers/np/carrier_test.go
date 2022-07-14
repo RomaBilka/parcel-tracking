@@ -43,8 +43,6 @@ func TestCarrier_Track(t *testing.T) {
 			name:        "Ok response",
 			trackNumber: "",
 			setupApiMock: func(api *apiMock, trackNumber string) {
-				res := &TrackingDocumentsResponse{}
-
 				trackingDocument := TrackingDocument{
 					DocumentNumber: trackNumber,
 				}
@@ -58,12 +56,12 @@ func TestCarrier_Track(t *testing.T) {
 					WarehouseRecipient: "Warehouse Recipient",
 					Status:             "Ok",
 				}
-
+				res := &TrackingDocumentsResponse{}
 				res.Data = append(res.Data, document)
 
 				api.On("TrackingDocument", methodProperties).Once().Return(res, nil)
 			},
-			parcel: carriers.Parcel{Number: "", Address: "City Recipient Warehouse Recipient", Status: "Ok"},
+			parcel: carriers.Parcel{Address: "City Recipient Warehouse Recipient", Status: "Ok"},
 		},
 	}
 
@@ -77,6 +75,7 @@ func TestCarrier_Track(t *testing.T) {
 
 			assert.NoError(t, err)
 			assert.Equal(t, testCase.parcel, parcels[0])
+			api.AssertExpectations(t)
 		})
 	}
 }
@@ -90,5 +89,6 @@ func (m *apiMock) TrackingDocument(methodProperties TrackingDocuments) (*Trackin
 	if arg.Get(0) == nil {
 		return nil, arg.Error(1)
 	}
+
 	return arg.Get(0).(*TrackingDocumentsResponse), arg.Error(1)
 }

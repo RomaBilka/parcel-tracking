@@ -27,7 +27,7 @@ func TestFixturesTrackingDocument(t *testing.T) {
 			error: nil,
 		},
 		{
-			name: "Tracked by number",
+			name: "Tracked by number and phone",
 			file: "fixtures/tracked_by_number_and_phone.json",
 			document: TrackingDocument{
 				DocumentNumber: "",
@@ -36,7 +36,7 @@ func TestFixturesTrackingDocument(t *testing.T) {
 			error: nil,
 		},
 		{
-			name: "Tracked by number",
+			name: "Invalid number",
 			file: "fixtures/invalid_number.json",
 			document: TrackingDocument{
 				DocumentNumber: "",
