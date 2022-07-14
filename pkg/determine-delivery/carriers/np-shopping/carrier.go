@@ -10,9 +10,6 @@ import (
 //NP99999999999999NPG
 var npShopping = regexp.MustCompile(`(?i)^NP[\d]{14}NPG$`)
 
-type api interface {
-}
-
 type Carrier struct {
 }
 

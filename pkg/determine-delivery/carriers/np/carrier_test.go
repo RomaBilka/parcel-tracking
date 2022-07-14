@@ -40,15 +40,13 @@ func TestCarrier_Track(t *testing.T) {
 		parcel       carriers.Parcel
 	}{
 		{
-			name:        "Ok response",
-			trackNumber: "",
+			name: "Ok response",
 			setupApiMock: func(api *apiMock, trackNumber string) {
 				trackingDocument := TrackingDocument{
 					DocumentNumber: trackNumber,
 				}
-				methodProperties := TrackingDocuments{}
+				methodProperties := TrackingDocuments{CheckWeightMethod: "3"}
 				methodProperties.Documents = append(methodProperties.Documents, trackingDocument)
-				methodProperties.CheckWeightMethod = "3"
 
 				document := TrackingDocumentResponse{
 					Number:             trackNumber,
