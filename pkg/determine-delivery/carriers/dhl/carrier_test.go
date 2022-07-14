@@ -1,6 +1,7 @@
 package dhl
 
 import (
+	"errors"
 	"testing"
 
 	"github.com/RomaBilka/parcel-tracking/pkg/determine-delivery/carriers"
@@ -74,6 +75,7 @@ func TestCarrier_Track(t *testing.T) {
 		trackNumber  string
 		setupApiMock func(api *apiMock, trackNumber string)
 		parcel       carriers.Parcel
+		err          error
 	}{
 		{
 			name: "Ok response",
@@ -91,6 +93,13 @@ func TestCarrier_Track(t *testing.T) {
 			},
 			parcel: carriers.Parcel{Address: "UA", Status: "Ok"},
 		},
+		{
+			name: "Bad response",
+			setupApiMock: func(api *apiMock, trackNumber string) {
+				api.On("TrackingDocument", trackNumber).Once().Return(nil, errors.New("bad request"))
+			},
+			err: errors.New("bad request"),
+		},
 	}
 
 	for _, testCase := range testCases {
@@ -101,8 +110,10 @@ func TestCarrier_Track(t *testing.T) {
 			c := NewCarrier(api)
 			parcels, err := c.Track(testCase.trackNumber)
 
-			assert.NoError(t, err)
-			assert.Equal(t, testCase.parcel, parcels[0])
+			assert.Equal(t, testCase.err, err)
+			if err == nil {
+				assert.Equal(t, testCase.parcel, parcels[0])
+			}
 			api.AssertExpectations(t)
 		})
 	}

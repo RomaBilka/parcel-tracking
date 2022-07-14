@@ -1,6 +1,8 @@
 package me
 
 import (
+	"errors"
+	"fmt"
 	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
@@ -9,18 +11,31 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+func TestApi_ShipmentsTrack(t *testing.T) {
+	api := NewApi("1", "1", "1", "https://apii.meest-group.com/T/1C_Query.php")
+	fmt.Println(api.ShipmentsTrack("dddd"))
+}
+
 func TestFixturesTrackingDocument(t *testing.T) {
 	testCases := []struct {
 		name      string
 		file      string
 		document  string
 		errorCode string
+		err       error
 	}{
 		{
 			name:      "Tracked by number",
 			file:      "fixtures/tracked_by_number.xml",
 			document:  "TESTIK11",
 			errorCode: "000",
+		},
+		{
+			name:      "Tracked by number",
+			file:      "fixtures/bad_request.xml",
+			document:  "TESTIK11",
+			errorCode: "101",
+			err:       errors.New("Connection Error"),
 		},
 	}
 	for _, testCase := range testCases {
@@ -41,8 +56,10 @@ func TestFixturesTrackingDocument(t *testing.T) {
 			me := NewApi("0xA79E003048D2B47311E26B7D4A430FFC", "public", "PUBLIC", server.URL)
 
 			r, err := me.ShipmentsTrack(testCase.document)
-			assert.NoError(t, err)
-			assert.Equal(t, testCase.errorCode, r.Errors.Code)
+			if err == nil {
+				assert.Equal(t, testCase.errorCode, r.Errors.Code)
+			}
+			assert.Equal(t, testCase.err, err)
 		})
 	}
 }
