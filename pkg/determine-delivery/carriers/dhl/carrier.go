@@ -55,11 +55,15 @@ var patterns = map[string]*regexp.Regexp{
 	"numbers14":   regexp.MustCompile(`^[\d]{14}$`),
 }
 
-type Carrier struct {
-	api *Api
+type api interface {
+	TrackingDocument(string) (*response, error)
 }
 
-func NewCarrier(api *Api) *Carrier {
+type Carrier struct {
+	api api
+}
+
+func NewCarrier(api api) *Carrier {
 	return &Carrier{
 		api: api,
 	}

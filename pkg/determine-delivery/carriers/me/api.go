@@ -27,13 +27,13 @@ func NewApi(agentUID, login, password, apiURL string) *Api {
 	}
 }
 
-func (me *Api) ShipmentsTrack(trackNumber string) (*ShipmentsTrackResponse, error) {
+func (api *Api) ShipmentsTrack(trackNumber string) (*ShipmentsTrackResponse, error) {
 	req := meestExpressRequest{
 		Function: "SHIPMENTS_TRACK",
-		Where:    me.agentUID + "," + trackNumber,
+		Where:    api.agentUID + "," + trackNumber,
 	}
 
-	b, err := me.makeRequest(req, fasthttp.MethodPost)
+	b, err := api.makeRequest(req, fasthttp.MethodPost)
 	if err != nil {
 		return nil, err
 	}
@@ -50,9 +50,9 @@ func (me *Api) ShipmentsTrack(trackNumber string) (*ShipmentsTrackResponse, erro
 	return shipmentsTrackResponse, nil
 }
 
-func (me *Api) makeRequest(r meestExpressRequest, method string) ([]byte, error) {
-	r.Login = me.login
-	r.Sign = me.getHash(r)
+func (api *Api) makeRequest(r meestExpressRequest, method string) ([]byte, error) {
+	r.Login = api.login
+	r.Sign = api.getHash(r)
 	p := param{r}
 
 	xmlString, _ := xml.MarshalIndent(p, "", " ")
@@ -64,7 +64,7 @@ func (me *Api) makeRequest(r meestExpressRequest, method string) ([]byte, error)
 	req.SetBody(data)
 	req.Header.SetMethod(method)
 	req.Header.SetContentType("text/xml")
-	req.SetRequestURI(me.apiURL)
+	req.SetRequestURI(api.apiURL)
 
 	res := fasthttp.AcquireResponse()
 	defer fasthttp.ReleaseResponse(res)

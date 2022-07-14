@@ -6,7 +6,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestIsUPS(t *testing.T) {
+func TestCarrier_Detect(t *testing.T) {
 	testCases := []struct {
 		name    string
 		trackId string
@@ -23,7 +23,7 @@ func TestIsUPS(t *testing.T) {
 
 	for _, testCase := range testCases {
 		t.Run(testCase.name, func(t *testing.T) {
-			u := NewCarrier(NewApi())
+			u := NewCarrier()
 			ok := u.Detect(testCase.trackId)
 			assert.Equal(t, testCase.ok, ok)
 		})

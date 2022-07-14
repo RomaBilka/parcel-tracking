@@ -42,8 +42,8 @@ func TestDetermine(t *testing.T) {
 	detector := NewDetector()
 	detector.Registry(np.NewCarrier(np.NewApi("", "")))
 	detector.Registry(me.NewCarrier(me.NewApi("", "", "", "")))
-	detector.Registry(np_shopping.NewCarrier(np_shopping.NewApi()))
-	detector.Registry(ups.NewCarrier(ups.NewApi()))
+	detector.Registry(np_shopping.NewCarrier())
+	detector.Registry(ups.NewCarrier())
 
 	for i := range testCases {
 		testCase := testCases[i]

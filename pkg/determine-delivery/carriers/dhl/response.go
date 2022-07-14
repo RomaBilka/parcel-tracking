@@ -7,16 +7,16 @@ type errorResponse struct {
 }
 
 type response struct {
-	Url                            string      `json:"url"`
-	PrevUrl                        string      `json:"prevUrl"`
-	NextUrl                        string      `json:"nextUrl"`
-	FirstUrl                       string      `json:"firstUrl"`
-	LastUrl                        string      `json:"lastUrl"`
-	PossibleAdditionalShipmentsUrl []string    `json:"possibleAdditionalShipmentsUrl"`
-	Shipments                      []shipments `json:"shipments"`
+	Url                            string     `json:"url"`
+	PrevUrl                        string     `json:"prevUrl"`
+	NextUrl                        string     `json:"nextUrl"`
+	FirstUrl                       string     `json:"firstUrl"`
+	LastUrl                        string     `json:"lastUrl"`
+	PossibleAdditionalShipmentsUrl []string   `json:"possibleAdditionalShipmentsUrl"`
+	Shipments                      []shipment `json:"shipments"`
 }
 
-type shipments struct {
+type shipment struct {
 	Id                            string `json:"id"`
 	Service                       string `json:"service"`
 	EstimatedTimeOfDelivery       string `json:"estimatedTimeOfDelivery"`

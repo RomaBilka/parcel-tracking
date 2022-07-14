@@ -11,13 +11,10 @@ import (
 var npShopping = regexp.MustCompile(`(?i)^NP[\d]{14}NPG$`)
 
 type Carrier struct {
-	api *Api
 }
 
-func NewCarrier(api *Api) *Carrier {
-	return &Carrier{
-		api: api,
-	}
+func NewCarrier() *Carrier {
+	return &Carrier{}
 }
 
 func (c *Carrier) Detect(trackId string) bool {

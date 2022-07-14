@@ -16,11 +16,15 @@ var patterns = map[string]*regexp.Regexp{
 	"startMYCV": regexp.MustCompile(`(?i)^MYCV[\d]{9}[a-z]{2}$`),
 }
 
-type Carrier struct {
-	api *Api
+type api interface {
+	ShipmentsTrack(string) (*ShipmentsTrackResponse, error)
 }
 
-func NewCarrier(api *Api) *Carrier {
+type Carrier struct {
+	api api
+}
+
+func NewCarrier(api api) *Carrier {
 	return &Carrier{
 		api: api,
 	}
