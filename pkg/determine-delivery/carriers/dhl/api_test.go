@@ -21,7 +21,7 @@ func TestFixturesTrackingDocument(t *testing.T) {
 		{
 			name:        "Tracked by number 1",
 			file:        "fixtures/tracked_by_number_1.json",
-			trackNumber: "00340434292135100186",
+			trackNumber: "7777777770",
 			status:      http.StatusOK,
 		},
 		{
@@ -55,8 +55,11 @@ func TestFixturesTrackingDocument(t *testing.T) {
 
 			dhl := NewApi(server.URL, "")
 
-			_, err := dhl.TrackingDocument(testCase.trackNumber)
+			res, err := dhl.TrackingDocument(testCase.trackNumber)
 			assert.Equal(t, testCase.err, err)
+			if res != nil {
+				assert.Equal(t, testCase.trackNumber, res.Shipments[0].Id)
+			}
 		})
 	}
 }

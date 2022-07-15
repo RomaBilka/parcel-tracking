@@ -49,11 +49,11 @@ func TestFixturesTrackingDocument(t *testing.T) {
 
 			me := NewApi("0xA79E003048D2B47311E26B7D4A430FFC", "public", "PUBLIC", server.URL)
 
-			r, err := me.ShipmentsTrack(testCase.document)
-			if err == nil {
-				assert.Equal(t, testCase.errorCode, r.Errors.Code)
-			}
+			res, err := me.ShipmentsTrack(testCase.document)
 			assert.Equal(t, testCase.err, err)
+			if res != nil {
+				assert.Equal(t, testCase.errorCode, res.Errors.Code)
+			}
 		})
 	}
 }

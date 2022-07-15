@@ -21,7 +21,7 @@ func TestFixturesTrackingDocument(t *testing.T) {
 			name: "Tracked by number",
 			file: "fixtures/tracked_by_number.json",
 			document: TrackingDocument{
-				DocumentNumber: "",
+				DocumentNumber: "59000777777777",
 				Phone:          "",
 			},
 			error: nil,
@@ -30,7 +30,7 @@ func TestFixturesTrackingDocument(t *testing.T) {
 			name: "Tracked by number and phone",
 			file: "fixtures/tracked_by_number_and_phone.json",
 			document: TrackingDocument{
-				DocumentNumber: "",
+				DocumentNumber: "59000777777777",
 				Phone:          "",
 			},
 			error: nil,
@@ -66,8 +66,12 @@ func TestFixturesTrackingDocument(t *testing.T) {
 			methodProperties.Documents = append(methodProperties.Documents, testCase.document)
 			methodProperties.CheckWeightMethod = "3"
 
-			_, err := np.TrackingDocument(methodProperties)
+			res, err := np.TrackingDocument(methodProperties)
 			assert.Equal(t, testCase.error, err)
+			if res != nil {
+				assert.Equal(t, testCase.document.DocumentNumber, res.Data[0].Number)
+			}
+
 		})
 	}
 }
