@@ -29,7 +29,7 @@ func TestFixturesTrackingDocument(t *testing.T) {
 			file:      "fixtures/bad_request.xml",
 			document:  "TESTIK11",
 			errorCode: "101",
-			err:       errors.New("Connection Message"),
+			err:       errors.New("Connection Error"),
 		},
 	}
 	for _, testCase := range testCases {
