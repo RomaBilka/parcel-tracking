@@ -2,7 +2,6 @@ package me
 
 import (
 	"errors"
-	"fmt"
 	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
@@ -10,11 +9,6 @@ import (
 
 	"github.com/stretchr/testify/assert"
 )
-
-func TestApi_ShipmentsTrack(t *testing.T) {
-	api := NewApi("1", "1", "1", "https://apii.meest-group.com/T/1C_Query.php")
-	fmt.Println(api.ShipmentsTrack("dddd"))
-}
 
 func TestFixturesTrackingDocument(t *testing.T) {
 	testCases := []struct {
