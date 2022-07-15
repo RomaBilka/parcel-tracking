@@ -16,27 +16,11 @@ func TestDetermine(t *testing.T) {
 		trackId string
 		isError bool
 	}{
-		{
-			name:    "UPU",
-			trackId: "1z0000000000000001",
-		},
-		{
-			name:    "NovaPoshta",
-			trackId: "59000000000001",
-		},
-		{
-			name:    "MeestExpress",
-			trackId: "CV999999999ZZ",
-		},
-		{
-			name:    "NPShopping",
-			trackId: "NP99999999999999NPG",
-		},
-		{
-			name:    "unknown",
-			trackId: "59000",
-			isError: true,
-		},
+		{name: "UPU", trackId: "1Z12345E6605272234"},
+		{name: "NovaPoshta", trackId: "59000000000001"},
+		{name: "MeestExpress", trackId: "CV999999999ZZ"},
+		{name: "NPShopping", trackId: "NP99999999999999NPG"},
+		{name: "unknown", trackId: "59000", isError: true},
 	}
 
 	detector := NewDetector()

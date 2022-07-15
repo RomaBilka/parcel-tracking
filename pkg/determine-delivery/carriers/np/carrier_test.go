@@ -54,7 +54,6 @@ func TestCarrier_Track(t *testing.T) {
 					WarehouseRecipient: "Warehouse Recipient",
 					Status:             "Ok",
 				}
-
 				res := &TrackingDocumentsResponse{}
 				res.Data = append(res.Data, document)
 
@@ -88,5 +87,6 @@ func (m *apiMock) TrackingDocument(methodProperties TrackingDocuments) (*Trackin
 	if arg.Get(0) == nil {
 		return nil, arg.Error(1)
 	}
+
 	return arg.Get(0).(*TrackingDocumentsResponse), arg.Error(1)
 }
