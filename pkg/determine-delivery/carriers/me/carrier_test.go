@@ -39,8 +39,7 @@ func TestCarrier_Track(t *testing.T) {
 		parcel       carriers.Parcel
 	}{
 		{
-			name:        "Ok response",
-			trackNumber: "",
+			name: "Ok response",
 			setupApiMock: func(api *apiMock, trackNumber string) {
 				shipment := ShipmentTrackResponse{
 					ShipmentNumberSender: trackNumber,
@@ -54,7 +53,7 @@ func TestCarrier_Track(t *testing.T) {
 
 				api.On("ShipmentsTrack", trackNumber).Once().Return(res, nil)
 			},
-			parcel: carriers.Parcel{Number: "", Address: "UA", Status: "Action Messages Detail Messages"},
+			parcel: carriers.Parcel{Address: "UA", Status: "Action Messages Detail Messages"},
 		},
 	}
 
@@ -68,9 +67,9 @@ func TestCarrier_Track(t *testing.T) {
 
 			assert.NoError(t, err)
 			assert.Equal(t, testCase.parcel, parcels[0])
+			api.AssertExpectations(t)
 		})
 	}
-
 }
 
 type apiMock struct {
@@ -82,5 +81,6 @@ func (m *apiMock) ShipmentsTrack(trackNumber string) (*ShipmentsTrackResponse, e
 	if arg.Get(0) == nil {
 		return nil, arg.Error(1)
 	}
+
 	return arg.Get(0).(*ShipmentsTrackResponse), arg.Error(1)
 }
