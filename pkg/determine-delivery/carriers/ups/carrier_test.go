@@ -20,6 +20,7 @@ func TestCarrier_Detect(t *testing.T) {
 		{name: "unknown", trackId: "01234567891011", ok: false},
 		{name: "9 false", trackId: "90000000000000000", ok: false},
 		{name: "1Z12345E6605272234", trackId: "1Z12345E6605272234", ok: true},
+		{name: "1Z123456E66052722", trackId: "1Z123456E66052722", ok: false},
 		{name: "1Z123456E6605272234", trackId: "1Z123456E6605272234", ok: true},
 		{name: "1Z123456E660527223", trackId: "1Z123456E660527223", ok: true},
 		{name: "1ZWX0692YP40636269", trackId: "1ZWX0692YP40636269", ok: true},
