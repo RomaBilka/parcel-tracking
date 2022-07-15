@@ -36,19 +36,9 @@ var patterns = map[string]*regexp.Regexp{
 	//Starts with cgish and 9 digits
 	//cgish000116630
 	"startCGISH": regexp.MustCompile(`(?i)^cgish[\d]{9}$`),
-<<<<<<< HEAD
-}
-
-type api interface {
 }
 
 type Carrier struct {
-	api api
-=======
-}
-
-type Carrier struct {
->>>>>>> c80f739aedb9f7a12d852d48ca6c205fcf51088e
 }
 
 func (c *Carrier) Detect(trackId string) bool {

@@ -13,7 +13,6 @@ import (
 )
 
 func TestDetermine(t *testing.T) {
-
 	detector := NewDetector()
 	npCarrier := np.NewCarrier(np.NewApi("", ""))
 	detector.Registry(npCarrier)
@@ -21,9 +20,9 @@ func TestDetermine(t *testing.T) {
 	detector.Registry(meCarrier)
 	dhlCarrier := dhl.NewCarrier(dhl.NewApi("", ""))
 	detector.Registry(dhlCarrier)
-	np_shoppingCarrier := np_shopping.NewCarrier(np_shopping.NewApi())
+	np_shoppingCarrier := np_shopping.NewCarrier()
 	detector.Registry(np_shoppingCarrier)
-	upsCarrier := ups.NewCarrier(ups.NewApi())
+	upsCarrier := ups.NewCarrier()
 	detector.Registry(upsCarrier)
 
 	testCases := []struct {
@@ -32,7 +31,6 @@ func TestDetermine(t *testing.T) {
 		carrier carriers.Carrier
 		isError bool
 	}{
-<<<<<<< HEAD
 		{name: "UPU 1Z12345E6605272234", trackId: "1Z12345E6605272234", carrier: upsCarrier},
 		{name: "UPU 1Z123456E6605272234", trackId: "1Z123456E6605272234", carrier: upsCarrier},
 		{name: "UPU 1Z123456E660527223", trackId: "1Z123456E660527223", carrier: upsCarrier},
@@ -65,21 +63,6 @@ func TestDetermine(t *testing.T) {
 		{name: "unknown", trackId: "59000", isError: true},
 	}
 
-=======
-		{name: "UPU", trackId: "1Z12345E6605272234"},
-		{name: "NovaPoshta", trackId: "59000000000001"},
-		{name: "MeestExpress", trackId: "CV999999999ZZ"},
-		{name: "NPShopping", trackId: "NP99999999999999NPG"},
-		{name: "unknown", trackId: "59000", isError: true},
-	}
-
-	detector := NewDetector()
-	detector.Registry(np.NewCarrier(np.NewApi("", "")))
-	detector.Registry(me.NewCarrier(me.NewApi("", "", "", "")))
-	detector.Registry(np_shopping.NewCarrier())
-	detector.Registry(ups.NewCarrier())
-
->>>>>>> c80f739aedb9f7a12d852d48ca6c205fcf51088e
 	for i := range testCases {
 		testCase := testCases[i]
 		t.Run(testCase.name, func(t *testing.T) {
