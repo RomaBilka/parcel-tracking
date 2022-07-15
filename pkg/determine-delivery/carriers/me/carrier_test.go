@@ -81,7 +81,6 @@ func TestCarrier_Track(t *testing.T) {
 			api.AssertExpectations(t)
 		})
 	}
-
 }
 
 type apiMock struct {
@@ -93,5 +92,6 @@ func (m *apiMock) ShipmentsTrack(trackNumber string) (*ShipmentsTrackResponse, e
 	if arg.Get(0) == nil {
 		return nil, arg.Error(1)
 	}
+
 	return arg.Get(0).(*ShipmentsTrackResponse), arg.Error(1)
 }

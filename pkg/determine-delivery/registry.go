@@ -25,5 +25,5 @@ func (d *Detector) Detect(trackId string) (carriers.Carrier, error) {
 		}
 	}
 
-	return nil, errors.New("Carrier not detected")
+	return nil, errors.New("carrier not detected")
 }
