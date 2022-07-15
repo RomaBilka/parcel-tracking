@@ -9,9 +9,7 @@ import (
 
 type internalErrorsReWriter struct {
 	http.ResponseWriter
-
 	status int
-	error  []byte
 }
 
 func (r *internalErrorsReWriter) WriteHeader(code int) {
