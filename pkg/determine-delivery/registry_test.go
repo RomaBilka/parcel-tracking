@@ -1,6 +1,7 @@
 package determine_delivery
 
 import (
+	"errors"
 	"testing"
 
 	"github.com/RomaBilka/parcel-tracking/pkg/determine-delivery/carriers"
@@ -29,7 +30,7 @@ func TestDetermine(t *testing.T) {
 		name    string
 		trackId string
 		carrier carriers.Carrier
-		isError bool
+		err     error
 	}{
 		{name: "UPU 1Z12345E6605272234", trackId: "1Z12345E6605272234", carrier: upsCarrier},
 		{name: "UPU 1Z123456E6605272234", trackId: "1Z123456E6605272234", carrier: upsCarrier},
@@ -60,21 +61,15 @@ func TestDetermine(t *testing.T) {
 		{name: "DHL AB-AB-1234567", trackId: "AB-AB-1234567", carrier: dhlCarrier},
 		{name: "DHL ABC-AB-1234567", trackId: "ABC-AB-1234567", carrier: dhlCarrier},
 		{name: "DHL AB-ABC-1234567", trackId: "AB-ABC-1234567", carrier: dhlCarrier},
-		{name: "unknown", trackId: "59000", isError: true},
+		{name: "unknown", trackId: "59000", err: errors.New("carrier not detected")},
 	}
 
 	for i := range testCases {
 		testCase := testCases[i]
 		t.Run(testCase.name, func(t *testing.T) {
-
 			carrier, err := detector.Detect(testCase.trackId)
 			assert.Equal(t, testCase.carrier, carrier)
-			if !testCase.isError {
-				assert.NoError(t, err)
-			}
-			if testCase.isError {
-				assert.Error(t, err)
-			}
+			assert.Equal(t, testCase.err, err)
 		})
 	}
 }
