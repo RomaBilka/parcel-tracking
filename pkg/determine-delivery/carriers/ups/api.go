@@ -1,7 +1,6 @@
 package ups
 
-type Api struct {
-}
+type Api struct{}
 
 func NewApi() *Api {
 	return &Api{}

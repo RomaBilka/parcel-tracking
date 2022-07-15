@@ -71,7 +71,6 @@ func TestFixturesTrackingDocument(t *testing.T) {
 			if res != nil {
 				assert.Equal(t, testCase.document.DocumentNumber, res.Data[0].Number)
 			}
-
 		})
 	}
 }

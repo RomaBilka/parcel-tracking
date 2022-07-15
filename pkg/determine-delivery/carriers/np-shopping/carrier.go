@@ -7,11 +7,10 @@ import (
 )
 
 ////Starts with NP, 14 numbers and NPG at the end
-//NP99999999999999NPG
+
 var npShopping = regexp.MustCompile(`(?i)^NP[\d]{14}NPG$`)
 
-type Carrier struct {
-}
+type Carrier struct{}
 
 func NewCarrier() *Carrier {
 	return &Carrier{}

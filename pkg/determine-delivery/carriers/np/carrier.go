@@ -7,16 +7,11 @@ import (
 )
 
 var patterns = map[string]*regexp.Regexp{
-	//Starts with 59, length 14, only numbers
-	//59************
+	// 59************
 	"start59": regexp.MustCompile(`^59[\d]{12}$`),
 
-	//Starts with 20, length 14, only numbers
-	//20************
 	"start20": regexp.MustCompile(`^20[\d]{12}$`),
 
-	//Starts with 1, length 14, only numbers
-	//1*************
 	"start1": regexp.MustCompile(`^1[\d]{13}$`),
 }
 
