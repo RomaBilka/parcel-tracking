@@ -25,7 +25,7 @@ func TestFixturesTrackingDocument(t *testing.T) {
 			errorCode: "000",
 		},
 		{
-			name:      "Tracked by number",
+			name:      "Bad request",
 			file:      "fixtures/bad_request.xml",
 			document:  "TESTIK11",
 			errorCode: "101",
