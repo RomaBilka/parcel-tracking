@@ -19,40 +19,45 @@ func TestEnableLogging(t *testing.T) {
 		logger func(m *loggerMock)
 	}{
 		{
-			name: "log message from body",
+			name: "log error on internal error",
 			prev: func(ctx context.Context, request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
-				return events.APIGatewayProxyResponse{Body: "body error", StatusCode: http.StatusInternalServerError}, nil
+				return events.APIGatewayProxyResponse{Body: `{"message": "body error"}`, StatusCode: http.StatusInternalServerError}, nil
 			},
 			logger: func(m *loggerMock) {
-				m.On("Error", "internal server error, body: body error",
-					zap.Int("StatusCode", http.StatusInternalServerError))
+				m.On("Error", "body error",
+					zap.Int("statusCode", http.StatusInternalServerError), mock.Anything)
 			},
 		},
 		{
-			name: "log message from error",
+			name: "log error from error",
 			prev: func(ctx context.Context, request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
 				return events.APIGatewayProxyResponse{}, assert.AnError
 			},
 			logger: func(m *loggerMock) {
-				m.On("Error", "internal server error, error: assert.AnError general error for testing", zap.Int("StatusCode", http.StatusInternalServerError))
+				m.On("Error", assert.AnError.Error(), mock.Anything)
 			},
 		},
 		{
-			name: "log message from body and error",
+			name: "log warn on bad request",
 			prev: func(ctx context.Context, request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
-				return events.APIGatewayProxyResponse{Body: "body error", StatusCode: http.StatusInternalServerError}, assert.AnError
+				return events.APIGatewayProxyResponse{Body: `{"message": "body error"}`, StatusCode: http.StatusBadRequest}, nil
 			},
 			logger: func(m *loggerMock) {
-				m.On("Error", "internal server error, body: body error, error: assert.AnError general error for testing",
-					zap.Int("StatusCode", http.StatusInternalServerError))
+				m.On("Warn", "body error",
+					zap.Int("statusCode", http.StatusBadRequest), mock.Anything)
 			},
 		},
 		{
-			name: "do not log if status not found",
+			name: "failed to unmarshall",
 			prev: func(ctx context.Context, request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
-				return events.APIGatewayProxyResponse{Body: "body", StatusCode: http.StatusNotFound}, nil
+				return events.APIGatewayProxyResponse{Body: "body error", StatusCode: http.StatusNotFound}, nil
 			},
-			logger: func(m *loggerMock) {},
+			logger: func(m *loggerMock) {
+				m.On("Error", "failed to unmarshall error",
+					zap.Int("statusCode", http.StatusNotFound), mock.Anything, mock.Anything,
+					zap.String("response", "body error"),
+				)
+			},
 		},
 		{
 			name: "do not log if status success",
@@ -87,6 +92,14 @@ type loggerMock struct {
 }
 
 func (l *loggerMock) Error(msg string, fields ...zap.Field) {
+	args := []interface{}{msg}
+	for _, field := range fields {
+		args = append(args, field)
+	}
+	l.Called(args...)
+}
+
+func (l *loggerMock) Warn(msg string, fields ...zap.Field) {
 	args := []interface{}{msg}
 	for _, field := range fields {
 		args = append(args, field)

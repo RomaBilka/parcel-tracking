@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
-	"fmt"
 	"net/http"
 
 	"github.com/RomaBilka/parcel-tracking/api"
@@ -35,16 +34,15 @@ func Tracking(t parcelTracker) http.HandlerFunc {
 			return
 		}
 
-		if err := json.NewEncoder(w).Encode(parcel); err != nil {
-			writeErrorResponse(w, http.StatusBadRequest, err)
-		}
-
 		w.WriteHeader(http.StatusOK)
+		if err := json.NewEncoder(w).Encode(parcel); err != nil {
+			writeErrorResponse(w, http.StatusInternalServerError, err)
+		}
 	}
 }
 
 func writeErrorResponse(w http.ResponseWriter, code int, err error) {
 	w.WriteHeader(code)
 	b, _ := json.Marshal(api.Error{Message: err.Error()})
-	fmt.Fprint(w, string(b))
+	_, _ = w.Write(b)
 }
