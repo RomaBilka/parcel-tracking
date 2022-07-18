@@ -34,26 +34,26 @@
 
 
 ## Request
-`
+```javascript
 {
-"apiKey": "[ВАШ КЛЮЧ]",
-"modelName": "TrackingDocument",
-"calledMethod": "getStatusDocuments",
-"methodProperties": {
-"Documents" : [
-{
-"DocumentNumber":"20400048799000",
-"Phone":"380600000000"
+    "apiKey":"[ВАШ КЛЮЧ]",
+        "modelName":"TrackingDocument",
+        "calledMethod":"getStatusDocuments",
+        "methodProperties":{
+        "Documents":[
+            {
+                "DocumentNumber":"20400048799000",
+                "Phone":"380600000000"
+            },
+            {
+                "DocumentNumber":"20400048799001",
+                "Phone":"380600000000"
+            }
+        ]
+    }
 }
-,
-{
-"DocumentNumber":"20400048799001",
-"Phone":"380600000000"
-}
-]
-}
-}
-`
+```
+
 ## Response
 
 [response](/fixtures)
