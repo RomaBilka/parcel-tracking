@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"github.com/RomaBilka/parcel-tracking/api/models"
+	"github.com/RomaBilka/parcel-tracking/api"
 	"github.com/RomaBilka/parcel-tracking/pkg/determine-delivery/carriers"
 	"github.com/aws/aws-lambda-go/events"
 )
@@ -13,16 +13,19 @@ import (
 type Handler func(ctx context.Context, request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error)
 
 type parcelTracker interface {
-	TrackParcel(ctx context.Context, parcelID string) (carriers.Parcel, error)
+	TrackParcel(ctx context.Context, parcelId string) (carriers.Parcel, error)
 }
 
-func HandleLambdaEvent(t parcelTracker) Handler {
+func Tracking(t parcelTracker) Handler {
 	return func(ctx context.Context, request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
 		id := request.QueryStringParameters["track_id"]
+		if id == "" {
+			return response(http.StatusBadRequest, api.Error{Message: "track_id cannot be empty"})
+		}
 
 		p, err := t.TrackParcel(ctx, id)
 		if err != nil {
-			return response(http.StatusBadRequest, models.Error{Message: err.Error()})
+			return response(http.StatusBadRequest, api.Error{Message: err.Error()})
 		}
 		return response(http.StatusOK, p)
 	}

@@ -7,12 +7,12 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/RomaBilka/parcel-tracking/api/models"
+	"github.com/RomaBilka/parcel-tracking/api"
 	"github.com/RomaBilka/parcel-tracking/pkg/determine-delivery/carriers"
 )
 
 type parcelTracker interface {
-	TrackParcel(ctx context.Context, parcelID string) (carriers.Parcel, error)
+	TrackParcel(ctx context.Context, parcelId string) (carriers.Parcel, error)
 }
 
 func Tracking(t parcelTracker) http.HandlerFunc {
@@ -22,14 +22,14 @@ func Tracking(t parcelTracker) http.HandlerFunc {
 			return
 		}
 
-		trackingId, ok := r.URL.Query()["tracking_id"]
-		if !ok {
-			writeErrorResponse(w, http.StatusBadRequest, errors.New("tracking id is empty"))
+		trackingId := r.URL.Query().Get("track_id")
+		if trackingId == "" {
+			writeErrorResponse(w, http.StatusBadRequest, errors.New("track_id cannot be empty"))
 			return
 		}
 
 		ctx := r.Context()
-		parcel, err := t.TrackParcel(ctx, trackingId[0])
+		parcel, err := t.TrackParcel(ctx, trackingId)
 		if err != nil {
 			writeErrorResponse(w, http.StatusBadRequest, err)
 			return
@@ -45,6 +45,6 @@ func Tracking(t parcelTracker) http.HandlerFunc {
 
 func writeErrorResponse(w http.ResponseWriter, code int, err error) {
 	w.WriteHeader(code)
-	b, _ := json.Marshal(models.Error{Message: err.Error()})
+	b, _ := json.Marshal(api.Error{Message: err.Error()})
 	fmt.Fprint(w, string(b))
 }

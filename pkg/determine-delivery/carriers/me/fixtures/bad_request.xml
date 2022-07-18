@@ -1,0 +1,1 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?><return>    <api>API-1C</api>    <apiversion>1</apiversion>    <result_table>    </result_table>    <result_uuid></result_uuid>    <errors>        <code>100</code>        <name>Connection Error</name>    </errors></return>

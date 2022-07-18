@@ -8,8 +8,8 @@ RUN go mod download
 
 COPY . .
 
-RUN go build ./cmd/parcel-tracking/
+RUN go build ./cmd/rest-server/
 
 EXPOSE 8080
 
-CMD [ "./parcel-tracking" ]
+CMD [ "./rest-server" ]

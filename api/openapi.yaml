@@ -1,0 +1,63 @@
+openapi: 3.0.1
+info:
+  title: Parcel Tracking
+  description: REST API
+  version: 1.0.0
+tags:
+  - name: Tracker
+paths:
+  /tracking:
+    get:
+      tags:
+        - "Tracker"
+      summary: "Track а parcel by tracking Id"
+      parameters:
+        - in: query
+          name: "track_id"
+          required: true
+          schema:
+            type: "string"
+      responses:
+        "200":
+          description: "Successful operation"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Parcel'
+        "400":
+          description: "Bad Request"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        "404":
+          description: "Not Found"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        "500":
+          description: "Internal Server Error"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+components:
+  schemas:
+    Parcel:
+      type: object
+      properties:
+        status:
+          type: "string"
+        track_id:
+          type: "string"
+        address:
+          description: "Delivery address"
+          type: "string"
+    Error:
+      type: object
+      properties:
+        message:
+          type: "string"

@@ -2,6 +2,7 @@ package np
 
 import (
 	"encoding/json"
+	"errors"
 
 	"github.com/valyala/fasthttp"
 )
@@ -20,7 +21,7 @@ func NewApi(apiURL, apiKey string) *Api {
 	}
 }
 
-func (np *Api) TrackingDocument(methodProperties TrackingDocuments) (*TrackingDocumentsResponse, error) {
+func (api *Api) TrackingDocument(methodProperties TrackingDocuments) (*TrackingDocumentsResponse, error) {
 	req := novaPoshtaRequest{
 		ModelName:    "TrackingDocument",
 		CalledMethod: "getStatusDocuments",
@@ -28,39 +29,43 @@ func (np *Api) TrackingDocument(methodProperties TrackingDocuments) (*TrackingDo
 	req.MethodProperties = methodProperties
 
 	trackingDocumentsResponse := &TrackingDocumentsResponse{}
-	b, err := np.makeRequest(req, fasthttp.MethodGet)
+	b, err := api.makeRequest(req, fasthttp.MethodGet)
 	if err != nil {
-		return trackingDocumentsResponse, err
+		return nil, err
 	}
 
-	err = json.Unmarshal(b, trackingDocumentsResponse)
-	if err != nil {
-		return trackingDocumentsResponse, err
+	if err := json.Unmarshal(b, trackingDocumentsResponse); err != nil {
+		return nil, err
+	}
+
+	if !trackingDocumentsResponse.Success {
+		return nil, errors.New(trackingDocumentsResponse.Errors[0])
 	}
 
 	return trackingDocumentsResponse, err
 }
 
-func (np *Api) makeRequest(r novaPoshtaRequest, method string) ([]byte, error) {
-	body := make([]byte, 0)
-	r.ApiKey = np.apiKey
+func (api *Api) makeRequest(r novaPoshtaRequest, method string) ([]byte, error) {
+	r.ApiKey = api.apiKey
 
 	data, err := json.Marshal(r)
 	if err != nil {
-		return body, err
+		return nil, err
 	}
 
 	req := fasthttp.AcquireRequest()
+	defer fasthttp.ReleaseRequest(req)
+
 	req.SetBody(data)
 	req.Header.SetMethod(method)
 	req.Header.SetContentType("application/json")
-	req.SetRequestURI(np.apiURL + URL)
-	res := fasthttp.AcquireResponse()
-	if err := fasthttp.Do(req, res); err != nil {
-		return body, err
-	}
-	fasthttp.ReleaseRequest(req)
-	body = res.Body()
+	req.SetRequestURI(api.apiURL + URL)
 
-	return body, nil
+	res := fasthttp.AcquireResponse()
+	defer fasthttp.ReleaseResponse(res)
+	if err := fasthttp.Do(req, res); err != nil {
+		return nil, err
+	}
+
+	return res.Body(), nil
 }

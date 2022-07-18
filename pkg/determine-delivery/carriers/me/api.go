@@ -4,9 +4,12 @@ import (
 	"crypto/md5"
 	"encoding/hex"
 	"encoding/xml"
+	"errors"
 
 	"github.com/valyala/fasthttp"
 )
+
+const statusOk = "000"
 
 type Api struct {
 	agentUID string
@@ -24,50 +27,53 @@ func NewApi(agentUID, login, password, apiURL string) *Api {
 	}
 }
 
-func (me *Api) ShipmentsTrack(trackNumber string) (*ShipmentsTrackResponse, error) {
+func (api *Api) ShipmentsTrack(trackNumber string) (*ShipmentsTrackResponse, error) {
 	req := meestExpressRequest{
 		Function: "SHIPMENTS_TRACK",
-		Where:    me.agentUID + "," + trackNumber,
+		Where:    api.agentUID + "," + trackNumber,
 	}
 
-	b, err := me.makeRequest(req, fasthttp.MethodPost)
+	b, err := api.makeRequest(req, fasthttp.MethodPost)
 	if err != nil {
-		return &ShipmentsTrackResponse{}, err
+		return nil, err
 	}
 	shipmentsTrackResponse := &ShipmentsTrackResponse{}
 
-	err = xml.Unmarshal(b, shipmentsTrackResponse)
-	if err != nil {
-		return &ShipmentsTrackResponse{}, err
+	if err := xml.Unmarshal(b, shipmentsTrackResponse); err != nil {
+		return nil, err
+	}
+
+	if shipmentsTrackResponse.Errors.Code != statusOk {
+		return nil, errors.New(shipmentsTrackResponse.Errors.Name)
 	}
 
 	return shipmentsTrackResponse, nil
 }
 
-func (me *Api) makeRequest(r meestExpressRequest, method string) ([]byte, error) {
-	body := make([]byte, 0)
-
-	r.Login = me.login
-	r.Sign = me.getHash(r)
+func (api *Api) makeRequest(r meestExpressRequest, method string) ([]byte, error) {
+	r.Login = api.login
+	r.Sign = api.getHash(r)
 	p := param{r}
 
 	xmlString, _ := xml.MarshalIndent(p, "", " ")
 	data := append([]byte(xml.Header), xmlString...)
 
 	req := fasthttp.AcquireRequest()
+	defer fasthttp.ReleaseRequest(req)
+
 	req.SetBody(data)
 	req.Header.SetMethod(method)
 	req.Header.SetContentType("text/xml")
-	req.SetRequestURI(me.apiURL)
+	req.SetRequestURI(api.apiURL)
+
 	res := fasthttp.AcquireResponse()
+	defer fasthttp.ReleaseResponse(res)
+
 	if err := fasthttp.Do(req, res); err != nil {
-		return body, err
+		return nil, err
 	}
 
-	fasthttp.ReleaseRequest(req)
-	body = res.Body()
-
-	return body, nil
+	return res.Body(), nil
 }
 
 func (me *Api) getHash(r meestExpressRequest) string {

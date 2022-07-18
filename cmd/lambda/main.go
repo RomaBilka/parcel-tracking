@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/RomaBilka/parcel-tracking/api/lambda/handlers"
+	api "github.com/RomaBilka/parcel-tracking/api/lambda"
 	"github.com/RomaBilka/parcel-tracking/dependencies"
 	"github.com/aws/aws-lambda-go/lambda"
 )
@@ -11,5 +11,8 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	lambda.Start(handlers.HandleLambdaEvent(deps.ParcelTracker))
+	defer deps.TearDown()
+
+	h := api.Configure(deps)
+	lambda.Start(h)
 }
