@@ -1,6 +1,9 @@
 # Novaposhta
 [Documentation](https://developers.novaposhta.ua/documentation)
 
+## Tracking number patterns
+14 digits start 59.., 20.., 1..
+
 ## Трекінг
 Оновлений метод «getStatusDocuments» працює в моделі «TrackingDocument», цей метод дозволяє переглядати більш розширену інформацію щодо статусу відправлення.
 При введеному номері телефону можна отримати наступні відомості: дані відправника або одержувача, номер телефону.
