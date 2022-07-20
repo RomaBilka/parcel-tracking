@@ -6,7 +6,7 @@ import (
 	"github.com/RomaBilka/parcel-tracking/pkg/determine-delivery/carriers/dhl"
 	"github.com/RomaBilka/parcel-tracking/pkg/determine-delivery/carriers/me"
 	"github.com/RomaBilka/parcel-tracking/pkg/determine-delivery/carriers/np"
-github.com/RomaBilka/parcel-tracking/pkg/determine-delivery/carriers/usps"
+	"github.com/RomaBilka/parcel-tracking/pkg/determine-delivery/carriers/usps"
 	"go.uber.org/zap"
 )
 

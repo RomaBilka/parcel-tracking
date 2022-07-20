@@ -1,7 +1,6 @@
 package usps
 
 import (
-	"encoding/json"
 	"errors"
 	"fmt"
 	"github.com/valyala/fasthttp"
@@ -30,19 +29,24 @@ func (api *Api) TrackingDocument(trackNumber string) (*response, error) {
 	}
 
 	r := &response{}
-	if err := json.Unmarshal(b, r); err != nil {
+
+	if err = r.isError(b); err != nil {
+		return nil, err
+	}
+
+	if err = r.unmarshalTrackData(b); err != nil {
 		return nil, err
 	}
 
 	return r, nil
 }
 
-const xmlBodyTemplate = "&XML=<TrackRequest USERID=\"%s\" PASSWORD=\"%s\"><TrackID ID=\"%s\"></TrackID></TrackRequest>"
+const xmlBodyRequest = "&XML=<TrackRequest USERID=\"%s\" PASSWORD=\"%s\"><TrackID ID=\"%s\"></TrackID></TrackRequest>"
 
 // USPS for tracking request use the POST request
 func (api *Api) makeRequest(trackingNum, method, endPoint string) ([]byte, error) {
 
-	xmlBody := fmt.Sprintf(xmlBodyTemplate, api.UserID, api.Password, trackingNum)
+	xmlBody := fmt.Sprintf(xmlBodyRequest, api.UserID, api.Password, trackingNum)
 
 	req := fasthttp.AcquireRequest()
 	defer fasthttp.ReleaseRequest(req)

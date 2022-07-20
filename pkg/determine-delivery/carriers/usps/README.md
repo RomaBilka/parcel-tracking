@@ -33,8 +33,8 @@ This **track** test shows a multi-entry return that is arranged in reverse chron
 http://production.shippingapis.com/ShippingAPI.dll?API=TrackV2
 
 REQUEST
-//the "password" tag may be optional
-&XML=<TrackRequest USERID="xxxxxxxx" PASSWORS="xxxxx"> 
+//the "PASSWORD" tag may be optional
+&XML=<TrackRequest USERID="xxxxxxxx" PASSWORD="xxxxx"> 
     <TrackID ID="EJ958083578US"></TrackID>
 </TrackRequest>
 

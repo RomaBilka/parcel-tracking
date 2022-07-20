@@ -20,12 +20,17 @@ func (c *Carrier) Detect(trackId string) bool {
 
 func (c *Carrier) Track(trackNumber string) ([]carriers.Parcel, error) {
 	resp, err := c.api.TrackingDocument(trackNumber)
-
 	if err != nil {
 		return nil, err
 	}
 
-	parcel := make([]carriers.Parcel)
-}
+	parcels := make([]carriers.Parcel, len(resp.details))
+	for i, d := range resp.details {
+		parcels[i] = carriers.Parcel{
+			Number: resp.number,
+			Status: d,
+		}
+	}
 
-func XMLErrorHadle() error
+	return parcels, nil
+}
