@@ -43,6 +43,11 @@ func Tracking(t parcelTracker) http.HandlerFunc {
 
 func writeErrorResponse(w http.ResponseWriter, code int, err error) {
 	w.WriteHeader(code)
-	b, _ := json.Marshal(api.Error{Message: err.Error()})
-	_, _ = w.Write(b)
+	b, err := json.Marshal(api.Error{Message: err.Error()})
+	if err != nil {
+		panic(err)
+	}
+	if _, err := w.Write(b); err != nil {
+		panic(err)
+	}
 }

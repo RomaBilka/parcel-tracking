@@ -25,7 +25,7 @@ func Logging(logger logger) Middleware {
 			resp, respErr = previous(ctx, request)
 			if respErr != nil {
 				logger.Error(respErr.Error(), zap.Duration("duration", time.Since(tn)))
-				return resp, respErr
+				return
 			}
 
 			fields := []zap.Field{
