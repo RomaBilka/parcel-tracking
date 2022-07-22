@@ -28,7 +28,7 @@ func TestRewriteInternalErrors(t *testing.T) {
 			prev: func(ctx context.Context, request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
 				return events.APIGatewayProxyResponse{Body: "ok", StatusCode: http.StatusOK}, assert.AnError
 			},
-			expResp: events.APIGatewayProxyResponse{Body: "internal server error", StatusCode: http.StatusInternalServerError},
+			expResp: events.APIGatewayProxyResponse{Body: `{"message":"Internal Server Error"}`, StatusCode: http.StatusInternalServerError},
 		},
 	}
 

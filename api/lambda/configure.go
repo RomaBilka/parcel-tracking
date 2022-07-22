@@ -9,5 +9,7 @@ import (
 func Configure(deps *dependencies.Deps) handlers.Handler {
 	tracking := handlers.Tracking(deps.ParcelTracker)
 	logging := midllewares.Logging(deps.Logger)
-	return midllewares.RewriteInternalErrors(logging(tracking))
+	panicRecovery := midllewares.PanicRecovery(deps.Logger.Sugar())
+
+	return midllewares.RewriteInternalErrors(panicRecovery(logging(tracking)))
 }
