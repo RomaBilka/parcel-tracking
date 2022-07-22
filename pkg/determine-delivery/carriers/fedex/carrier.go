@@ -16,7 +16,7 @@ var patterns = map[string]*regexp.Regexp{
 }
 
 type api interface {
-	TrackByTrackingNumber(string)
+	TrackByTrackingNumber(TrackingRequest) (*Response, error)
 }
 
 type Carrier struct {

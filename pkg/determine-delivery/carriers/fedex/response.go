@@ -2,6 +2,13 @@ package fedex
 
 import "time"
 
+type authResponse struct {
+	AccessToken string `json:"access_token"`
+	TokenType   string `json:"token_type"`
+	ExpiresIn   int    `json:"expires_in"`
+	Scope       string `json:"scope"`
+}
+
 type Response struct {
 	TransactionId         string `json:"transactionId"`
 	CustomerTransactionId string `json:"customerTransactionId"`
@@ -375,4 +382,10 @@ type Response struct {
 		} `json:"completeTrackResults"`
 		Alerts string `json:"alerts"`
 	} `json:"output"`
+	Errors Errors `json:"errors"`
+}
+
+type Errors []struct {
+	Code    string `json:"code"`
+	Message string `json:"message"`
 }
