@@ -9,12 +9,9 @@ import (
 )
 
 func Configure(deps *dependencies.Deps) {
-	http.Handle("/tracking",
-		midllewares.RewriteInternalErrors(
-			midllewares.Logging(deps.Logger)(
-				handlers.Tracking(deps.ParcelTracker),
-			),
-		),
-	)
+	tracking := handlers.Tracking(deps.ParcelTracker)
+	logging := midllewares.Logging(deps.Logger)
+	panicRecovery := midllewares.PanicRecovery(deps.Logger.Sugar())
 
+	http.Handle("/tracking", midllewares.RewriteInternalErrors(panicRecovery(logging(tracking))))
 }

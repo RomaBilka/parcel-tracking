@@ -12,7 +12,7 @@ import (
 	"go.uber.org/zap"
 )
 
-func TestEnableLogging(t *testing.T) {
+func TestLogging(t *testing.T) {
 	testCases := []struct {
 		name   string
 		prev   handlers.Handler
