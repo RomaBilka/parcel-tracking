@@ -36,8 +36,9 @@ func response(status int, body interface{}) (events.APIGatewayProxyResponse, err
 	if err != nil {
 		return events.APIGatewayProxyResponse{}, err
 	}
+
 	return events.APIGatewayProxyResponse{
-		StatusCode: status,
 		Body:       string(resp),
+		StatusCode: status,
 	}, nil
 }
