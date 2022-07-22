@@ -18,8 +18,6 @@ type parcelTracker interface {
 
 func Tracking(t parcelTracker) Handler {
 	return func(ctx context.Context, request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
-		panic("error test")
-
 		id := request.QueryStringParameters["track_id"]
 		if id == "" {
 			return response(http.StatusBadRequest, api.Error{Message: "track_id cannot be empty"})
@@ -38,7 +36,6 @@ func response(status int, body interface{}) (events.APIGatewayProxyResponse, err
 	if err != nil {
 		return events.APIGatewayProxyResponse{}, err
 	}
-
 	return events.APIGatewayProxyResponse{
 		StatusCode: status,
 		Body:       string(resp),
