@@ -31,6 +31,7 @@ var patterns = map[string]*regexp.Regexp{
 	"numbers9_10": regexp.MustCompile(`^[\d]{9,10}$`),
 
 	//Numeric only with the length 22
+	//22 in Fedex as well !!!
 	"numbers22": regexp.MustCompile(`^[\d]{22}$`),
 
 	//Starts with cgish and 9 digits

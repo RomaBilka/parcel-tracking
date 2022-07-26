@@ -9,14 +9,15 @@ import (
 	"github.com/valyala/fasthttp"
 )
 
-const tokenExpirationLimit = 1 //1 second
+const tokenExpirationLimit = 1
+const oneMinute = 60
 const gzip = "gzip"
 
 type Api struct {
+	apiURL       string
 	grantType    string
 	clientId     string
 	clientSecret string
-	apiURL       string
 }
 
 type requestParam struct {
@@ -32,18 +33,18 @@ type token struct {
 	expire time.Time
 }
 
-var t token
+var currentToken token
 
-func NewApi(grantType, clientId, clientSecret, apiURL string) *Api {
+func NewApi(apiURL, grantType, clientId, clientSecret string) *Api {
 	return &Api{
+		apiURL:       apiURL,
 		grantType:    grantType,
 		clientId:     clientId,
 		clientSecret: clientSecret,
-		apiURL:       apiURL,
 	}
 }
 
-func (api *Api) TrackByTrackingNumber(trackingRequest TrackingRequest) (*Response, error) {
+func (api *Api) TrackByTrackingNumber(trackingRequest TrackingRequest) (*TrackingResponse, error) {
 	b, err := json.Marshal(trackingRequest)
 	if err != nil {
 		return nil, err
@@ -62,13 +63,21 @@ func (api *Api) TrackByTrackingNumber(trackingRequest TrackingRequest) (*Respons
 		return nil, err
 	}
 
-	res := &Response{}
+	res := &TrackingResponse{}
 	if err := json.Unmarshal(response, res); err != nil {
 		return nil, err
 	}
 
 	if err = getErrors(res.Errors); err != nil {
 		return nil, err
+	}
+
+	for _, rules := range res.Output.CompleteTrackResults {
+		for _, resalt := range rules.TrackResults {
+			if resalt.Error.Code != "" {
+				return nil, errors.New(resalt.Error.Message)
+			}
+		}
 	}
 
 	return res, err
@@ -93,20 +102,21 @@ func (api *Api) authorize() error {
 		contentType: "application/x-www-form-urlencoded",
 	}
 
-	b, err := api.makeRequest(request)
+	response, err := api.makeRequest(request)
+
 	if err != nil {
 		return err
 	}
 
 	a := &authResponse{}
-	if err := json.Unmarshal(b, a); err != nil {
+	if err := json.Unmarshal(response, a); err != nil {
 
 		return err
 	}
 
 	if a.AccessToken == "" {
 		res := &Response{}
-		if err := json.Unmarshal(b, res); err != nil {
+		if err := json.Unmarshal(response, res); err != nil {
 			return err
 		}
 		if err = getErrors(res.Errors); err != nil {
@@ -114,12 +124,12 @@ func (api *Api) authorize() error {
 		}
 	}
 
-	if a.ExpiresIn <= tokenExpirationLimit {
+	if a.ExpiresIn <= oneMinute {
 		return errors.New("short expiration of the token")
 	}
 
 	seconds := time.Duration(a.ExpiresIn) * time.Second
-	t = token{
+	currentToken = token{
 		token:  a.AccessToken,
 		expire: time.Now().Local().Add(seconds),
 	}
@@ -161,16 +171,16 @@ func (api *Api) makeRequest(r requestParam) ([]byte, error) {
 }
 
 func (api *Api) setAuthorize(req *fasthttp.Request) error {
-	if t.isExpired() {
+	if currentToken.isExpired() {
 		if err := api.authorize(); err != nil {
 			return err
 		}
 	}
-	req.Header.Add("authorization", "Bearer 1"+t.token)
+	req.Header.Add("authorization", "Bearer "+currentToken.token)
 	return nil
 }
 
-func getErrors(err Errors) error {
+func getErrors(err []Error) error {
 	lenErrors := len(err)
 	if lenErrors > 0 {
 		errorMsgs := ""
@@ -186,5 +196,5 @@ func getErrors(err Errors) error {
 }
 
 func (t *token) isExpired() bool {
-	return t.expire.Sub(time.Now()) < 1*time.Minute
+	return t.expire.Sub(time.Now()) < tokenExpirationLimit*time.Minute
 }

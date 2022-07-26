@@ -122,16 +122,6 @@
                 "description": "this is an informational message"
               }
             ],
-            "error": {
-              "code": "TRACKING.TRACKINGNUMBER.EMPTY",
-              "parameterList": [
-                {
-                  "value": "value",
-                  "key": "key"
-                }
-              ],
-              "message": "Please provide tracking number."
-            },
             "specialHandlings": [
               {
                 "description": "Deliver Weekday",

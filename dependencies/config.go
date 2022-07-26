@@ -21,11 +21,19 @@ type DHL struct {
 	ApiKey string `long:"DHL_API_Key" description:"DHL API key"  default:"demo-key" env:"DHL_API_KEY"`
 }
 
+type Fedex struct {
+	ApiURL       string `long:"FEDEX_URL" description:"FEDEX API URL" required:"true" default:"https://apis-sandbox.fedex.com" env:"FEDEX_API_URL"`
+	GrantType    string `long:"FEDEX_GRANT_TYPE" description:"Fedex grant type"  default:"" env:"FEDEX_GRANT_TYPE"`
+	ClientId     string `long:"FEDEX_CLIENT_ID" description:"Fedex client id"  default:"" env:"FEDEX_CLIENT_ID"`
+	ClientSecret string `long:"FEDEX_CLIENT_SECRET" description:"Fedex client secret"  default:"" env:"FEDEX_CLIENT_SECRET"`
+}
+
 type Config struct {
 	Port         string `short:"p" long:"port" description:"Port" required:"true" default:"8080" env:"PORT"`
 	NovaPoshta   NovaPoshta
 	MeestExpress MeestExpress
 	DHL          DHL
+	Fedex        Fedex
 }
 
 func initConfig() (*Config, error) {

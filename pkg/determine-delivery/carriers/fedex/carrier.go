@@ -2,6 +2,8 @@ package fedex
 
 import (
 	"regexp"
+
+	"github.com/RomaBilka/parcel-tracking/pkg/determine-delivery/carriers"
 )
 
 var patterns = map[string]*regexp.Regexp{
@@ -12,11 +14,12 @@ var patterns = map[string]*regexp.Regexp{
 	//Numeric only with the length 20
 	"numbers20": regexp.MustCompile(`^[\d]{20}$`),
 	//Numeric only with the length 22
+	//22 in UPS as well !!!
 	"numbers22": regexp.MustCompile(`^[\d]{22}$`),
 }
 
 type api interface {
-	TrackByTrackingNumber(TrackingRequest) (*Response, error)
+	TrackByTrackingNumber(TrackingRequest) (*TrackingResponse, error)
 }
 
 type Carrier struct {
@@ -39,22 +42,29 @@ func (c *Carrier) Detect(trackId string) bool {
 	return false
 }
 
-/*
 func (c *Carrier) Track(trackingId string) ([]carriers.Parcel, error) {
-	documents, err := c.api.ShipmentsTrack(trackingId)
+	trackingInfo := TrackingInfo{
+		TrackingNumberInfo: TrackingNumberInfo{
+			TrackingNumber: trackingId,
+		},
+	}
+
+	trackingData := TrackingRequest{IncludeDetailedScans: true}
+	trackingData.TrackingInfo = append(trackingData.TrackingInfo, trackingInfo)
+
+	documents, err := c.api.TrackByTrackingNumber(trackingData)
 	if err != nil {
 		return nil, err
 	}
 
-	parcels := make([]carriers.Parcel, len(documents.ResultTable))
-	for i, d := range documents.ResultTable {
+	parcels := make([]carriers.Parcel, len(documents.Output.CompleteTrackResults))
+	for i, d := range documents.Output.CompleteTrackResults {
 		parcels[i] = carriers.Parcel{
-			Number:  d.ShipmentNumberSender,
-			Address: d.CountryDel,
-			Status:  d.ActionMessages_UA + " " + d.DetailMessages_UA,
+			Number:  d.TrackingNumber,
+			Address: d.TrackResults[0].LatestStatusDetail.ScanLocation.CountryName + " " + d.TrackResults[0].LatestStatusDetail.ScanLocation.City,
+			Status:  d.TrackResults[0].LatestStatusDetail.StatusByLocale,
 		}
 	}
 
 	return parcels, nil
 }
-*/

@@ -9,10 +9,20 @@ type authResponse struct {
 	Scope       string `json:"scope"`
 }
 
+type Error struct {
+	Code    string `json:"code"`
+	Message string `json:"message"`
+}
+
 type Response struct {
-	TransactionId         string `json:"transactionId"`
-	CustomerTransactionId string `json:"customerTransactionId"`
-	Output                struct {
+	TransactionId         string  `json:"transactionId"`
+	CustomerTransactionId string  `json:"customerTransactionId"`
+	Errors                []Error `json:"errors"`
+}
+
+type TrackingResponse struct {
+	Response
+	Output struct {
 		CompleteTrackResults []struct {
 			TrackingNumber string `json:"trackingNumber"`
 			TrackResults   []struct {
@@ -382,10 +392,4 @@ type Response struct {
 		} `json:"completeTrackResults"`
 		Alerts string `json:"alerts"`
 	} `json:"output"`
-	Errors Errors `json:"errors"`
-}
-
-type Errors []struct {
-	Code    string `json:"code"`
-	Message string `json:"message"`
 }

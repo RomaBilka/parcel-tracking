@@ -6,6 +6,7 @@ import (
 
 	"github.com/RomaBilka/parcel-tracking/pkg/determine-delivery/carriers"
 	"github.com/RomaBilka/parcel-tracking/pkg/determine-delivery/carriers/dhl"
+	"github.com/RomaBilka/parcel-tracking/pkg/determine-delivery/carriers/fedex"
 	"github.com/RomaBilka/parcel-tracking/pkg/determine-delivery/carriers/me"
 	"github.com/RomaBilka/parcel-tracking/pkg/determine-delivery/carriers/np"
 	np_shopping "github.com/RomaBilka/parcel-tracking/pkg/determine-delivery/carriers/np-shopping"
@@ -19,6 +20,8 @@ func TestDetermine(t *testing.T) {
 	detector.Registry(npCarrier)
 	meCarrier := me.NewCarrier(me.NewApi("", "", "", ""))
 	detector.Registry(meCarrier)
+	fedexCarrier := fedex.NewCarrier(fedex.NewApi("", "", "", ""))
+	detector.Registry(fedexCarrier)
 	dhlCarrier := dhl.NewCarrier(dhl.NewApi("", ""))
 	detector.Registry(dhlCarrier)
 	np_shoppingCarrier := np_shopping.NewCarrier()
@@ -44,6 +47,9 @@ func TestDetermine(t *testing.T) {
 		{name: "MeestExpress CV999999999ZZ", trackId: "CV999999999ZZ", carrier: meCarrier},
 		{name: "MeestExpress MYCV999999999ZZ", trackId: "MYCV999999999ZZ", carrier: meCarrier},
 		{name: "NPShopping NP99999999999999NPG", trackId: "NP99999999999999NPG", carrier: np_shoppingCarrier},
+		{name: "Fedex 123456789012", trackId: "123456789012", carrier: fedexCarrier},
+		{name: "Fedex 123456789012345", trackId: "123456789012345", carrier: fedexCarrier},
+		{name: "Fedex 12345678901234567890", trackId: "12345678901234567890", carrier: fedexCarrier},
 		{name: "DHL 0001111111111", trackId: "0001111111111", carrier: dhlCarrier},
 		{name: "DHL JVGL1111111111", trackId: "JVGL1111111111", carrier: dhlCarrier},
 		{name: "DHL GM1111111111", trackId: "GM1111111111", carrier: dhlCarrier},
