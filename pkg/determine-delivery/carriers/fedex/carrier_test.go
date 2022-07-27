@@ -44,10 +44,25 @@ func TestCarrier_Track(t *testing.T) {
 			name:        "Ok response",
 			trackNumber: "123456789012",
 			setupApiMock: func(api *apiMock, requestData TrackingRequest) {
-				response := &TrackingResponse{}
-				response.Output.CompleteTrackResults[0].TrackResults[0].LatestStatusDetail.ScanLocation.CountryName = "Country Name"
-				response.Output.CompleteTrackResults[0].TrackResults[0].LatestStatusDetail.ScanLocation.City = "City"
-				response.Output.CompleteTrackResults[0].TrackResults[0].LatestStatusDetail.StatusByLocale = "Ok"
+				response := &TrackingResponse{
+					Output: Output{
+						CompleteTrackResults: []CompleteTrackResult{
+							CompleteTrackResult{
+								TrackResults: []TrackResult{
+									TrackResult{
+										LatestStatusDetail: LatestStatusDetail{
+											ScanLocation: ScanLocation{
+												CountryName: "Country Name",
+												City:        "City",
+											},
+											StatusByLocale: "Ok",
+										},
+									},
+								},
+							},
+						},
+					},
+				}
 
 				api.On("TrackByTrackingNumber", requestData).Once().Return(response, nil)
 			},
