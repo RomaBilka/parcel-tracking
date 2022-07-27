@@ -196,5 +196,5 @@ func getErrors(err []Error) error {
 }
 
 func (t *token) isExpired() bool {
-	return t.expire.Sub(time.Now()) < tokenExpirationLimit*time.Minute
+	return time.Until(t.expire) < tokenExpirationLimit*time.Minute
 }

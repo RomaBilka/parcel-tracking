@@ -40,7 +40,6 @@ func TestDetermine(t *testing.T) {
 		{name: "UPU 1Z123456E660527223", trackId: "1Z123456E660527223", carrier: upsCarrier},
 		{name: "UPU 1ZWX0692YP40636269", trackId: "1ZWX0692YP40636269", carrier: upsCarrier},
 		{name: "UPU cgish000116630", trackId: "cgish000116630", carrier: upsCarrier},
-		{name: "UPU 1234567890123456789012", trackId: "1234567890123456789012", carrier: upsCarrier},
 		{name: "NovaPoshta 59000000000001", trackId: "59000000000001", carrier: npCarrier},
 		{name: "NovaPoshta 10000000000001", trackId: "10000000000001", carrier: npCarrier},
 		{name: "NovaPoshta 20000000000001", trackId: "20000000000001", carrier: npCarrier},

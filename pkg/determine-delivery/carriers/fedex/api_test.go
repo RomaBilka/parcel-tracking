@@ -2,7 +2,6 @@ package fedex
 
 import (
 	"errors"
-	"fmt"
 	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
@@ -11,20 +10,6 @@ import (
 
 	"github.com/stretchr/testify/assert"
 )
-
-func TestTrackByTrackingNumber(t *testing.T) {
-	api := NewApi("https://apis-sandbox.fedex.com", "client_credentials", "l7318b44d51b6f499cbe9a46eb1ebd37f5", "8001cb5294c647198b11340c42b242c0")
-
-	trackingInfo := TrackingInfo{
-		TrackingNumberInfo: TrackingNumberInfo{
-			TrackingNumber: "070557615225247",
-		},
-	}
-
-	n := TrackingRequest{IncludeDetailedScans: true}
-	n.TrackingInfo = append(n.TrackingInfo, trackingInfo)
-	fmt.Println(api.TrackByTrackingNumber(n))
-}
 
 func TestApi_TrackByTrackingNumber(t *testing.T) {
 	currentToken = token{
@@ -131,7 +116,7 @@ func TestApi_authorize(t *testing.T) {
 			}))
 			defer server.Close()
 
-			fedex := NewApi("", "", "", server.URL)
+			fedex := NewApi(server.URL, "", "", "")
 
 			err := fedex.authorize()
 			assert.Equal(t, testCase.err, err)
