@@ -1,25 +1,5 @@
-        <!--REQUEST BODY-->
 <!--The request is made by the URL http://production.shippingapis.com/ShippingAPI.dll?API=TrackV2-->
 <!--The "PASSWORD" tag may be optional-->
 <TrackRequest USERID="xxxxxxxx" PASSWORD="xxxxx">
     <TrackID ID="EJ958083578US"></TrackID>
 </TrackRequest>
-
-        <!--RESPONSE BODY-->
-<?xml version="1.0"?>
-<TrackResponse>
-<TrackInfo ID="EJ958083578US">
-    <TrackSummary>
-        Your item was delivered at 8:10 am on June 1 in Wilmington DE 19801.
-    </TrackSummary>
-    <TrackDetail>
-        May 30 11:07 am NOTICE LEFT WILMINGTON DE 19801.
-    </TrackDetail>
-    <TrackDetail>
-        May 30 10:08 am ARRIVAL AT UNIT WILMINGTON DE 19850.
-    </TrackDetail>
-    <TrackDetail>
-        May 29 9:55 am ACCEPT OR PICKUP EDGEWATER NJ 07020.
-    </TrackDetail>
-</TrackInfo>
-</TrackResponse>

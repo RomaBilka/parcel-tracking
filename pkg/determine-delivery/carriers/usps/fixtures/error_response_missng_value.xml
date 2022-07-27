@@ -1,4 +1,3 @@
-        <!--Example 1-->
 <?xml version="1.0"?>
 <Error>
     <Number>-2147217951</Number>
@@ -8,12 +7,4 @@
     <Description>Missing value for To Phone number.</Description>
     <HelpFile></HelpFile>
     <HelpContext>1000440</HelpContext>
-</Error>
-
-        <!--Example 2-->
-<?xml version="1.0"?>
-<Error>
-    <Number>80040B1A</Number>
-    <Description>API Authorization failure. User 302ROMAN1277 is not authorized to use API TrackV2.</Description>
-    <Source>USPSCOM::DoAuth</Source>
 </Error>
