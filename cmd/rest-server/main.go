@@ -8,7 +8,7 @@ import (
 	"os/signal"
 	"syscall"
 
-	"github.com/RomaBilka/parcel-tracking/api/rest/handlers"
+	"github.com/RomaBilka/parcel-tracking/api/rest"
 	"github.com/RomaBilka/parcel-tracking/dependencies"
 	"golang.org/x/sync/errgroup"
 )
@@ -18,8 +18,9 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
+	defer deps.TearDown()
 
-	http.HandleFunc("/tracking", handlers.Tracking(deps.ParcelTracker))
+	rest.Configure(deps)
 
 	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
 	defer stop()
