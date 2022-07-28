@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <Error>
     <Number>80040B1A</Number>
-    <Description>API Authorization failure. User 302ROMAN1277 is not authorized to use API TrackV2.</Description>
+    <Description>API Authorization failure. User XXXXXXX is not authorized to use API TrackV2.</Description>
     <Source>USPSCOM::DoAuth</Source>
 </Error>

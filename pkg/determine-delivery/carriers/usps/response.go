@@ -59,13 +59,18 @@ func (r *response) unmarshalTrackData(xmlBody []byte) error {
 
 	root := xmlquery.FindOne(doc, "//TrackInfo")
 
+	if root == nil {
+		return fmt.Errorf("the XML structure does not match the parsing conditions or is missing")
+	}
+
 	if trackID := xmlquery.FindOne(root, "@ID"); trackID != nil {
 		r.number = trackID.InnerText()
 	}
-
+	// NOTE! If you want the first element in the "details" slice to be the Summary,
+	//then do not change the order of the condition below.
 	var details []string
 	if summary := root.SelectElement("//TrackSummary"); summary != nil {
-		r.details = append(details, summary.InnerText())
+		details = append(details, summary.InnerText())
 	}
 
 	if nodes := xmlquery.Find(root, "//TrackDetail"); nodes != nil {
