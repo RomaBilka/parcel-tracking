@@ -2,8 +2,6 @@ package usps
 
 import "github.com/RomaBilka/parcel-tracking/pkg/determine-delivery/carriers"
 
-var patterns string
-
 type Carrier struct {
 	api *Api
 }
