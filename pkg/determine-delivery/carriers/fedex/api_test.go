@@ -141,7 +141,7 @@ func TestApi_isExpired(t *testing.T) {
 			name: "expired",
 			currentToken: token{
 				token:  "test_token",
-				expire: time.Now().Local().Add(500 * time.Millisecond),
+				expire: time.Now().Local().Add(1 * time.Millisecond),
 			},
 			ok: true,
 		},
