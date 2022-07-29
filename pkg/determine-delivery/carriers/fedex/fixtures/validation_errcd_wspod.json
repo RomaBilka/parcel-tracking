@@ -1,0 +1,9 @@
+{
+  "transactionId":"bab63e7e-c3c6-45d9-99a7-32b76ed2535c",
+  "errors":[
+    {
+      "code":"VALIDATION.ERRCD.WSPOD",
+      "message":"We are unable to process this shipment for the moment. Try again later or contact FedEx Customer Service."
+    }
+  ]
+}

@@ -1,0 +1,9 @@
+{
+  "transactionId":"6cd007d6-5667-4baa-a56d-b3e8ed94563f",
+  "errors":[
+    {
+      "code":"BAD.REQUEST.ERROR",
+      "message":"The given JWT is invalid. Please modify your request and try again."
+    }
+  ]
+}
