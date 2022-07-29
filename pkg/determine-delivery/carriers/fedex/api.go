@@ -9,9 +9,11 @@ import (
 	"github.com/valyala/fasthttp"
 )
 
-const tokenExpirationLimit = 1
-const oneMinute = 60
-const gzip = "gzip"
+const (
+	tokenExpirationLimit = 1
+	oneMinute            = 60
+	gzip                 = "gzip"
+)
 
 type Api struct {
 	apiURL       string
