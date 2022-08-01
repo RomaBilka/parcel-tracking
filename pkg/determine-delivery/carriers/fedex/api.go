@@ -19,9 +19,9 @@ const (
 type (
 	Api struct {
 		apiURL       string
-		grantType    string
-		clientId     string
-		clientSecret string
+		grantType    string //client_credentials
+		clientId     string //API KEY
+		clientSecret string //SHIPPING ACCOUNT
 		token        struct {
 			token  string
 			expire time.Time
