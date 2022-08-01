@@ -3,7 +3,6 @@ package fedex
 import (
 	"encoding/json"
 	"errors"
-	"fmt"
 	"sync"
 	"time"
 
@@ -19,9 +18,9 @@ const (
 type (
 	Api struct {
 		apiURL       string
-		grantType    string //client_credentials
-		clientId     string //API KEY
-		clientSecret string //SHIPPING ACCOUNT
+		grantType    string
+		clientId     string
+		clientSecret string
 		token        struct {
 			token  string
 			expire time.Time
@@ -38,12 +37,12 @@ type (
 	}
 )
 
-func NewApi(apiURL, grantType, clientId, clientSecret string) *Api {
+func NewApi(apiURL, grantType, apiKey, shippingAccount string) *Api {
 	return &Api{
 		apiURL:       apiURL,
 		grantType:    grantType,
-		clientId:     clientId,
-		clientSecret: clientSecret,
+		clientId:     apiKey,
+		clientSecret: shippingAccount,
 	}
 }
 
@@ -86,9 +85,13 @@ func (api *Api) TrackByTrackingNumber(trackingRequest TrackingRequest) (*Trackin
 	return trackingResponse, err
 }
 
-func (api *Api) authorize() error {
+func (api *Api) authorize() (string, error) {
 	api.token.Lock()
 	defer api.token.Unlock()
+
+	if !isExpired(api.token.expire) {
+		return api.token.token, nil
+	}
 
 	authParams := authorizeRequest{
 		GrantType:    api.grantType,
@@ -98,7 +101,7 @@ func (api *Api) authorize() error {
 
 	v, err := query.Values(authParams)
 	if err != nil {
-		return err
+		return "", err
 	}
 
 	request := requestParam{
@@ -110,33 +113,32 @@ func (api *Api) authorize() error {
 
 	response, err := api.makeRequest(request)
 	if err != nil {
-		return err
+		return "", err
 	}
 
 	authResp := &authResponse{}
 	if err := json.Unmarshal(response, authResp); err != nil {
-		fmt.Println(err)
-		return err
+		return "", err
 	}
 
 	if authResp.AccessToken == "" {
 		res := &Response{}
 		if err := json.Unmarshal(response, res); err != nil {
-			return err
+			return "", err
 		}
 		if err = getErrors(res.Errors); err != nil {
-			return err
+			return "", err
 		}
 	}
 
 	if isExpired(authResp.ExpiresIn.Time) {
-		return errors.New("short expiration of the token")
+		return "", errors.New("short expiration of the token")
 	}
 
 	api.token.token = authResp.AccessToken
 	api.token.expire = authResp.ExpiresIn.Time
 
-	return nil
+	return api.token.token, nil
 }
 
 func (api *Api) makeRequest(r requestParam) ([]byte, error) {
@@ -149,9 +151,11 @@ func (api *Api) makeRequest(r requestParam) ([]byte, error) {
 	req.SetRequestURI(api.apiURL + r.path)
 
 	if r.needAuthorization {
-		if err := api.setAuthorize(req); err != nil {
+		token, err := api.authorize()
+		if err != nil {
 			return nil, err
 		}
+		req.Header.Add("authorization", "Bearer "+token)
 	}
 
 	res := fasthttp.AcquireResponse()
@@ -170,16 +174,6 @@ func (api *Api) makeRequest(r requestParam) ([]byte, error) {
 	}
 
 	return res.Body(), nil
-}
-
-func (api *Api) setAuthorize(req *fasthttp.Request) error {
-	if isExpired(api.token.expire) {
-		if err := api.authorize(); err != nil {
-			return err
-		}
-	}
-	req.Header.Add("authorization", "Bearer "+api.token.token)
-	return nil
 }
 
 func getErrors(err []Error) error {

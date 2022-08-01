@@ -78,23 +78,27 @@ func TestApi_authorize(t *testing.T) {
 	fedex := NewApi("", "", "", "")
 
 	testCases := []struct {
-		name string
-		file string
-		err  error
+		name  string
+		file  string
+		token string
+		err   error
 	}{
 		{
-			name: "Not authorized",
-			file: "fixtures/not_authorized_error.json",
-			err:  errors.New("Access token expired. Please modify your request and try again."),
+			name:  "Not authorized",
+			file:  "fixtures/not_authorized_error.json",
+			token: "",
+			err:   errors.New("Access token expired. Please modify your request and try again."),
 		},
 		{
-			name: "Short_lifetime",
-			file: "fixtures/token_with_short_lifetime.json",
-			err:  errors.New("short expiration of the token"),
+			name:  "Short_lifetime",
+			file:  "fixtures/token_with_short_lifetime.json",
+			token: "",
+			err:   errors.New("short expiration of the token"),
 		},
 		{
-			name: "Ok",
-			file: "fixtures/authorize_ok.json",
+			name:  "Ok",
+			token: "test token",
+			file:  "fixtures/authorize_ok.json",
 		},
 	}
 
@@ -113,8 +117,9 @@ func TestApi_authorize(t *testing.T) {
 
 			fedex.apiURL = server.URL
 
-			err := fedex.authorize()
+			token, err := fedex.authorize()
 			assert.Equal(t, testCase.err, err)
+			assert.Equal(t, testCase.token, token)
 		})
 	}
 }
