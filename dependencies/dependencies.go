@@ -7,6 +7,7 @@ import (
 	"github.com/RomaBilka/parcel-tracking/pkg/determine-delivery/carriers/fedex"
 	"github.com/RomaBilka/parcel-tracking/pkg/determine-delivery/carriers/me"
 	"github.com/RomaBilka/parcel-tracking/pkg/determine-delivery/carriers/np"
+	"github.com/RomaBilka/parcel-tracking/pkg/determine-delivery/carriers/usps"
 	"go.uber.org/zap"
 )
 
@@ -33,6 +34,9 @@ func InitDeps() (*Deps, error) {
 
 	fedexApi := fedex.NewApi(config.Fedex.ApiURL, config.Fedex.GrantType, config.Fedex.ClientId, config.Fedex.ClientSecret)
 	detector.Registry(fedex.NewCarrier(fedexApi))
+
+	uspsApi := usps.NewApi(config.USPS.UserID, config.USPS.Password, config.USPS.URL)
+	detector.Registry(usps.NewCarrier(uspsApi))
 
 	logger, err := zap.NewProduction()
 	if err != nil {
