@@ -6,6 +6,7 @@ import (
 	"github.com/RomaBilka/parcel-tracking/pkg/determine-delivery/carriers/dhl"
 	"github.com/RomaBilka/parcel-tracking/pkg/determine-delivery/carriers/me"
 	"github.com/RomaBilka/parcel-tracking/pkg/determine-delivery/carriers/np"
+	"github.com/RomaBilka/parcel-tracking/pkg/determine-delivery/carriers/usps"
 	"go.uber.org/zap"
 )
 
@@ -29,6 +30,9 @@ func InitDeps() (*Deps, error) {
 
 	dhlApi := dhl.NewApi(config.DHL.ApiURL, config.DHL.ApiKey)
 	detector.Registry(dhl.NewCarrier(dhlApi))
+
+	uspsApi := usps.NewApi(config.USPS.UserID, config.USPS.Password, config.USPS.URL)
+	detector.Registry(usps.NewCarrier(uspsApi))
 
 	logger, err := zap.NewProduction()
 	if err != nil {

@@ -21,10 +21,18 @@ type DHL struct {
 	ApiKey string `long:"DHL_API_Key" description:"DHL API key"  default:"demo-key" env:"DHL_API_KEY"`
 }
 
+type USPS struct {
+	UserID   string `long:"USPS_ID" description:"USPS user ID" required:"true" default:"302ROMAN1277" env:"USPS_ID"`
+	Password string `long:"USPS_Password" description:"USPS password" required:"false" default:"536KD44UF932" env:"USPS_Password"`
+	URL      string `long:"USPS_APIV2_URL" description:"USPS express API TrackV2 URL" required:"true" default:"http://production.shippingapis.com/ShippingAPI.dll?API=TrackV2" env:"USPS_APIV2_URL"`
+	ApiURL   string `long:"ME_API_URL" description:"meest express API URL" required:"true" default:"https://apii.meest-group.com/T/1C_Query.php" env:"ME_API_URL"`
+}
+
 type Config struct {
 	Port         string `short:"p" long:"port" description:"Port" required:"true" default:"8080" env:"PORT"`
 	NovaPoshta   NovaPoshta
 	MeestExpress MeestExpress
+	USPS         USPS
 	DHL          DHL
 }
 
