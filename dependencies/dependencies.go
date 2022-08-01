@@ -4,6 +4,7 @@ import (
 	"github.com/RomaBilka/parcel-tracking/logic"
 	determine_delivery "github.com/RomaBilka/parcel-tracking/pkg/determine-delivery"
 	"github.com/RomaBilka/parcel-tracking/pkg/determine-delivery/carriers/dhl"
+	"github.com/RomaBilka/parcel-tracking/pkg/determine-delivery/carriers/fedex"
 	"github.com/RomaBilka/parcel-tracking/pkg/determine-delivery/carriers/me"
 	"github.com/RomaBilka/parcel-tracking/pkg/determine-delivery/carriers/np"
 	"github.com/RomaBilka/parcel-tracking/pkg/determine-delivery/carriers/usps"
@@ -30,6 +31,9 @@ func InitDeps() (*Deps, error) {
 
 	dhlApi := dhl.NewApi(config.DHL.ApiURL, config.DHL.ApiKey)
 	detector.Registry(dhl.NewCarrier(dhlApi))
+
+	fedexApi := fedex.NewApi(config.Fedex.ApiURL, config.Fedex.GrantType, config.Fedex.ClientId, config.Fedex.ClientSecret)
+	detector.Registry(fedex.NewCarrier(fedexApi))
 
 	uspsApi := usps.NewApi(config.USPS.UserID, config.USPS.Password, config.USPS.URL)
 	detector.Registry(usps.NewCarrier(uspsApi))
