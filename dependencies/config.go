@@ -23,10 +23,10 @@ type (
 	}
 
 	Fedex struct {
-		ApiURL       string `long:"FEDEX_URL" description:"FEDEX API URL" required:"true" default:"https://apis-sandbox.fedex.com" env:"FEDEX_API_URL"`
-		GrantType    string `long:"FEDEX_GRANT_TYPE" description:"Fedex grant type" env:"FEDEX_GRANT_TYPE"`
-		ClientId     string `long:"FEDEX_CLIENT_ID" description:"Fedex client id" env:"FEDEX_CLIENT_ID"`
-		ClientSecret string `long:"FEDEX_CLIENT_SECRET" description:"Fedex client secret" env:"FEDEX_CLIENT_SECRET"`
+		ApiURL          string `long:"FEDEX_URL" description:"FEDEX API URL" required:"true" default:"https://apis-sandbox.fedex.com" env:"FEDEX_API_URL"`
+		GrantType       string `long:"FEDEX_GRANT_TYPE" description:"Fedex grant type" env:"FEDEX_GRANT_TYPE"`
+		ApiKey          string `long:"FEDEX_API_KEY" description:"Fedex client id" env:"FEDEX_API_KEY"`
+		ShippingAccount string `long:"FEDEX_SHIPPING_ACCOUNT" description:"Fedex shipping account" env:"FEDEX_SHIPPING_ACCOUNT"`
 	}
 
 	USPS struct {

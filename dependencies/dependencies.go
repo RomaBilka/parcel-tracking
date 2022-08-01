@@ -32,7 +32,7 @@ func InitDeps() (*Deps, error) {
 	dhlApi := dhl.NewApi(config.DHL.ApiURL, config.DHL.ApiKey)
 	detector.Registry(dhl.NewCarrier(dhlApi))
 
-	fedexApi := fedex.NewApi(config.Fedex.ApiURL, config.Fedex.GrantType, config.Fedex.ClientId, config.Fedex.ClientSecret)
+	fedexApi := fedex.NewApi(config.Fedex.ApiURL, config.Fedex.GrantType, config.Fedex.ApiKey, config.Fedex.ShippingAccount)
 	detector.Registry(fedex.NewCarrier(fedexApi))
 
 	uspsApi := usps.NewApi(config.USPS.UserID, config.USPS.Password, config.USPS.URL)
