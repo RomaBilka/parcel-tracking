@@ -12,7 +12,7 @@ func NewCarrier(api *Api) *Carrier {
 	}
 }
 
-func (c *Carrier) Detect(trackId string) bool {
+func (c *Carrier) Detect(_ string) bool {
 	return false
 }
 

@@ -31,8 +31,8 @@ func InitDeps() (*Deps, error) {
 	dhlApi := dhl.NewApi(config.DHL.ApiURL, config.DHL.ApiKey)
 	detector.Registry(dhl.NewCarrier(dhlApi))
 
-	uspsAPIv2 := usps.NewApi(config.USPS.UserID, config.USPS.Password, config.USPS.URL)
-	detector.Registry(usps.NewCarrier(uspsAPIv2))
+	uspsApi := usps.NewApi(config.USPS.UserID, config.USPS.Password, config.USPS.URL)
+	detector.Registry(usps.NewCarrier(uspsApi))
 
 	logger, err := zap.NewProduction()
 	if err != nil {

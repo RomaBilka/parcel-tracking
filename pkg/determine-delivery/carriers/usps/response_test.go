@@ -4,6 +4,7 @@ import (
 	"encoding/xml"
 	"errors"
 	"io/ioutil"
+	"os"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -23,9 +24,10 @@ func TestIsError(t *testing.T) {
 		},
 		{
 			name: "bad xml, parsing error",
+			file: "fixtures/bad_syntax.xml",
 			err: &xml.SyntaxError{
 				Msg:  "element <Bad> closed by </BadSyntax>",
-				Line: 1,
+				Line: 3,
 			},
 		},
 		{
@@ -40,31 +42,18 @@ func TestIsError(t *testing.T) {
 		},
 	}
 
-	var (
-		xmlBody []byte
-		err     error
-	)
-
 	for _, testCase := range testCases {
 		t.Run(testCase.name, func(t *testing.T) {
+			xmlBody, err := os.ReadFile(testCase.file)
+			assert.NoError(t, err)
 
-			if testCase.file == "" {
-				xmlBody = []byte(`<Bad></BadSyntax>`)
-			} else {
-				xmlBody, err = ioutil.ReadFile(testCase.file)
-				if err != nil {
-					t.Error(err)
-				}
-			}
-
-			err = resp.isError(xmlBody)
+			err = resp.error(xmlBody)
 			assert.Equal(t, testCase.err, err)
 		})
 	}
 }
 
 func TestUnmarshalTrackData(t *testing.T) {
-
 	testCases := []struct {
 		name    string
 		file    string
@@ -86,9 +75,10 @@ func TestUnmarshalTrackData(t *testing.T) {
 		},
 		{
 			name: "bad xml, parsing error",
+			file: "fixtures/bad_syntax.xml",
 			err: &xml.SyntaxError{
 				Msg:  "element <Bad> closed by </BadSyntax>",
-				Line: 1,
+				Line: 3,
 			},
 		},
 		{
@@ -98,26 +88,14 @@ func TestUnmarshalTrackData(t *testing.T) {
 		},
 	}
 
-	var (
-		xmlBody []byte
-		err     error
-	)
-
 	for _, testCase := range testCases {
 		t.Run(testCase.name, func(t *testing.T) {
-
-			if testCase.file == "" {
-				xmlBody = []byte(`<Bad></BadSyntax>`)
-			} else {
-				xmlBody, err = ioutil.ReadFile(testCase.file)
-				if err != nil {
-					t.Error(err)
-				}
-			}
+			xmlBody, err := ioutil.ReadFile(testCase.file)
+			assert.NoError(t, err)
 
 			resp := response{}
-
 			err = resp.unmarshalTrackData(xmlBody)
+
 			assert.Equal(t, testCase.err, err)
 			assert.Equal(t, testCase.number, resp.number)
 		})

@@ -12,43 +12,39 @@ type response struct {
 	details []string
 }
 
-var (
-	number      string
-	description string
-	source      string
-	helpContext string
-)
-
-func (r *response) isError(xmlBody []byte) error {
+func (r *response) error(xmlBody []byte) error {
 	doc, err := xmlquery.Parse(bytes.NewReader(xmlBody))
 	if err != nil {
 		return err
 	}
 
 	root := xmlquery.FindOne(doc, "//Error")
-
-	if root != nil {
-		if n := xmlquery.FindOne(root, "//Number"); n != nil {
-			number = n.InnerText()
-		}
-
-		if d := xmlquery.FindOne(root, "//Description"); d != nil {
-			description = d.InnerText()
-		}
-
-		if hc := xmlquery.FindOne(root, "//HelpContext"); hc != nil {
-			helpContext = hc.InnerText()
-		}
-
-		if s := xmlquery.FindOne(root, "//Source"); s != nil {
-			source = s.InnerText()
-		}
-
-		return fmt.Errorf("USPS body error.\n Number: %s\n Description: %s\n Source: %s\n HelpContext: %s\n",
-			number, description, source, helpContext)
+	if root == nil {
+		return nil
 	}
 
-	return nil
+	var number string
+	if n := xmlquery.FindOne(root, "//Number"); n != nil {
+		number = n.InnerText()
+	}
+
+	var description string
+	if d := xmlquery.FindOne(root, "//Description"); d != nil {
+		description = d.InnerText()
+	}
+
+	var helpContext string
+	if hc := xmlquery.FindOne(root, "//HelpContext"); hc != nil {
+		helpContext = hc.InnerText()
+	}
+
+	var source string
+	if s := xmlquery.FindOne(root, "//Source"); s != nil {
+		source = s.InnerText()
+	}
+
+	return fmt.Errorf("USPS body error.\n Number: %s\n Description: %s\n Source: %s\n HelpContext: %s\n",
+		number, description, source, helpContext)
 }
 
 func (r *response) unmarshalTrackData(xmlBody []byte) error {
@@ -58,7 +54,6 @@ func (r *response) unmarshalTrackData(xmlBody []byte) error {
 	}
 
 	root := xmlquery.FindOne(doc, "//TrackInfo")
-
 	if root == nil {
 		return fmt.Errorf("the XML structure does not match the parsing conditions or is missing")
 	}
@@ -66,6 +61,7 @@ func (r *response) unmarshalTrackData(xmlBody []byte) error {
 	if trackID := xmlquery.FindOne(root, "@ID"); trackID != nil {
 		r.number = trackID.InnerText()
 	}
+
 	// NOTE! If you want the first element in the "details" slice to be the Summary,
 	//then do not change the order of the condition below.
 	var details []string
