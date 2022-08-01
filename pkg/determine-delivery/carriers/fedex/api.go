@@ -87,6 +87,7 @@ func (api *Api) TrackByTrackingNumber(trackingRequest TrackingRequest) (*Trackin
 }
 
 func (api *Api) authorize() error {
+	api.token.Lock()
 	defer api.token.Unlock()
 
 	authParams := authorizeRequest{
@@ -173,7 +174,6 @@ func (api *Api) makeRequest(r requestParam) ([]byte, error) {
 
 func (api *Api) setAuthorize(req *fasthttp.Request) error {
 	if isExpired(api.token.expire) {
-		api.token.Lock()
 		if err := api.authorize(); err != nil {
 			return err
 		}

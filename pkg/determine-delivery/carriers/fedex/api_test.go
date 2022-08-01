@@ -112,7 +112,6 @@ func TestApi_authorize(t *testing.T) {
 			defer server.Close()
 
 			fedex.apiURL = server.URL
-			fedex.token.Lock()
 
 			err := fedex.authorize()
 			assert.Equal(t, testCase.err, err)
