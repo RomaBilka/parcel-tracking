@@ -12,10 +12,9 @@ import (
 )
 
 func TestApi_TrackByTrackingNumber(t *testing.T) {
-	currentToken = token{
-		token:  "test_token",
-		expire: time.Now().Local().Add(60 * time.Minute),
-	}
+	fedex := NewApi("", "", "", "")
+	fedex.token.token = "test_token"
+	fedex.token.expire = time.Now().Local().Add(60 * time.Minute)
 
 	testCases := []struct {
 		name        string
@@ -64,7 +63,7 @@ func TestApi_TrackByTrackingNumber(t *testing.T) {
 			}))
 			defer server.Close()
 
-			fedex := NewApi(server.URL, "", "", "")
+			fedex.apiURL = server.URL
 
 			res, err := fedex.TrackByTrackingNumber(TrackingRequest{})
 			assert.Equal(t, testCase.err, err)
@@ -76,10 +75,7 @@ func TestApi_TrackByTrackingNumber(t *testing.T) {
 }
 
 func TestApi_authorize(t *testing.T) {
-	currentToken = token{
-		token:  "test_token",
-		expire: time.Now().Local().Add(60 * time.Minute),
-	}
+	fedex := NewApi("", "", "", "")
 
 	testCases := []struct {
 		name string
@@ -115,7 +111,8 @@ func TestApi_authorize(t *testing.T) {
 			}))
 			defer server.Close()
 
-			fedex := NewApi(server.URL, "", "", "")
+			fedex.apiURL = server.URL
+			fedex.token.Lock()
 
 			err := fedex.authorize()
 			assert.Equal(t, testCase.err, err)
@@ -125,31 +122,25 @@ func TestApi_authorize(t *testing.T) {
 
 func TestApi_isExpired(t *testing.T) {
 	testCases := []struct {
-		name         string
-		currentToken token
-		ok           bool
+		name   string
+		expire time.Time
+		ok     bool
 	}{
 		{
-			name: "Ok",
-			currentToken: token{
-				token:  "test_token",
-				expire: time.Now().Local().Add(2 * time.Minute),
-			},
-			ok: false,
+			name:   "Ok",
+			expire: time.Now().Local().Add(2 * time.Minute),
+			ok:     false,
 		},
 		{
-			name: "expired",
-			currentToken: token{
-				token:  "test_token",
-				expire: time.Now().Local().Add(500 * time.Millisecond),
-			},
-			ok: true,
+			name:   "expired",
+			expire: time.Now().Local().Add(500 * time.Millisecond),
+			ok:     true,
 		},
 	}
 
 	for _, testCase := range testCases {
 		t.Run(testCase.name, func(t *testing.T) {
-			assert.Equal(t, testCase.ok, testCase.currentToken.isExpired())
+			assert.Equal(t, testCase.ok, isExpired(testCase.expire))
 		})
 	}
 }

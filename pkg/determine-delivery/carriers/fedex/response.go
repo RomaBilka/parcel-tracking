@@ -1,12 +1,35 @@
 package fedex
 
-import "time"
+import (
+	"encoding/json"
+	"errors"
+	"time"
+)
 
 type authResponse struct {
-	AccessToken string `json:"access_token"`
-	TokenType   string `json:"token_type"`
-	ExpiresIn   int    `json:"expires_in"`
-	Scope       string `json:"scope"`
+	AccessToken string  `json:"access_token"`
+	TokenType   string  `json:"token_type"`
+	ExpiresIn   Expires `json:"expires_in"`
+	Scope       string  `json:"scope"`
+}
+
+type Expires struct {
+	time.Time
+}
+
+func (e *Expires) UnmarshalJSON(b []byte) error {
+	var v interface{}
+	if err := json.Unmarshal(b, &v); err != nil {
+		return err
+	}
+	switch value := v.(type) {
+	case float64:
+		seconds := time.Duration(value) * time.Second
+		e.Time = time.Now().Local().Add(seconds)
+		return nil
+	default:
+		return errors.New("invalid duration")
+	}
 }
 
 type Error struct {

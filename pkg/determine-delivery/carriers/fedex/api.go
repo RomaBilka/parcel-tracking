@@ -3,6 +3,8 @@ package fedex
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
+	"sync"
 	"time"
 
 	"github.com/google/go-querystring/query"
@@ -11,31 +13,30 @@ import (
 
 const (
 	tokenExpirationLimit = 1
-	oneMinute            = 60
 	gzip                 = "gzip"
 )
 
-type Api struct {
-	apiURL       string
-	grantType    string
-	clientId     string
-	clientSecret string
-}
+type (
+	Api struct {
+		apiURL       string
+		grantType    string
+		clientId     string
+		clientSecret string
+		token        struct {
+			token  string
+			expire time.Time
+			sync.Mutex
+		}
+	}
 
-type requestParam struct {
-	body              []byte
-	path              string
-	method            string
-	contentType       string
-	needAuthorization bool
-}
-
-type token struct {
-	token  string
-	expire time.Time
-}
-
-var currentToken token
+	requestParam struct {
+		body              []byte
+		path              string
+		method            string
+		contentType       string
+		needAuthorization bool
+	}
+)
 
 func NewApi(apiURL, grantType, clientId, clientSecret string) *Api {
 	return &Api{
@@ -65,27 +66,29 @@ func (api *Api) TrackByTrackingNumber(trackingRequest TrackingRequest) (*Trackin
 		return nil, err
 	}
 
-	res := &TrackingResponse{}
-	if err := json.Unmarshal(response, res); err != nil {
+	trackingResponse := &TrackingResponse{}
+	if err := json.Unmarshal(response, trackingResponse); err != nil {
 		return nil, err
 	}
 
-	if err = getErrors(res.Errors); err != nil {
+	if err = getErrors(trackingResponse.Errors); err != nil {
 		return nil, err
 	}
 
-	for _, rules := range res.Output.CompleteTrackResults {
-		for _, resalt := range rules.TrackResults {
-			if resalt.Error.Code != "" {
-				return nil, errors.New(resalt.Error.Message)
+	for _, rules := range trackingResponse.Output.CompleteTrackResults {
+		for _, result := range rules.TrackResults {
+			if result.Error.Code != "" {
+				return nil, errors.New(result.Error.Message)
 			}
 		}
 	}
 
-	return res, err
+	return trackingResponse, err
 }
 
 func (api *Api) authorize() error {
+	defer api.token.Unlock()
+
 	authParams := authorizeRequest{
 		GrantType:    api.grantType,
 		ClientId:     api.clientId,
@@ -105,18 +108,17 @@ func (api *Api) authorize() error {
 	}
 
 	response, err := api.makeRequest(request)
-
 	if err != nil {
 		return err
 	}
 
-	a := &authResponse{}
-	if err := json.Unmarshal(response, a); err != nil {
-
+	authResp := &authResponse{}
+	if err := json.Unmarshal(response, authResp); err != nil {
+		fmt.Println(err)
 		return err
 	}
 
-	if a.AccessToken == "" {
+	if authResp.AccessToken == "" {
 		res := &Response{}
 		if err := json.Unmarshal(response, res); err != nil {
 			return err
@@ -126,15 +128,12 @@ func (api *Api) authorize() error {
 		}
 	}
 
-	if a.ExpiresIn <= oneMinute {
+	if isExpired(authResp.ExpiresIn.Time) {
 		return errors.New("short expiration of the token")
 	}
 
-	seconds := time.Duration(a.ExpiresIn) * time.Second
-	currentToken = token{
-		token:  a.AccessToken,
-		expire: time.Now().Local().Add(seconds),
-	}
+	api.token.token = authResp.AccessToken
+	api.token.expire = authResp.ExpiresIn.Time
 
 	return nil
 }
@@ -173,12 +172,13 @@ func (api *Api) makeRequest(r requestParam) ([]byte, error) {
 }
 
 func (api *Api) setAuthorize(req *fasthttp.Request) error {
-	if currentToken.isExpired() {
+	if isExpired(api.token.expire) {
+		api.token.Lock()
 		if err := api.authorize(); err != nil {
 			return err
 		}
 	}
-	req.Header.Add("authorization", "Bearer "+currentToken.token)
+	req.Header.Add("authorization", "Bearer "+api.token.token)
 	return nil
 }
 
@@ -197,6 +197,6 @@ func getErrors(err []Error) error {
 	return nil
 }
 
-func (t *token) isExpired() bool {
-	return time.Until(t.expire) < tokenExpirationLimit*time.Minute
+func isExpired(t time.Time) bool {
+	return time.Until(t) < tokenExpirationLimit*time.Minute
 }
