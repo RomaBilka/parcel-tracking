@@ -1,0 +1,20 @@
+# More info: https://docs.docker.com/engine/reference/builder/#dockerignore-file
+
+# docker related files
+.dockerignore
+Dockerfile*
+
+# docs except README.md
+*.md
+!README.md
+
+# source repository history
+.git
+
+# CI/CD configs
+.github
+.golangci.yaml
+
+# tool configuration
+.idea
+.vscode
