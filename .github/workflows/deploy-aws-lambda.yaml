@@ -1,7 +1,6 @@
 name: Deploy to lambda
 on:
   pull_request:
-    types: [opened]
 jobs:
 
   deploy_zip:
