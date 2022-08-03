@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 
+	"github.com/RomaBilka/parcel-tracking/pkg/http"
 	"github.com/valyala/fasthttp"
 )
 
@@ -47,25 +48,17 @@ func (api *Api) TrackingDocument(methodProperties TrackingDocuments) (*TrackingD
 
 func (api *Api) makeRequest(r novaPoshtaRequest, method string) ([]byte, error) {
 	r.ApiKey = api.apiKey
-
 	data, err := json.Marshal(r)
 	if err != nil {
 		return nil, err
 	}
 
-	req := fasthttp.AcquireRequest()
-	defer fasthttp.ReleaseRequest(req)
-
-	req.SetBody(data)
-	req.Header.SetMethod(method)
-	req.Header.SetContentType("application/json")
-	req.SetRequestURI(api.apiURL + URL)
-
-	res := fasthttp.AcquireResponse()
-	defer fasthttp.ReleaseResponse(res)
-	if err := fasthttp.Do(req, res); err != nil {
+	res, err := http.Do(api.apiURL+URL, method, func(req *fasthttp.Request) {
+		req.SetBody(data)
+		req.Header.SetContentType("application/json")
+	})
+	if err != nil {
 		return nil, err
 	}
-
 	return res.Body(), nil
 }

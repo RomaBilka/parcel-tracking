@@ -6,6 +6,7 @@ import (
 	"sync"
 	"time"
 
+	"github.com/RomaBilka/parcel-tracking/pkg/http"
 	"github.com/google/go-querystring/query"
 	"github.com/valyala/fasthttp"
 )
@@ -56,7 +57,7 @@ func (api *Api) TrackByTrackingNumber(trackingRequest TrackingRequest) (*Trackin
 		body:              b,
 		path:              "/track/v1/trackingdocuments",
 		method:            fasthttp.MethodPost,
-		contentType:       "application/json",
+		contentType:       http.JsonContentType,
 		needAuthorization: true,
 	}
 
@@ -108,7 +109,7 @@ func (api *Api) authorize() (string, error) {
 		body:        []byte(v.Encode()),
 		path:        "/oauth/token",
 		method:      fasthttp.MethodPost,
-		contentType: "application/x-www-form-urlencoded",
+		contentType: http.FormContentType,
 	}
 
 	response, err := api.makeRequest(request)
@@ -142,38 +143,23 @@ func (api *Api) authorize() (string, error) {
 }
 
 func (api *Api) makeRequest(r requestParam) ([]byte, error) {
-	req := fasthttp.AcquireRequest()
-	defer fasthttp.ReleaseRequest(req)
-
-	req.SetBody(r.body)
-	req.Header.SetMethod(r.method)
-	req.Header.SetContentType(r.contentType)
-	req.SetRequestURI(api.apiURL + r.path)
-
-	if r.needAuthorization {
-		token, err := api.authorize()
-		if err != nil {
-			return nil, err
-		}
-		req.Header.Add("authorization", "Bearer "+token)
-	}
-
-	res := fasthttp.AcquireResponse()
-	defer fasthttp.ReleaseResponse(res)
-	if err := fasthttp.Do(req, res); err != nil {
+	res, err := http.Do(api.apiURL+r.path, r.method, func(req *fasthttp.Request) {
+		req.SetBody(r.body)
+		req.Header.SetContentType(r.contentType)
+	})
+	if err != nil {
 		return nil, err
 	}
 
-	if string(res.Header.ContentEncoding()) == gzip {
-		b, err := res.BodyGunzip()
-		if err != nil {
-			return nil, err
-		}
-
-		return b, nil
+	if string(res.Header.ContentType()) != gzip {
+		return res.Body(), nil
 	}
 
-	return res.Body(), nil
+	b, err := res.BodyGunzip()
+	if err != nil {
+		return nil, err
+	}
+	return b, nil
 }
 
 func getErrors(err []Error) error {

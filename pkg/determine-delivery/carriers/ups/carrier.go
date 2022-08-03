@@ -2,8 +2,6 @@ package ups
 
 import (
 	"regexp"
-
-	"github.com/RomaBilka/parcel-tracking/pkg/determine-delivery/carriers"
 )
 
 var patterns = map[string]*regexp.Regexp{
@@ -39,8 +37,7 @@ var patterns = map[string]*regexp.Regexp{
 	"startCGISH": regexp.MustCompile(`(?i)^cgish[\d]{9}$`),
 }
 
-type Carrier struct {
-}
+type Carrier struct{}
 
 func (c *Carrier) Detect(trackId string) bool {
 	for _, pattern := range patterns {
@@ -54,8 +51,4 @@ func (c *Carrier) Detect(trackId string) bool {
 
 func NewCarrier() *Carrier {
 	return &Carrier{}
-}
-
-func (c *Carrier) Track(trackingId string) ([]carriers.Parcel, error) {
-	return []carriers.Parcel{}, nil
 }
