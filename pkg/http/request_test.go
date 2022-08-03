@@ -13,10 +13,10 @@ import (
 func Test_DoSuccess(t *testing.T) {
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if r.Header.Get("Content-Type") != XmlContentType {
-			w.Write([]byte("Content-Type header is not correct"))
+			_, _ = w.Write([]byte("Content-Type header is not correct"))
 			return
 		}
-		w.Write([]byte("OK"))
+		_, _ = w.Write([]byte("OK"))
 	}))
 
 	defer server.Close()
