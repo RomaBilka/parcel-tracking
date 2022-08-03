@@ -1,7 +1,6 @@
 package http
 
 import (
-	"errors"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -33,5 +32,5 @@ func Test_DoError(t *testing.T) {
 	resp, err := Do("invalid url", "GET", nil)
 
 	assert.Nil(t, resp)
-	assert.Equal(t, errors.New("response failed with status code: 200 and body: "), err)
+	assert.EqualError(t, err, "lookup : no such host")
 }

@@ -1,7 +1,6 @@
 package http
 
 import (
-	"fmt"
 	"time"
 
 	"github.com/valyala/fasthttp"
@@ -27,7 +26,7 @@ func Do(url, method string, upd func(*fasthttp.Request)) (*fasthttp.Response, er
 	res := fasthttp.AcquireResponse()
 	if err := fasthttp.DoTimeout(req, res, 60*time.Second); err != nil {
 		defer fasthttp.ReleaseResponse(res)
-		return nil, fmt.Errorf("response failed with status code: %d and body: %s", res.StatusCode(), res.Body())
+		return nil, err
 	}
 	return res, nil
 }
