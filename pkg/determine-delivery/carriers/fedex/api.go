@@ -143,7 +143,19 @@ func (api *Api) authorize() (string, error) {
 }
 
 func (api *Api) makeRequest(r requestParam) ([]byte, error) {
+	var token string
+	if r.needAuthorization {
+		authToken, err := api.authorize()
+		if err != nil {
+			return nil, err
+		}
+		token = authToken
+	}
+
 	res, err := http.Do(api.apiURL+r.path, r.method, func(req *fasthttp.Request) {
+		if r.needAuthorization {
+			req.Header.Add("authorization", "Bearer "+token)
+		}
 		req.SetBody(r.body)
 		req.Header.SetContentType(r.contentType)
 	})
