@@ -20,14 +20,14 @@ func Do(url, method string, upd func(*fasthttp.Request)) (*fasthttp.Response, er
 	req.Header.SetMethod(method)
 	req.SetRequestURI(url)
 
-	upd(req)
-
-	res := fasthttp.AcquireResponse()
-	defer fasthttp.ReleaseResponse(res)
-
-	if err := fasthttp.DoTimeout(req, res, time.Second*60); err != nil {
-		return nil, fmt.Errorf("response failed with status code: %d and body: %s", res.StatusCode(), res.Body())
+	if upd != nil {
+		upd(req)
 	}
 
+	res := fasthttp.AcquireResponse()
+	if err := fasthttp.DoTimeout(req, res, 60*time.Second); err != nil {
+		defer fasthttp.ReleaseResponse(res)
+		return nil, fmt.Errorf("response failed with status code: %d and body: %s", res.StatusCode(), res.Body())
+	}
 	return res, nil
 }

@@ -66,6 +66,8 @@ func (api *Api) makeRequest(r meestExpressRequest, method string) ([]byte, error
 	if err != nil {
 		return nil, err
 	}
+	defer fasthttp.ReleaseResponse(res)
+
 	return res.Body(), nil
 }
 

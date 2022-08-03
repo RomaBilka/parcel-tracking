@@ -9,8 +9,6 @@ import (
 	"github.com/RomaBilka/parcel-tracking/pkg/determine-delivery/carriers/fedex"
 	"github.com/RomaBilka/parcel-tracking/pkg/determine-delivery/carriers/me"
 	"github.com/RomaBilka/parcel-tracking/pkg/determine-delivery/carriers/np"
-	np_shopping "github.com/RomaBilka/parcel-tracking/pkg/determine-delivery/carriers/np-shopping"
-	"github.com/RomaBilka/parcel-tracking/pkg/determine-delivery/carriers/ups"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -24,10 +22,11 @@ func TestDetermine(t *testing.T) {
 	detector.Registry(fedexCarrier)
 	dhlCarrier := dhl.NewCarrier(dhl.NewApi("", ""))
 	detector.Registry(dhlCarrier)
-	np_shoppingCarrier := np_shopping.NewCarrier()
-	detector.Registry(np_shoppingCarrier)
-	upsCarrier := ups.NewCarrier()
-	detector.Registry(upsCarrier)
+
+	//np_shoppingCarrier := np_shopping.NewCarrier()
+	//detector.Registry(np_shoppingCarrier)
+	//upsCarrier := ups.NewCarrier()
+	//detector.Registry(upsCarrier)
 
 	testCases := []struct {
 		name    string
@@ -35,17 +34,17 @@ func TestDetermine(t *testing.T) {
 		carrier carriers.Carrier
 		err     error
 	}{
-		{name: "UPU 1Z12345E6605272234", trackId: "1Z12345E6605272234", carrier: upsCarrier},
-		{name: "UPU 1Z123456E6605272234", trackId: "1Z123456E6605272234", carrier: upsCarrier},
-		{name: "UPU 1Z123456E660527223", trackId: "1Z123456E660527223", carrier: upsCarrier},
-		{name: "UPU 1ZWX0692YP40636269", trackId: "1ZWX0692YP40636269", carrier: upsCarrier},
-		{name: "UPU cgish000116630", trackId: "cgish000116630", carrier: upsCarrier},
+		//{name: "UPU 1Z12345E6605272234", trackId: "1Z12345E6605272234", carrier: upsCarrier},
+		//{name: "UPU 1Z123456E6605272234", trackId: "1Z123456E6605272234", carrier: upsCarrier},
+		//{name: "UPU 1Z123456E660527223", trackId: "1Z123456E660527223", carrier: upsCarrier},
+		//{name: "UPU 1ZWX0692YP40636269", trackId: "1ZWX0692YP40636269", carrier: upsCarrier},
+		//{name: "UPU cgish000116630", trackId: "cgish000116630", carrier: upsCarrier},
 		{name: "NovaPoshta 59000000000001", trackId: "59000000000001", carrier: npCarrier},
 		{name: "NovaPoshta 10000000000001", trackId: "10000000000001", carrier: npCarrier},
 		{name: "NovaPoshta 20000000000001", trackId: "20000000000001", carrier: npCarrier},
 		{name: "MeestExpress CV999999999ZZ", trackId: "CV999999999ZZ", carrier: meCarrier},
 		{name: "MeestExpress MYCV999999999ZZ", trackId: "MYCV999999999ZZ", carrier: meCarrier},
-		{name: "NPShopping NP99999999999999NPG", trackId: "NP99999999999999NPG", carrier: np_shoppingCarrier},
+		//{name: "NPShopping NP99999999999999NPG", trackId: "NP99999999999999NPG", carrier: np_shoppingCarrier},
 
 		{name: "DHL 0001111111111", trackId: "0001111111111", carrier: dhlCarrier},
 		{name: "DHL JVGL1111111111", trackId: "JVGL1111111111", carrier: dhlCarrier},

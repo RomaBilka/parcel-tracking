@@ -52,6 +52,7 @@ func (api *Api) makeRequest(r request, method, endPoint string) ([]byte, error) 
 	if err != nil {
 		return nil, err
 	}
+	defer fasthttp.ReleaseResponse(res)
 
 	body := res.Body()
 	if res.StatusCode() == fasthttp.StatusOK {

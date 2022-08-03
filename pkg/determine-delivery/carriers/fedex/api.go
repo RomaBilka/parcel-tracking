@@ -150,6 +150,7 @@ func (api *Api) makeRequest(r requestParam) ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
+	defer fasthttp.ReleaseResponse(res)
 
 	if string(res.Header.ContentType()) != gzip {
 		return res.Body(), nil

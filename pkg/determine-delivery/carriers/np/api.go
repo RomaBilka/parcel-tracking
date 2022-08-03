@@ -60,5 +60,7 @@ func (api *Api) makeRequest(r novaPoshtaRequest, method string) ([]byte, error) 
 	if err != nil {
 		return nil, err
 	}
+	defer fasthttp.ReleaseResponse(res)
+
 	return res.Body(), nil
 }
