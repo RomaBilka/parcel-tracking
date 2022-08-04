@@ -24,6 +24,7 @@ func TestDetermine(t *testing.T) {
 	detector.Registry(fedexCarrier)
 	dhlCarrier := dhl.NewCarrier(dhl.NewApi("", ""))
 	detector.Registry(dhlCarrier)
+
 	np_shoppingCarrier := np_shopping.NewCarrier()
 	detector.Registry(np_shoppingCarrier)
 	upsCarrier := ups.NewCarrier()

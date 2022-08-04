@@ -39,7 +39,10 @@ var patterns = map[string]*regexp.Regexp{
 	"startCGISH": regexp.MustCompile(`(?i)^cgish[\d]{9}$`),
 }
 
-type Carrier struct {
+type Carrier struct{}
+
+func NewCarrier() *Carrier {
+	return &Carrier{}
 }
 
 func (c *Carrier) Detect(trackId string) bool {
@@ -52,10 +55,7 @@ func (c *Carrier) Detect(trackId string) bool {
 	return false
 }
 
-func NewCarrier() *Carrier {
-	return &Carrier{}
-}
-
-func (c *Carrier) Track(trackingId string) ([]carriers.Parcel, error) {
-	return []carriers.Parcel{}, nil
+func (c *Carrier) Track(string) ([]carriers.Parcel, error) {
+	//TODO implement me
+	panic("implement me")
 }

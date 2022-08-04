@@ -6,6 +6,7 @@ import (
 	"encoding/xml"
 	"errors"
 
+	"github.com/RomaBilka/parcel-tracking/pkg/http"
 	"github.com/valyala/fasthttp"
 )
 
@@ -58,20 +59,14 @@ func (api *Api) makeRequest(r meestExpressRequest, method string) ([]byte, error
 	xmlString, _ := xml.MarshalIndent(p, "", " ")
 	data := append([]byte(xml.Header), xmlString...)
 
-	req := fasthttp.AcquireRequest()
-	defer fasthttp.ReleaseRequest(req)
-
-	req.SetBody(data)
-	req.Header.SetMethod(method)
-	req.Header.SetContentType("text/xml")
-	req.SetRequestURI(api.apiURL)
-
-	res := fasthttp.AcquireResponse()
-	defer fasthttp.ReleaseResponse(res)
-
-	if err := fasthttp.Do(req, res); err != nil {
+	res, err := http.Do(api.apiURL, method, func(req *fasthttp.Request) {
+		req.SetBody(data)
+		req.Header.SetContentType(http.XmlContentType)
+	})
+	if err != nil {
 		return nil, err
 	}
+	defer fasthttp.ReleaseResponse(res)
 
 	return res.Body(), nil
 }

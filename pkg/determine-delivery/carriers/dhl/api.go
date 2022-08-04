@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 
+	"github.com/RomaBilka/parcel-tracking/pkg/http"
 	"github.com/google/go-querystring/query"
 	"github.com/valyala/fasthttp"
 )
@@ -44,16 +45,14 @@ func (api *Api) makeRequest(r request, method, endPoint string) ([]byte, error) 
 		return nil, err
 	}
 
-	req := fasthttp.AcquireRequest()
-	defer fasthttp.ReleaseRequest(req)
-	req.Header.SetMethod(method)
-	req.Header.Add("DHL-API-Key", api.apiKey)
-	req.SetRequestURI(api.apiURL + endPoint + "?" + v.Encode())
-	res := fasthttp.AcquireResponse()
-	defer fasthttp.ReleaseResponse(res)
-	if err := fasthttp.Do(req, res); err != nil {
+	url := api.apiURL + endPoint + "?" + v.Encode()
+	res, err := http.Do(url, method, func(req *fasthttp.Request) {
+		req.Header.Add("DHL-API-Key", api.apiKey)
+	})
+	if err != nil {
 		return nil, err
 	}
+	defer fasthttp.ReleaseResponse(res)
 
 	body := res.Body()
 	if res.StatusCode() == fasthttp.StatusOK {
@@ -64,6 +63,5 @@ func (api *Api) makeRequest(r request, method, endPoint string) ([]byte, error) 
 	if err := json.Unmarshal(body, errorResponse); err != nil {
 		return nil, err
 	}
-
 	return nil, errors.New(errorResponse.Detail)
 }

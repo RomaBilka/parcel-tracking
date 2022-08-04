@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 
+	"github.com/RomaBilka/parcel-tracking/pkg/http"
 	"github.com/valyala/fasthttp"
 )
 
@@ -42,20 +43,15 @@ func (api *Api) makeRequest(trackingNum, method, endPoint string) ([]byte, error
 	xmlBody := fmt.Sprintf(`&XML=<TrackRequest USERID="%s" PASSWORD="%s"><TrackID ID="%s"></TrackID></TrackRequest>`,
 		api.UserId, api.Password, trackingNum)
 
-	req := fasthttp.AcquireRequest()
-	defer fasthttp.ReleaseRequest(req)
-
-	req.Header.SetContentType("text/xml")
-	req.Header.SetMethod(method)
-	req.SetRequestURI(endPoint)
-	req.AppendBodyString(xmlBody)
-
-	res := fasthttp.AcquireResponse()
+	res, err := http.Do(endPoint, method, func(req *fasthttp.Request) {
+		req.Header.SetContentType(http.XmlContentType)
+		req.AppendBodyString(xmlBody)
+	})
+	if err != nil {
+		return nil, err
+	}
 	defer fasthttp.ReleaseResponse(res)
 
-	if err := fasthttp.Do(req, res); err != nil {
-		return nil, fmt.Errorf("response failed with status code: %d and body: %s", res.StatusCode(), res.Body())
-	}
 	if res.StatusCode() == fasthttp.StatusOK {
 		return res.Body(), nil
 	}
