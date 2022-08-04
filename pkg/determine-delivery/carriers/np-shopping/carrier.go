@@ -2,6 +2,8 @@ package np_shopping
 
 import (
 	"regexp"
+
+	"github.com/RomaBilka/parcel-tracking/pkg/determine-delivery/carriers"
 )
 
 ////Starts with NP, 14 numbers and NPG at the end NP99999999999999NPG
@@ -15,4 +17,9 @@ func NewCarrier() *Carrier {
 
 func (c *Carrier) Detect(trackId string) bool {
 	return npShopping.MatchString(trackId)
+}
+
+func (c *Carrier) Track(string) ([]carriers.Parcel, error) {
+	//TODO implement me
+	panic("implement me")
 }
