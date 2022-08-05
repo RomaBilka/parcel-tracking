@@ -25,8 +25,8 @@ func TestDetermine(t *testing.T) {
 	dhlCarrier := dhl.NewCarrier(dhl.NewApi("", ""))
 	detector.Registry(dhlCarrier)
 
-	np_shoppingCarrier := np_shopping.NewCarrier()
-	detector.Registry(np_shoppingCarrier)
+	npShoppingCarrier := np_shopping.NewCarrier(np_shopping.NewApi())
+	detector.Registry(npShoppingCarrier)
 	upsCarrier := ups.NewCarrier()
 	detector.Registry(upsCarrier)
 
@@ -46,7 +46,8 @@ func TestDetermine(t *testing.T) {
 		{name: "NovaPoshta 20000000000001", trackId: "20000000000001", carrier: npCarrier},
 		{name: "MeestExpress CV999999999ZZ", trackId: "CV999999999ZZ", carrier: meCarrier},
 		{name: "MeestExpress MYCV999999999ZZ", trackId: "MYCV999999999ZZ", carrier: meCarrier},
-		{name: "NPShopping NP99999999999999NPG", trackId: "NP99999999999999NPG", carrier: np_shoppingCarrier},
+
+		{name: "NPShopping NP99999999999999", trackId: "NPI99999999999999", carrier: npShoppingCarrier},
 
 		{name: "DHL 0001111111111", trackId: "0001111111111", carrier: dhlCarrier},
 		{name: "DHL JVGL1111111111", trackId: "JVGL1111111111", carrier: dhlCarrier},
