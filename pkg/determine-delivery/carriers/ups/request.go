@@ -35,7 +35,7 @@ type Request struct {
 }
 
 type TransactionReference struct {
-	CustomerContext       string `xml:"CustomerContext,omitempty,omitempty"`
+	CustomerContext       string `xml:"CustomerContext,omitempty"`
 	TransactionIdentifier string `xml:"TransactionIdentifier,omitempty"`
 	ToolVersion           string `xml:"ToolVersion,omitempty"`
 }
