@@ -36,9 +36,9 @@ type (
 	}
 
 	UPS struct {
-		UserID              string `long:"UPS_USER_ID" description:"UPS user ID" required:"true" env:"UPS_USER_ID"`
-		Password            string `long:"UPS_PASSWORD" description:"UPS password" required:"true" env:"UPS_PASSWORD"`
-		AccessLicenseNumber string `long:"UPS_ACCESS_LICENSE_NUMBER" description:"UPS Access License Number" required:"true" env:"UPS_ACCESS_LICENSE_NUMBER"`
+		UserID              string `long:"UPS_USER_ID" description:"UPS user ID"  env:"UPS_USER_ID"`
+		Password            string `long:"UPS_PASSWORD" description:"UPS password" env:"UPS_PASSWORD"`
+		AccessLicenseNumber string `long:"UPS_ACCESS_LICENSE_NUMBER" description:"UPS Access License Number" env:"UPS_ACCESS_LICENSE_NUMBER"`
 		ApiURL              string `long:"UPS_API_URL" description:"UPS API URL" required:"true" default:"https://wwwcie.ups.com/ups.app/xml/" env:"UPS_API_URL"`
 	}
 
