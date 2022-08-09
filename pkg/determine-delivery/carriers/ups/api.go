@@ -55,12 +55,12 @@ func (api *Api) makeRequest(r TrackRequest, path string) ([]byte, error) {
 		return nil, err
 	}
 	data := append([]byte(xml.Header), xmlString...)
-	data = append(data, []byte(xml.Header)...)
 
 	xmlString, err = xml.MarshalIndent(r, "", " ")
 	if err != nil {
 		return nil, err
 	}
+	data = append(data, []byte(xml.Header)...)
 	data = append(data, xmlString...)
 
 	res, err := http.Do(api.apiURL+path, fasthttp.MethodPost, func(req *fasthttp.Request) {
