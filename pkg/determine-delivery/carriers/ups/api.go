@@ -50,18 +50,18 @@ func (api *Api) makeRequest(r TrackRequest, path string) ([]byte, error) {
 		Password:            api.password,
 	}
 
-	xmlString, err := xml.MarshalIndent(accessRequest, "", " ")
+	accessByte, err := xml.MarshalIndent(accessRequest, "", " ")
 	if err != nil {
 		return nil, err
 	}
-	data := append([]byte(xml.Header), xmlString...)
+	data := append([]byte(xml.Header), accessByte...)
 
-	xmlString, err = xml.MarshalIndent(r, "", " ")
+	requestByte, err := xml.MarshalIndent(r, "", " ")
 	if err != nil {
 		return nil, err
 	}
 	data = append(data, []byte(xml.Header)...)
-	data = append(data, xmlString...)
+	data = append(data, requestByte...)
 
 	res, err := http.Do(api.apiURL+path, fasthttp.MethodPost, func(req *fasthttp.Request) {
 		req.SetBody(data)

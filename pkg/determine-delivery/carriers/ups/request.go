@@ -7,24 +7,24 @@ type AccessRequest struct {
 }
 
 type TrackRequest struct {
-	TrackingNumber                     string `xml:"TrackingNumber"`
-	ShipmentIdentificationNumber       string `xml:"ShipmentIdentificationNumber,omitempty"`
-	CandidateBookmark                  string `xml:"CandidateBookmark,omitempty"`
-	ShipperNumber                      string `xml:"ShipperNumber,omitempty"`
-	DestinationPostalCode              string `xml:"DestinationPostalCode,omitempty"`
-	DestinationCountryCode             string `xml:"DestinationCountryCode,omitempty"`
-	OriginPostalCode                   string `xml:"OriginPostalCode,omitempty"`
-	OriginCountryCode                  string `xml:"OriginCountryCode,omitempty"`
-	IncludeMailInnovationIndicator     string `xml:"IncludeMailInnovationIndicator,omitempty"`
-	TrackingOption                     string `xml:"TrackingOption,omitempty"`
-	UPSWorldWideExpressFreightShipment string `xml:"UPSWorldWideExpressFreightShipment,omitempty"`
-	IncludeFreight                     string `xml:"IncludeFreight,omitempty"`
-	PreauthorizedReturnIndicator       string `xml:"PreauthorizedReturnIndicator,omitempty"`
-	//Request                            Request            `xml:"Request,omitempty"`
-	//ShipperAccountInfo                 ShipperAccountInfo `xml:"ShipperAccountInfo,omitempty"`
-	//ShipmentType                       ShipmentType       `xml:"ShipmentType,omitempty"`
-	//ReferenceNumber                    ReferenceNumber    `xml:"ReferenceNumber,omitempty"`
-	//PickupDateRange                    PickupDateRange    `xml:"PickupDateRange,omitempty"`
+	TrackingNumber                     string              `xml:"TrackingNumber"`
+	ShipmentIdentificationNumber       string              `xml:"ShipmentIdentificationNumber,omitempty"`
+	CandidateBookmark                  string              `xml:"CandidateBookmark,omitempty"`
+	ShipperNumber                      string              `xml:"ShipperNumber,omitempty"`
+	DestinationPostalCode              string              `xml:"DestinationPostalCode,omitempty"`
+	DestinationCountryCode             string              `xml:"DestinationCountryCode,omitempty"`
+	OriginPostalCode                   string              `xml:"OriginPostalCode,omitempty"`
+	OriginCountryCode                  string              `xml:"OriginCountryCode,omitempty"`
+	IncludeMailInnovationIndicator     string              `xml:"IncludeMailInnovationIndicator,omitempty"`
+	TrackingOption                     string              `xml:"TrackingOption,omitempty"`
+	UPSWorldWideExpressFreightShipment string              `xml:"UPSWorldWideExpressFreightShipment,omitempty"`
+	IncludeFreight                     string              `xml:"IncludeFreight,omitempty"`
+	PreauthorizedReturnIndicator       string              `xml:"PreauthorizedReturnIndicator,omitempty"`
+	Request                            *Request            `xml:"Request,omitempty"`
+	ShipperAccountInfo                 *ShipperAccountInfo `xml:"ShipperAccountInfo,omitempty"`
+	ShipmentType                       *ShipmentType       `xml:"ShipmentType,omitempty"`
+	ReferenceNumber                    *ReferenceNumber    `xml:"ReferenceNumber,omitempty"`
+	PickupDateRange                    *PickupDateRange    `xml:"PickupDateRange,omitempty"`
 }
 
 type Request struct {
