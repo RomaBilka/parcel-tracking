@@ -1,9 +1,12 @@
 package ups
 
 import (
+	"errors"
 	"testing"
 
+	"github.com/RomaBilka/parcel-tracking/pkg/determine-delivery/carriers"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/mock"
 )
 
 func TestCarrier_Detect(t *testing.T) {
@@ -39,9 +42,70 @@ func TestCarrier_Detect(t *testing.T) {
 
 	for _, testCase := range testCases {
 		t.Run(testCase.name, func(t *testing.T) {
-			u := NewCarrier()
+			u := NewCarrier(NewApi("", "", "", ""))
 			ok := u.Detect(testCase.trackId)
 			assert.Equal(t, testCase.ok, ok)
 		})
 	}
+}
+
+func TestCarrier_Track(t *testing.T) {
+	testCases := []struct {
+		name         string
+		trackNumber  string
+		setupApiMock func(api *apiMock, trackNumber string)
+		parcels      []carriers.Parcel
+		err          error
+	}{
+		{
+			name:        "Ok response",
+			trackNumber: "1Z12345E0291980793",
+			setupApiMock: func(api *apiMock, trackNumber string) {
+				res := &TrackResponse{
+					Shipment: Shipment{
+						ShipmentIdentificationNumber: trackNumber,
+						Package: Package{
+							Activity: []Activity{{}},
+						},
+					},
+				}
+				api.On("TrackByNumber", trackNumber).Once().Return(res, nil)
+			},
+			parcels: []carriers.Parcel{{Number: "1Z12345E0291980793"}},
+		},
+		{
+			name: "Bad response",
+			setupApiMock: func(api *apiMock, trackNumber string) {
+				api.On("TrackByNumber", trackNumber).Once().Return(nil, errors.New("Invalid tracking number"))
+			},
+			err: errors.New("Invalid tracking number"),
+		},
+	}
+
+	for _, testCase := range testCases {
+		t.Run(testCase.name, func(t *testing.T) {
+			api := &apiMock{}
+			testCase.setupApiMock(api, testCase.trackNumber)
+
+			c := NewCarrier(api)
+			parcels, err := c.Track(testCase.trackNumber)
+
+			assert.Equal(t, testCase.err, err)
+			assert.Equal(t, testCase.parcels, parcels)
+			api.AssertExpectations(t)
+		})
+	}
+}
+
+type apiMock struct {
+	mock.Mock
+}
+
+func (m *apiMock) TrackByNumber(trackNumber string) (*TrackResponse, error) {
+	arg := m.Called(trackNumber)
+	if arg.Get(0) == nil {
+		return nil, arg.Error(1)
+	}
+
+	return arg.Get(0).(*TrackResponse), arg.Error(1)
 }

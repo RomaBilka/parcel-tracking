@@ -39,10 +39,18 @@ var patterns = map[string]*regexp.Regexp{
 	"startCGISH": regexp.MustCompile(`(?i)^cgish[\d]{9}$`),
 }
 
-type Carrier struct{}
+type api interface {
+	TrackByNumber(string) (*TrackResponse, error)
+}
 
-func NewCarrier() *Carrier {
-	return &Carrier{}
+type Carrier struct {
+	api api
+}
+
+func NewCarrier(api api) *Carrier {
+	return &Carrier{
+		api: api,
+	}
 }
 
 func (c *Carrier) Detect(trackId string) bool {
@@ -55,7 +63,19 @@ func (c *Carrier) Detect(trackId string) bool {
 	return false
 }
 
-func (c *Carrier) Track(string) ([]carriers.Parcel, error) {
-	//TODO implement me
-	panic("implement me")
+func (c *Carrier) Track(trackingNumber string) ([]carriers.Parcel, error) {
+	res, err := c.api.TrackByNumber(trackingNumber)
+	if err != nil {
+		return nil, err
+	}
+
+	parcels := []carriers.Parcel{
+		carriers.Parcel{
+			Number:  res.Shipment.ShipmentIdentificationNumber,
+			Status:  res.Shipment.Package.Activity[0].Status.StatusType.Description,
+			Address: res.Shipment.Package.Activity[0].ActivityLocation.Address.City,
+		},
+	}
+
+	return parcels, nil
 }
