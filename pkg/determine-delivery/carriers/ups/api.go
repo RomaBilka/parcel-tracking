@@ -10,16 +10,16 @@ import (
 
 type Api struct {
 	apiURL              string
-	accessLicenseNumber string
 	userId              string
+	accessLicenseNumber string
 	password            string
 }
 
-func NewApi(apiURL, accessLicenseNumber, userId, password string) *Api {
+func NewApi(apiURL, userId, accessLicenseNumber, password string) *Api {
 	return &Api{
 		apiURL:              apiURL,
-		accessLicenseNumber: accessLicenseNumber,
 		userId:              userId,
+		accessLicenseNumber: accessLicenseNumber,
 		password:            password,
 	}
 }

@@ -27,19 +27,19 @@ func InitDeps() (*Deps, error) {
 	detector := determine_delivery.NewDetector()
 	detector.Registry(np.NewCarrier(np.NewApi(config.NovaPoshta.ApiURL, config.NovaPoshta.ApiKey)))
 
-	meApi := me.NewApi(config.MeestExpress.ID, config.MeestExpress.Login, config.MeestExpress.Password, config.MeestExpress.ApiURL)
+	meApi := me.NewApi(config.MeestExpress.ApiURL, config.MeestExpress.ID, config.MeestExpress.Login, config.MeestExpress.Password)
 	detector.Registry(me.NewCarrier(meApi))
 
 	dhlApi := dhl.NewApi(config.DHL.ApiURL, config.DHL.ApiKey)
 	detector.Registry(dhl.NewCarrier(dhlApi))
 
-	fedexApi := fedex.NewApi(config.Fedex.ApiURL, config.Fedex.GrantType, config.Fedex.ApiKey, config.Fedex.ShippingAccount)
+	fedexApi := fedex.NewApi(config.Fedex.ApiURL, config.Fedex.ApiKey, config.Fedex.GrantType, config.Fedex.ShippingAccount)
 	detector.Registry(fedex.NewCarrier(fedexApi))
 
-	uspsApi := usps.NewApi(config.USPS.UserID, config.USPS.Password, config.USPS.ApiURL)
+	uspsApi := usps.NewApi(config.USPS.ApiURL, config.USPS.UserID, config.USPS.Password)
 	detector.Registry(usps.NewCarrier(uspsApi))
 
-	upsApi := ups.NewApi(config.UPS.ApiURL, config.UPS.AccessLicenseNumber, config.UPS.UserID, config.UPS.Password)
+	upsApi := ups.NewApi(config.UPS.ApiURL, config.UPS.UserID, config.UPS.AccessLicenseNumber, config.UPS.Password)
 	detector.Registry(ups.NewCarrier(upsApi))
 
 	logger, err := zap.NewProduction()

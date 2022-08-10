@@ -10,14 +10,14 @@ import (
 )
 
 type Api struct {
-	apiKey string
 	apiURL string
+	apiKey string
 }
 
 func NewApi(apiURL, apiKey string) *Api {
 	return &Api{
-		apiKey: apiKey,
 		apiURL: apiURL,
+		apiKey: apiKey,
 	}
 }
 
