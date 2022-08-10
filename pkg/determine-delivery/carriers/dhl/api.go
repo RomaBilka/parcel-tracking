@@ -21,7 +21,7 @@ func NewApi(apiURL, apiKey string) *Api {
 	}
 }
 
-func (api *Api) TrackingDocument(trackNumber string) (*response, error) {
+func (api *Api) TrackByTrackingNumber(trackNumber string) (*response, error) {
 	req := request{
 		TrackingNumber: trackNumber,
 	}

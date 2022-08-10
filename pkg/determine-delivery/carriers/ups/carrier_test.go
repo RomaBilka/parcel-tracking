@@ -69,14 +69,14 @@ func TestCarrier_Track(t *testing.T) {
 						},
 					},
 				}
-				api.On("TrackByNumber", trackNumber).Once().Return(res, nil)
+				api.On("TrackByTrackingNumber", trackNumber).Once().Return(res, nil)
 			},
 			parcels: []carriers.Parcel{{Number: "1Z12345E0291980793"}},
 		},
 		{
 			name: "Bad response",
 			setupApiMock: func(api *apiMock, trackNumber string) {
-				api.On("TrackByNumber", trackNumber).Once().Return(nil, errors.New("Invalid tracking number"))
+				api.On("TrackByTrackingNumber", trackNumber).Once().Return(nil, errors.New("Invalid tracking number"))
 			},
 			err: errors.New("Invalid tracking number"),
 		},
@@ -101,7 +101,7 @@ type apiMock struct {
 	mock.Mock
 }
 
-func (m *apiMock) TrackByNumber(trackNumber string) (*TrackResponse, error) {
+func (m *apiMock) TrackByTrackingNumber(trackNumber string) (*TrackResponse, error) {
 	arg := m.Called(trackNumber)
 	if arg.Get(0) == nil {
 		return nil, arg.Error(1)

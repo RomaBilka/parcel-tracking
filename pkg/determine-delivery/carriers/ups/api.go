@@ -24,7 +24,7 @@ func NewApi(apiURL, userId, accessLicenseNumber, password string) *Api {
 	}
 }
 
-func (api *Api) TrackByNumber(trackingNumber string) (*TrackResponse, error) {
+func (api *Api) TrackByTrackingNumber(trackingNumber string) (*TrackResponse, error) {
 	trackRequest := TrackRequest{TrackingNumber: trackingNumber}
 	b, err := api.makeRequest(trackRequest, "/Track")
 	if err != nil {

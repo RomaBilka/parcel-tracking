@@ -22,7 +22,7 @@ func NewApi(userId, password, apiURL string) *Api {
 	}
 }
 
-func (api *Api) TrackingDocument(trackNumber string) (*response, error) {
+func (api *Api) TrackByTrackingNumber(trackNumber string) (*response, error) {
 	b, err := api.makeRequest(trackNumber, fasthttp.MethodPost, api.apiURL)
 	if err != nil {
 		return nil, err

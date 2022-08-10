@@ -28,7 +28,7 @@ func NewApi(apiURL, agentUID, login, password string) *Api {
 	}
 }
 
-func (api *Api) ShipmentsTrack(trackNumber string) (*ShipmentsTrackResponse, error) {
+func (api *Api) TrackByTrackingNumber(trackNumber string) (*ShipmentsTrackResponse, error) {
 	req := meestExpressRequest{
 		Function: "SHIPMENTS_TRACK",
 		Where:    api.agentUID + "," + trackNumber,

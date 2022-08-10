@@ -52,13 +52,13 @@ func (c *Carrier) Track(trackingId string) ([]carriers.Parcel, error) {
 	trackingData := TrackingRequest{IncludeDetailedScans: true}
 	trackingData.TrackingInfo = append(trackingData.TrackingInfo, trackingInfo)
 
-	documents, err := c.api.TrackByTrackingNumber(trackingData)
+	response, err := c.api.TrackByTrackingNumber(trackingData)
 	if err != nil {
 		return nil, err
 	}
 
-	parcels := make([]carriers.Parcel, len(documents.Output.CompleteTrackResults))
-	for i, d := range documents.Output.CompleteTrackResults {
+	parcels := make([]carriers.Parcel, len(response.Output.CompleteTrackResults))
+	for i, d := range response.Output.CompleteTrackResults {
 		parcels[i] = carriers.Parcel{
 			Number:  d.TrackingNumber,
 			Address: d.TrackResults[0].LatestStatusDetail.ScanLocation.CountryName + " " + d.TrackResults[0].LatestStatusDetail.ScanLocation.City,

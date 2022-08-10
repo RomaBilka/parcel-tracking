@@ -10,7 +10,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestFixturesTrackingDocument(t *testing.T) {
+func TestApi_TrackByTrackingNumber(t *testing.T) {
 	testCases := []struct {
 		name      string
 		file      string
@@ -47,9 +47,9 @@ func TestFixturesTrackingDocument(t *testing.T) {
 			}))
 			defer server.Close()
 
-			me := NewApi("0xA79E003048D2B47311E26B7D4A430FFC", "public", "PUBLIC", server.URL)
+			me := NewApi(server.URL, "0xA79E003048D2B47311E26B7D4A430FFC", "public", "PUBLIC")
 
-			res, err := me.ShipmentsTrack(testCase.document)
+			res, err := me.TrackByTrackingNumber(testCase.document)
 			assert.Equal(t, testCase.err, err)
 			if res != nil {
 				assert.Equal(t, testCase.errorCode, res.Errors.Code)
