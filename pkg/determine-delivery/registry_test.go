@@ -21,6 +21,8 @@ func TestDetector_Detect_Fails(t *testing.T) {
 	carrier, err := detector.Detect(trackId)
 	assert.Nil(t, carrier, "carrier should be nil")
 	assert.Equal(t, errCarrierNotDetected, err)
+
+	mock.AssertExpectationsForObjects(t, m)
 }
 
 func TestDetector_Detect_Success(t *testing.T) {
@@ -40,6 +42,8 @@ func TestDetector_Detect_Success(t *testing.T) {
 	carrier, err := detector.Detect(trackId)
 	assert.NoError(t, err)
 	assert.Equal(t, carrier, validCarrier)
+
+	mock.AssertExpectationsForObjects(t, invalidCarrier, validCarrier)
 }
 
 type mockCarrier struct {
