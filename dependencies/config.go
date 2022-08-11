@@ -11,10 +11,10 @@ type (
 	}
 
 	MeestExpress struct {
+		ApiURL   string `long:"ME_API_URL" description:"meest express API URL" required:"true" default:"https://apii.meest-group.com/T/1C_Query.php" env:"ME_API_URL"`
 		ID       string `long:"ME_ID" description:"meest express ID" required:"true" default:"0xA79E003048D2B47311E26B7D4A430FFC" env:"ME_ID"`
 		Login    string `long:"ME_LOGIN" description:"meest express login" required:"true" default:"public" env:"ME_LOGIN"`
 		Password string `long:"ME_PASSWORD" description:"meest express password" required:"true" default:"PUBLIC" env:"ME_PASSWORD"`
-		ApiURL   string `long:"ME_API_URL" description:"meest express API URL" required:"true" default:"https://apii.meest-group.com/T/1C_Query.php" env:"ME_API_URL"`
 	}
 
 	DHL struct {
@@ -24,16 +24,22 @@ type (
 
 	Fedex struct {
 		ApiURL          string `long:"FEDEX_URL" description:"FEDEX API URL" required:"true" default:"https://apis-sandbox.fedex.com" env:"FEDEX_API_URL"`
-		GrantType       string `long:"FEDEX_GRANT_TYPE" description:"Fedex grant type" env:"FEDEX_GRANT_TYPE"`
 		ApiKey          string `long:"FEDEX_API_KEY" description:"Fedex client id" env:"FEDEX_API_KEY"`
+		GrantType       string `long:"FEDEX_GRANT_TYPE" description:"Fedex grant type" env:"FEDEX_GRANT_TYPE"`
 		ShippingAccount string `long:"FEDEX_SHIPPING_ACCOUNT" description:"Fedex shipping account" env:"FEDEX_SHIPPING_ACCOUNT"`
 	}
 
 	USPS struct {
+		ApiURL   string `long:"USPS_APIV2_URL" description:"USPS express API TrackV2 URL" required:"true" default:"http://production.shippingapis.com/ShippingAPI.dll?API=TrackV2" env:"USPS_APIV2_URL"`
 		UserID   string `long:"USPS_ID" description:"USPS user ID" required:"true" default:"302ROMAN1277" env:"USPS_ID"`
 		Password string `long:"USPS_Password" description:"USPS password" required:"false" default:"536KD44UF932" env:"USPS_Password"`
-		URL      string `long:"USPS_APIV2_URL" description:"USPS express API TrackV2 URL" required:"true" default:"http://production.shippingapis.com/ShippingAPI.dll?API=TrackV2" env:"USPS_APIV2_URL"`
-		ApiURL   string `long:"USPS_API_URL" description:"USPS express API URL" required:"true" default:"https://apii.meest-group.com/T/1C_Query.php" env:"USPS_API_URL"`
+	}
+
+	UPS struct {
+		ApiURL              string `long:"UPS_API_URL" description:"UPS API URL" required:"true" default:"https://wwwcie.ups.com/ups.app/xml/" env:"UPS_API_URL"`
+		UserID              string `long:"UPS_USER_ID" description:"UPS user ID"  env:"UPS_USER_ID"`
+		AccessLicenseNumber string `long:"UPS_ACCESS_LICENSE_NUMBER" description:"UPS Access License Number" env:"UPS_ACCESS_LICENSE_NUMBER"`
+		Password            string `long:"UPS_PASSWORD" description:"UPS password" env:"UPS_PASSWORD"`
 	}
 
 	Config struct {
@@ -43,6 +49,7 @@ type (
 		DHL          DHL
 		Fedex        Fedex
 		USPS         USPS
+		UPS          UPS
 	}
 )
 

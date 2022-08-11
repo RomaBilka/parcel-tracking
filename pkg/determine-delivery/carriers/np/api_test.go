@@ -10,7 +10,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestFixturesTrackingDocument(t *testing.T) {
+func TestApi_TrackByTrackingNumber(t *testing.T) {
 	testCases := []struct {
 		name     string
 		file     string
@@ -66,7 +66,7 @@ func TestFixturesTrackingDocument(t *testing.T) {
 			methodProperties.Documents = append(methodProperties.Documents, testCase.document)
 			methodProperties.CheckWeightMethod = "3"
 
-			res, err := np.TrackingDocument(methodProperties)
+			res, err := np.TrackByTrackingNumber(methodProperties)
 			assert.Equal(t, testCase.error, err)
 			if res != nil {
 				assert.Equal(t, testCase.document.DocumentNumber, res.Data[0].Number)

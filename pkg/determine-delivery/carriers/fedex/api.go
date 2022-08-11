@@ -19,8 +19,8 @@ const (
 type (
 	Api struct {
 		apiURL       string
-		grantType    string
 		clientId     string
+		grantType    string
 		clientSecret string
 		token        struct {
 			token  string
@@ -38,11 +38,11 @@ type (
 	}
 )
 
-func NewApi(apiURL, grantType, apiKey, shippingAccount string) *Api {
+func NewApi(apiURL, apiKey, grantType, shippingAccount string) *Api {
 	return &Api{
 		apiURL:       apiURL,
-		grantType:    grantType,
 		clientId:     apiKey,
+		grantType:    grantType,
 		clientSecret: shippingAccount,
 	}
 }

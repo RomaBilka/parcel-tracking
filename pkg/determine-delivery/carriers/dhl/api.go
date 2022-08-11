@@ -10,18 +10,18 @@ import (
 )
 
 type Api struct {
-	apiKey string
 	apiURL string
+	apiKey string
 }
 
 func NewApi(apiURL, apiKey string) *Api {
 	return &Api{
-		apiKey: apiKey,
 		apiURL: apiURL,
+		apiKey: apiKey,
 	}
 }
 
-func (api *Api) TrackingDocument(trackNumber string) (*response, error) {
+func (api *Api) TrackByTrackingNumber(trackNumber string) (*response, error) {
 	req := request{
 		TrackingNumber: trackNumber,
 	}

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TrackResponse>
+    <Response>
+        <ResponseStatusCode>0</ResponseStatusCode>
+        <ResponseStatusDescription>Failure</ResponseStatusDescription>
+        <Error>
+            <ErrorSeverity>Hard</ErrorSeverity>
+            <ErrorCode>150022</ErrorCode>
+            <ErrorDescription>Invalid tracking number</ErrorDescription>
+        </Error>
+    </Response>
+</TrackResponse>

@@ -9,21 +9,21 @@ import (
 )
 
 type Api struct {
-	UserId   string
-	Password string
-	URL      string
+	apiURL   string
+	userId   string
+	password string
 }
 
-func NewApi(userId, password, url string) *Api {
+func NewApi(userId, password, apiURL string) *Api {
 	return &Api{
-		UserId:   userId,
-		Password: password,
-		URL:      url,
+		apiURL:   apiURL,
+		userId:   userId,
+		password: password,
 	}
 }
 
-func (api *Api) TrackingDocument(trackNumber string) (*response, error) {
-	b, err := api.makeRequest(trackNumber, fasthttp.MethodPost, api.URL)
+func (api *Api) TrackByTrackingNumber(trackNumber string) (*response, error) {
+	b, err := api.makeRequest(trackNumber, fasthttp.MethodPost, api.apiURL)
 	if err != nil {
 		return nil, err
 	}
@@ -41,7 +41,7 @@ func (api *Api) TrackingDocument(trackNumber string) (*response, error) {
 
 func (api *Api) makeRequest(trackingNum, method, endPoint string) ([]byte, error) {
 	xmlBody := fmt.Sprintf(`&XML=<TrackRequest USERID="%s" PASSWORD="%s"><TrackID ID="%s"></TrackID></TrackRequest>`,
-		api.UserId, api.Password, trackingNum)
+		api.userId, api.password, trackingNum)
 
 	res, err := http.Do(endPoint, method, func(req *fasthttp.Request) {
 		req.Header.SetContentType(http.XmlContentType)

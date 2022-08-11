@@ -13,22 +13,22 @@ import (
 const statusOk = "000"
 
 type Api struct {
+	apiURL   string
 	agentUID string
 	login    string
 	password string
-	apiURL   string
 }
 
-func NewApi(agentUID, login, password, apiURL string) *Api {
+func NewApi(apiURL, agentUID, login, password string) *Api {
 	return &Api{
+		apiURL:   apiURL,
 		agentUID: agentUID,
 		login:    login,
 		password: password,
-		apiURL:   apiURL,
 	}
 }
 
-func (api *Api) ShipmentsTrack(trackNumber string) (*ShipmentsTrackResponse, error) {
+func (api *Api) TrackByTrackingNumber(trackNumber string) (*ShipmentsTrackResponse, error) {
 	req := meestExpressRequest{
 		Function: "SHIPMENTS_TRACK",
 		Where:    api.agentUID + "," + trackNumber,
