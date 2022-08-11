@@ -21,7 +21,7 @@ var patterns = map[string]*regexp.Regexp{
 }
 
 type api interface {
-	TrackingDocument(TrackingDocuments) (*TrackingDocumentsResponse, error)
+	TrackByTrackingNumber(TrackingDocuments) (*TrackingDocumentsResponse, error)
 }
 
 type Carrier struct {
@@ -52,13 +52,13 @@ func (c *Carrier) Track(trackingId string) ([]carriers.Parcel, error) {
 	methodProperties.Documents = append(methodProperties.Documents, document)
 	methodProperties.CheckWeightMethod = "3"
 
-	documents, err := c.api.TrackingDocument(methodProperties)
+	response, err := c.api.TrackByTrackingNumber(methodProperties)
 	if err != nil {
 		return nil, err
 	}
 
-	parcels := make([]carriers.Parcel, len(documents.Data))
-	for i, d := range documents.Data {
+	parcels := make([]carriers.Parcel, len(response.Data))
+	for i, d := range response.Data {
 		parcels[i] = carriers.Parcel{
 			Number:  d.Number,
 			Address: d.CityRecipient + " " + d.WarehouseRecipient,

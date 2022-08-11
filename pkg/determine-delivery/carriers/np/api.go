@@ -22,7 +22,7 @@ func NewApi(apiURL, apiKey string) *Api {
 	}
 }
 
-func (api *Api) TrackingDocument(methodProperties TrackingDocuments) (*TrackingDocumentsResponse, error) {
+func (api *Api) TrackByTrackingNumber(methodProperties TrackingDocuments) (*TrackingDocumentsResponse, error) {
 	req := novaPoshtaRequest{
 		ModelName:    "TrackingDocument",
 		CalledMethod: "getStatusDocuments",

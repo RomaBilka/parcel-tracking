@@ -60,7 +60,7 @@ func TestCarrier_Track(t *testing.T) {
 				res := &TrackingDocumentsResponse{}
 				res.Data = append(res.Data, document)
 
-				api.On("TrackingDocument", methodProperties).Once().Return(res, nil)
+				api.On("TrackByTrackingNumber", methodProperties).Once().Return(res, nil)
 			},
 			parcels: []carriers.Parcel{{Address: "City Recipient Warehouse Recipient", Status: "Ok"}},
 		},
@@ -73,7 +73,7 @@ func TestCarrier_Track(t *testing.T) {
 				methodProperties := TrackingDocuments{CheckWeightMethod: "3"}
 				methodProperties.Documents = append(methodProperties.Documents, trackingDocument)
 
-				api.On("TrackingDocument", methodProperties).Once().Return(nil, errors.New("bad request"))
+				api.On("TrackByTrackingNumber", methodProperties).Once().Return(nil, errors.New("bad request"))
 			},
 			err: errors.New("bad request"),
 		},
@@ -98,7 +98,7 @@ type apiMock struct {
 	mock.Mock
 }
 
-func (m *apiMock) TrackingDocument(methodProperties TrackingDocuments) (*TrackingDocumentsResponse, error) {
+func (m *apiMock) TrackByTrackingNumber(methodProperties TrackingDocuments) (*TrackingDocumentsResponse, error) {
 	arg := m.Called(methodProperties)
 	if arg.Get(0) == nil {
 		return nil, arg.Error(1)

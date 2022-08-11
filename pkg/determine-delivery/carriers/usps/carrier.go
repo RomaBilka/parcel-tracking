@@ -17,7 +17,7 @@ func (c *Carrier) Detect(_ string) bool {
 }
 
 func (c *Carrier) Track(trackNumber string) ([]carriers.Parcel, error) {
-	resp, err := c.api.TrackingDocument(trackNumber)
+	resp, err := c.api.TrackByTrackingNumber(trackNumber)
 	if err != nil {
 		return nil, err
 	}

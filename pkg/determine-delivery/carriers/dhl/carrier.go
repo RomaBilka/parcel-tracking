@@ -57,7 +57,7 @@ var patterns = map[string]*regexp.Regexp{
 }
 
 type api interface {
-	TrackingDocument(string) (*response, error)
+	TrackByTrackingNumber(string) (*response, error)
 }
 
 type Carrier struct {
@@ -81,7 +81,7 @@ func (c *Carrier) Detect(trackId string) bool {
 }
 
 func (c *Carrier) Track(trackNumber string) ([]carriers.Parcel, error) {
-	response, err := c.api.TrackingDocument(trackNumber)
+	response, err := c.api.TrackByTrackingNumber(trackNumber)
 	if err != nil {
 		return nil, err
 	}

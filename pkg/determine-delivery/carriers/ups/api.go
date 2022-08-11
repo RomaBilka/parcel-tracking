@@ -10,21 +10,21 @@ import (
 
 type Api struct {
 	apiURL              string
-	accessLicenseNumber string
 	userId              string
+	accessLicenseNumber string
 	password            string
 }
 
-func NewApi(apiURL, accessLicenseNumber, userId, password string) *Api {
+func NewApi(apiURL, userId, accessLicenseNumber, password string) *Api {
 	return &Api{
 		apiURL:              apiURL,
-		accessLicenseNumber: accessLicenseNumber,
 		userId:              userId,
+		accessLicenseNumber: accessLicenseNumber,
 		password:            password,
 	}
 }
 
-func (api *Api) TrackByNumber(trackingNumber string) (*TrackResponse, error) {
+func (api *Api) TrackByTrackingNumber(trackingNumber string) (*TrackResponse, error) {
 	trackRequest := TrackRequest{TrackingNumber: trackingNumber}
 	b, err := api.makeRequest(trackRequest, "/Track")
 	if err != nil {

@@ -40,7 +40,7 @@ var patterns = map[string]*regexp.Regexp{
 }
 
 type api interface {
-	TrackByNumber(string) (*TrackResponse, error)
+	TrackByTrackingNumber(string) (*TrackResponse, error)
 }
 
 type Carrier struct {
@@ -64,16 +64,16 @@ func (c *Carrier) Detect(trackId string) bool {
 }
 
 func (c *Carrier) Track(trackingNumber string) ([]carriers.Parcel, error) {
-	res, err := c.api.TrackByNumber(trackingNumber)
+	response, err := c.api.TrackByTrackingNumber(trackingNumber)
 	if err != nil {
 		return nil, err
 	}
 
 	parcels := []carriers.Parcel{
 		carriers.Parcel{
-			Number:  res.Shipment.ShipmentIdentificationNumber,
-			Status:  res.Shipment.Package.Activity[0].Status.StatusType.Description,
-			Address: res.Shipment.Package.Activity[0].ActivityLocation.Address.City,
+			Number:  response.Shipment.ShipmentIdentificationNumber,
+			Status:  response.Shipment.Package.Activity[0].Status.StatusType.Description,
+			Address: response.Shipment.Package.Activity[0].ActivityLocation.Address.City,
 		},
 	}
 
