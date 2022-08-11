@@ -2,6 +2,23 @@
 
 [Here](https://www.usps.com/business/web-tools-apis/) you can find all information for developers presented by USPS
 
+## Tracking number patterns
+[Patterns](https://tools.usps.com/go/TrackConfirmAction_input)
+
+| SERVICE                              | SAMPLE NUMBER                  |
+|--------------------------------------|--------------------------------|
+| USPS Tracking®                       | 9400 1000 0000 0000 0000 00    |
+| Priority Mail®                       | 9205 5000 0000 0000 0000 00    |
+| Certified Mail®                      | 9407 3000 0000 0000 0000 00    |
+| Collect On Delivery Hold For Pickup  | 9303 3000 0000 0000 0000 00    |
+| Global Express Guaranteed®           | 82 000 000 00                  |
+| Priority Mail Express International® | EC 000 000 000 US              |
+| Priority Mail Express®               | 9270 1000 0000 0000 0000 00 & EA 000 000 000 US|
+| Priority Mail International®         | CP 000 000 000 US              |
+| Registered Mail™                     | 9208 8000 0000 0000 0000 00    |
+| Signature Confirmation™              | 9202 1000 0000 0000 0000 00    |
+
+
 ## How to work with the USPS API 
 1. You need to be registered for the U.S.Postal Service's Web Tools Application Programming Interfaces (APIs). ***1**
    - As a result, you will have a UserID (Username) and Password.
