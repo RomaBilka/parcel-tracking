@@ -10,6 +10,10 @@ type (
 		ApiKey string `long:"NP_API_KEY" description:"nova poshta API key" env:"NP_API_KEY"`
 	}
 
+	NovaPoshtaShopping struct {
+		ApiURL string `long:"NP_SHOPPING_API_URL" description:"nova poshta shopping API URL" required:"true" default:"https://novaposhtaglobal.ua/ajax.php" env:"NP_SHOPPING_API_URL"`
+	}
+
 	MeestExpress struct {
 		ApiURL   string `long:"ME_API_URL" description:"meest express API URL" required:"true" default:"https://apii.meest-group.com/T/1C_Query.php" env:"ME_API_URL"`
 		ID       string `long:"ME_ID" description:"meest express ID" required:"true" default:"0xA79E003048D2B47311E26B7D4A430FFC" env:"ME_ID"`
@@ -43,13 +47,14 @@ type (
 	}
 
 	Config struct {
-		Port         string `short:"p" long:"port" description:"Port" required:"true" default:"8080" env:"PORT"`
-		NovaPoshta   NovaPoshta
-		MeestExpress MeestExpress
-		DHL          DHL
-		Fedex        Fedex
-		USPS         USPS
-		UPS          UPS
+		Port               string `short:"p" long:"port" description:"Port" required:"true" default:"8080" env:"PORT"`
+		NovaPoshta         NovaPoshta
+		NovaPoshtaShopping NovaPoshtaShopping
+		MeestExpress       MeestExpress
+		DHL                DHL
+		Fedex              Fedex
+		USPS               USPS
+		UPS                UPS
 	}
 )
 

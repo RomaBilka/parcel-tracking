@@ -12,8 +12,8 @@ type Api struct {
 	url string
 }
 
-func NewApi() *Api {
-	return &Api{url: "https://novaposhtaglobal.ua/ajax.php"}
+func NewApi(url string) *Api {
+	return &Api{url: url}
 }
 
 func (api *Api) TrackByTrackingNumber(trackingID string) (*TrackingDocumentResponse, error) {

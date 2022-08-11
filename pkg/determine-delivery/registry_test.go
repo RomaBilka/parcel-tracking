@@ -26,7 +26,7 @@ func TestDetermine(t *testing.T) {
 	detector.Registry(dhlCarrier)
 	upsCarrier := ups.NewCarrier(ups.NewApi("", "", "", ""))
 	detector.Registry(upsCarrier)
-	npShoppingCarrier := np_shopping.NewCarrier(np_shopping.NewApi())
+	npShoppingCarrier := np_shopping.NewCarrier(np_shopping.NewApi(""))
 	detector.Registry(npShoppingCarrier)
 
 	testCases := []struct {
@@ -46,7 +46,8 @@ func TestDetermine(t *testing.T) {
 		{name: "MeestExpress CV999999999ZZ", trackId: "CV999999999ZZ", carrier: meCarrier},
 		{name: "MeestExpress MYCV999999999ZZ", trackId: "MYCV999999999ZZ", carrier: meCarrier},
 
-		{name: "NPShopping NP99999999999999", trackId: "NPI99999999999999", carrier: npShoppingCarrier},
+		{name: "NP Shopping NPI99999999999999", trackId: "NPI99999999999999", carrier: npShoppingCarrier},
+
 		{name: "DHL 0001111111111", trackId: "0001111111111", carrier: dhlCarrier},
 		{name: "DHL JVGL1111111111", trackId: "JVGL1111111111", carrier: dhlCarrier},
 		{name: "DHL GM1111111111", trackId: "GM1111111111", carrier: dhlCarrier},
