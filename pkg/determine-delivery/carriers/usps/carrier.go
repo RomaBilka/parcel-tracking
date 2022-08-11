@@ -42,8 +42,12 @@ var patterns = map[string]*regexp.Regexp{
 	"start80": regexp.MustCompile(`(?i)^82[\d]{8}$`),
 }
 
+type api interface {
+	TrackByTrackingNumber(trackNumber string) (*response, error)
+}
+
 type Carrier struct {
-	api *Api
+	api api
 }
 
 func NewCarrier(api *Api) *Carrier {
