@@ -16,7 +16,7 @@ func NewApi() *Api {
 	return &Api{url: "https://novaposhtaglobal.ua/ajax.php"}
 }
 
-func (api *Api) TrackingDocument(trackingID string) (*TrackingDocumentResponse, error) {
+func (api *Api) TrackByTrackingNumber(trackingID string) (*TrackingDocumentResponse, error) {
 	// ajax_tracking is copy paste from https://novaposhtaglobal.ua/track/?Tracking_ID=3234 network call.
 	// I can't find any documentation about it, so leaving it as in the request.
 	// If you can find a documentation, or just you know other way to implement it, please let me know.

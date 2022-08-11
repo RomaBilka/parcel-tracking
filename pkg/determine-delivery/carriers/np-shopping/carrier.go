@@ -6,11 +6,15 @@ import (
 	"github.com/RomaBilka/parcel-tracking/pkg/determine-delivery/carriers"
 )
 
-////Starts with NP, 14 numbers and NPG at the end NP99999999999999NPG
-var npShopping = regexp.MustCompile(`(?i)^NPI[\d]{14}$`)
+var patterns = map[string]*regexp.Regexp{
+	"start NPI": regexp.MustCompile(`^NPI`),
+	"end NPI":   regexp.MustCompile(`NPI$`),
+	"start NPG": regexp.MustCompile(`^NPG`),
+	"end NPG":   regexp.MustCompile(`NPG$`),
+}
 
 type api interface {
-	TrackingDocument(string) (*TrackingDocumentResponse, error)
+	TrackByTrackingNumber(string) (*TrackingDocumentResponse, error)
 }
 
 type Carrier struct {
@@ -24,20 +28,23 @@ func NewCarrier(api api) *Carrier {
 }
 
 func (c *Carrier) Detect(trackId string) bool {
-	return npShopping.MatchString(trackId)
+	for _, pattern := range patterns {
+		if pattern.MatchString(trackId) {
+			return true
+		}
+	}
+	return false
 }
 
 func (c *Carrier) Track(trackId string) ([]carriers.Parcel, error) {
-	doc, err := c.api.TrackingDocument(trackId)
+	doc, err := c.api.TrackByTrackingNumber(trackId)
 	if err != nil {
 		return nil, err
 	}
 
-	p := carriers.Parcel{
+	return []carriers.Parcel{{
 		Number:  doc.WaybillNumber,
 		Address: doc.PickupAddress.Country,
 		Status:  doc.State,
-	}
-
-	return []carriers.Parcel{p}, nil
+	}}, nil
 }

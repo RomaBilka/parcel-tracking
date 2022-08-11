@@ -46,7 +46,7 @@ func TestFixturesTrackingDocument(t *testing.T) {
 			defer server.Close()
 
 			np := Api{url: server.URL}
-			res, err := np.TrackingDocument(tc.documentID)
+			res, err := np.TrackByTrackingNumber(tc.documentID)
 			if tc.errorContains != "" {
 				assert.ErrorContains(t, err, tc.errorContains)
 			} else {
