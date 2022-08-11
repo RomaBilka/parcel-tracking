@@ -11,11 +11,16 @@ import (
 	"github.com/RomaBilka/parcel-tracking/pkg/determine-delivery/carriers/np"
 	np_shopping "github.com/RomaBilka/parcel-tracking/pkg/determine-delivery/carriers/np-shopping"
 	"github.com/RomaBilka/parcel-tracking/pkg/determine-delivery/carriers/ups"
+	"github.com/RomaBilka/parcel-tracking/pkg/determine-delivery/carriers/usps"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestDetermine(t *testing.T) {
 	detector := NewDetector()
+	uspsCarrier := usps.NewCarrier(usps.NewApi("", "", ""))
+	detector.Registry(uspsCarrier)
+	upsCarrier := ups.NewCarrier(ups.NewApi("", "", "", ""))
+	detector.Registry(upsCarrier)
 	npCarrier := np.NewCarrier(np.NewApi("", ""))
 	detector.Registry(npCarrier)
 	meCarrier := me.NewCarrier(me.NewApi("", "", "", ""))
@@ -24,8 +29,6 @@ func TestDetermine(t *testing.T) {
 	detector.Registry(fedexCarrier)
 	dhlCarrier := dhl.NewCarrier(dhl.NewApi("", ""))
 	detector.Registry(dhlCarrier)
-	upsCarrier := ups.NewCarrier(ups.NewApi("", "", "", ""))
-	detector.Registry(upsCarrier)
 	np_shoppingCarrier := np_shopping.NewCarrier()
 	detector.Registry(np_shoppingCarrier)
 
@@ -39,7 +42,18 @@ func TestDetermine(t *testing.T) {
 		{name: "UPS 1Z123456E6605272234", trackId: "1Z123456E6605272234", carrier: upsCarrier},
 		{name: "UPS 1Z123456E660527223", trackId: "1Z123456E660527223", carrier: upsCarrier},
 		{name: "UPS 1ZWX0692YP40636269", trackId: "1ZWX0692YP40636269", carrier: upsCarrier},
+		{name: "UPS 1Z4861WWE194914215", trackId: "1Z4861WWE194914215", carrier: upsCarrier},
 		{name: "UPS cgish000116630", trackId: "cgish000116630", carrier: upsCarrier},
+		{name: "USPS 9400100000000000000000", trackId: "9400100000000000000000", carrier: uspsCarrier},
+		{name: "USPS 9407300000000000000000", trackId: "9407300000000000000000", carrier: uspsCarrier},
+		{name: "USPS 9303300000000000000000", trackId: "9303300000000000000000", carrier: uspsCarrier},
+		{name: "USPS 9208800000000000000000", trackId: "9208800000000000000000", carrier: uspsCarrier},
+		{name: "USPS 9202100000000000000000", trackId: "9202100000000000000000", carrier: uspsCarrier},
+		{name: "USPS 9270100000000000000000", trackId: "9270100000000000000000", carrier: uspsCarrier},
+		{name: "USPS EC000000000US", trackId: "EC000000000US", carrier: uspsCarrier},
+		{name: "USPS EA000000000US", trackId: "EA000000000US", carrier: uspsCarrier},
+		{name: "USPS CP000000000US", trackId: "CP000000000US", carrier: uspsCarrier},
+		{name: "USPS 8200000000", trackId: "8200000000", carrier: uspsCarrier},
 		{name: "NovaPoshta 59000000000001", trackId: "59000000000001", carrier: npCarrier},
 		{name: "NovaPoshta 10000000000001", trackId: "10000000000001", carrier: npCarrier},
 		{name: "NovaPoshta 20000000000001", trackId: "20000000000001", carrier: npCarrier},

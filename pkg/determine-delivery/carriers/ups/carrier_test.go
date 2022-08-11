@@ -15,13 +15,9 @@ func TestCarrier_Detect(t *testing.T) {
 		trackId string
 		ok      bool
 	}{
-		{name: "8 true", trackId: "800000000000000001", ok: true},
-		{name: "9 true", trackId: "900000000000000001", ok: true},
 		{name: "1Z false", trackId: "1z000000000000000000000000", ok: false},
-		{name: "8 false", trackId: "80000000000000000000", ok: false},
-		{name: "9 false", trackId: "90000000000000000", ok: false},
 		{name: "unknown", trackId: "01234567891011", ok: false},
-		{name: "9 false", trackId: "90000000000000000", ok: false},
+		{name: "1Z4861WWE194914215", trackId: "1Z4861WWE194914215", ok: true},
 		{name: "1Z12345E6605272234", trackId: "1Z12345E6605272234", ok: true},
 		{name: "1Z123456E66052722", trackId: "1Z123456E66052722", ok: false},
 		{name: "1Z123456E6605272234", trackId: "1Z123456E6605272234", ok: true},
@@ -32,9 +28,9 @@ func TestCarrier_Detect(t *testing.T) {
 		{name: "123456789", trackId: "123456789", ok: true},
 		{name: "1234567890", trackId: "1234567890", ok: true},
 		{name: "12345678901", trackId: "12345678901", ok: false},
-		{name: "21 true", trackId: "123456789012345678901", ok: false},
+		{name: "21 false", trackId: "123456789012345678901", ok: false},
 		{name: "22 true", trackId: "1234567890123456789012", ok: true},
-		{name: "23 true", trackId: "12345678901234567890123", ok: false},
+		{name: "23 false", trackId: "12345678901234567890123", ok: false},
 		{name: "cgish000116630", trackId: "cgish000116630", ok: true},
 		{name: "cgish0001166301", trackId: "cgish0001166301", ok: false},
 		{name: "cgish00011663", trackId: "cgish00011663", ok: false},
