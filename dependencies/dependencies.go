@@ -7,6 +7,7 @@ import (
 	"github.com/RomaBilka/parcel-tracking/pkg/determine-delivery/carriers/fedex"
 	"github.com/RomaBilka/parcel-tracking/pkg/determine-delivery/carriers/me"
 	"github.com/RomaBilka/parcel-tracking/pkg/determine-delivery/carriers/np"
+	np_shopping "github.com/RomaBilka/parcel-tracking/pkg/determine-delivery/carriers/np-shopping"
 	"github.com/RomaBilka/parcel-tracking/pkg/determine-delivery/carriers/ups"
 	"github.com/RomaBilka/parcel-tracking/pkg/determine-delivery/carriers/usps"
 	"go.uber.org/zap"
@@ -30,17 +31,20 @@ func InitDeps() (*Deps, error) {
 	meApi := me.NewApi(config.MeestExpress.ApiURL, config.MeestExpress.ID, config.MeestExpress.Login, config.MeestExpress.Password)
 	detector.Registry(me.NewCarrier(meApi))
 
-	dhlApi := dhl.NewApi(config.DHL.ApiURL, config.DHL.ApiKey)
-	detector.Registry(dhl.NewCarrier(dhlApi))
-
-	fedexApi := fedex.NewApi(config.Fedex.ApiURL, config.Fedex.ApiKey, config.Fedex.GrantType, config.Fedex.ShippingAccount)
-	detector.Registry(fedex.NewCarrier(fedexApi))
-
 	uspsApi := usps.NewApi(config.USPS.ApiURL, config.USPS.UserID, config.USPS.Password)
 	detector.Registry(usps.NewCarrier(uspsApi))
 
 	upsApi := ups.NewApi(config.UPS.ApiURL, config.UPS.UserID, config.UPS.AccessLicenseNumber, config.UPS.Password)
 	detector.Registry(ups.NewCarrier(upsApi))
+
+	fedexApi := fedex.NewApi(config.Fedex.ApiURL, config.Fedex.ApiKey, config.Fedex.GrantType, config.Fedex.ShippingAccount)
+	detector.Registry(fedex.NewCarrier(fedexApi))
+
+	dhlApi := dhl.NewApi(config.DHL.ApiURL, config.DHL.ApiKey)
+	detector.Registry(dhl.NewCarrier(dhlApi))
+
+	npShoppingApi := np_shopping.NewApi(config.NovaPoshtaShopping.ApiURL)
+	detector.Registry(np_shopping.NewCarrier(npShoppingApi))
 
 	logger, err := zap.NewProduction()
 	if err != nil {
