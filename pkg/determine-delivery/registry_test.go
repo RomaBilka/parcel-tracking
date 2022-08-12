@@ -15,6 +15,7 @@ func TestDetector_Detect_Fails(t *testing.T) {
 	m.On("Detect", trackId).Twice().Return(false)
 
 	detector := NewDetector()
+
 	detector.Registry(m)
 	detector.Registry(m)
 
