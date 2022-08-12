@@ -38,12 +38,6 @@ func TestDetermine(t *testing.T) {
 		carrier carriers.Carrier
 		err     error
 	}{
-		{name: "UPS 1Z12345E6605272234", trackId: "1Z12345E6605272234", carrier: upsCarrier},
-		{name: "UPS 1Z123456E6605272234", trackId: "1Z123456E6605272234", carrier: upsCarrier},
-		{name: "UPS 1Z123456E660527223", trackId: "1Z123456E660527223", carrier: upsCarrier},
-		{name: "UPS 1ZWX0692YP40636269", trackId: "1ZWX0692YP40636269", carrier: upsCarrier},
-		{name: "UPS 1Z4861WWE194914215", trackId: "1Z4861WWE194914215", carrier: upsCarrier},
-		{name: "UPS cgish000116630", trackId: "cgish000116630", carrier: upsCarrier},
 		{name: "USPS 9400100000000000000000", trackId: "9400100000000000000000", carrier: uspsCarrier},
 		{name: "USPS 9407300000000000000000", trackId: "9407300000000000000000", carrier: uspsCarrier},
 		{name: "USPS 9303300000000000000000", trackId: "9303300000000000000000", carrier: uspsCarrier},
@@ -54,6 +48,12 @@ func TestDetermine(t *testing.T) {
 		{name: "USPS EA000000000US", trackId: "EA000000000US", carrier: uspsCarrier},
 		{name: "USPS CP000000000US", trackId: "CP000000000US", carrier: uspsCarrier},
 		{name: "USPS 8200000000", trackId: "8200000000", carrier: uspsCarrier},
+		{name: "UPS 1Z12345E6605272234", trackId: "1Z12345E6605272234", carrier: upsCarrier},
+		{name: "UPS 1Z123456E6605272234", trackId: "1Z123456E6605272234", carrier: upsCarrier},
+		{name: "UPS 1Z123456E660527223", trackId: "1Z123456E660527223", carrier: upsCarrier},
+		{name: "UPS 1ZWX0692YP40636269", trackId: "1ZWX0692YP40636269", carrier: upsCarrier},
+		{name: "UPS 1Z4861WWE194914215", trackId: "1Z4861WWE194914215", carrier: upsCarrier},
+		{name: "UPS cgish000116630", trackId: "cgish000116630", carrier: upsCarrier},
 		{name: "NovaPoshta 59000000000001", trackId: "59000000000001", carrier: npCarrier},
 		{name: "NovaPoshta 10000000000001", trackId: "10000000000001", carrier: npCarrier},
 		{name: "NovaPoshta 20000000000001", trackId: "20000000000001", carrier: npCarrier},
