@@ -7,6 +7,7 @@ import (
 	"github.com/RomaBilka/parcel-tracking/pkg/determine-delivery/carriers/fedex"
 	"github.com/RomaBilka/parcel-tracking/pkg/determine-delivery/carriers/me"
 	"github.com/RomaBilka/parcel-tracking/pkg/determine-delivery/carriers/np"
+	np_shopping "github.com/RomaBilka/parcel-tracking/pkg/determine-delivery/carriers/np-shopping"
 	"github.com/RomaBilka/parcel-tracking/pkg/determine-delivery/carriers/ups"
 	"github.com/RomaBilka/parcel-tracking/pkg/determine-delivery/carriers/usps"
 	"go.uber.org/zap"
@@ -41,6 +42,9 @@ func InitDeps() (*Deps, error) {
 
 	upsApi := ups.NewApi(config.UPS.ApiURL, config.UPS.UserID, config.UPS.AccessLicenseNumber, config.UPS.Password)
 	detector.Registry(ups.NewCarrier(upsApi))
+
+	npShoppingApi := np_shopping.NewApi(config.NovaPoshtaShopping.ApiURL)
+	detector.Registry(np_shopping.NewCarrier(npShoppingApi))
 
 	logger, err := zap.NewProduction()
 	if err != nil {
