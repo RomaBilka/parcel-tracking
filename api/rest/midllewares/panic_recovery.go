@@ -14,7 +14,7 @@ func PanicRecovery(log unknownArgumentsLogger) Middleware {
 			defer func() {
 				if r := recover(); r != nil {
 					rw.WriteHeader(http.StatusInternalServerError)
-					// trigger rewrite internal errors middleware, to write correct error message
+					// trigger rewrite internal response-errors middleware, to write correct error message
 					_, _ = rw.Write(nil)
 
 					log.Error(r)

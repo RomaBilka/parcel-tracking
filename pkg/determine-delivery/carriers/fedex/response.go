@@ -46,7 +46,7 @@ type ParameterList struct {
 type Response struct {
 	TransactionId         string  `json:"transactionId"`
 	CustomerTransactionId string  `json:"customerTransactionId"`
-	Errors                []Error `json:"errors"`
+	Errors                []Error `json:"response-errors"`
 }
 
 type TrackingResponse struct {

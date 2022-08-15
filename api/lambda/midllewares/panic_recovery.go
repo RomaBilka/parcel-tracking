@@ -17,7 +17,7 @@ func PanicRecovery(log unknownArgumentsLogger) Middleware {
 		return func(ctx context.Context, request events.APIGatewayProxyRequest) (resp events.APIGatewayProxyResponse, respErr error) {
 			defer func() {
 				if r := recover(); r != nil {
-					// trigger rewrite internal errors middleware, to write correct error message
+					// trigger rewrite internal response-errors middleware, to write correct error message
 					respErr = errors.New("")
 					log.Error(r)
 				}

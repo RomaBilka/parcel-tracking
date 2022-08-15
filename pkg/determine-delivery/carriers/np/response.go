@@ -2,7 +2,7 @@ package np
 
 type NovaPoshtaResponse struct {
 	Success      bool                `json:"success"`
-	Errors       []string            `json:"errors,omitempty"`
+	Errors       []string            `json:"response-errors,omitempty"`
 	Warnings     any                 `json:"warnings,omitempty"`
 	Info         []map[string]string `json:"info,omitempty"`
 	MessageCodes []string            `json:"messageCodes,omitempty"`

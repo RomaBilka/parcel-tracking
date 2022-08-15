@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/RomaBilka/parcel-tracking/pkg/http"
+	response_errors "github.com/RomaBilka/parcel-tracking/pkg/response-errors"
 	"github.com/google/go-querystring/query"
 	"github.com/valyala/fasthttp"
 )
@@ -15,6 +16,17 @@ const (
 	tokenExpirationLimit = 1
 	gzip                 = "gzip"
 )
+
+var handleErrors = map[string]error{
+	"TRACKING.REFRENCEVALUE.INVALID":    response_errors.ErrInvalidNumber,
+	"TRACKING.TCNVALUE.EMPTY":           response_errors.ErrInvalidNumber,
+	"TRACKING.TRACKINGNUMBER.EMPTY":     response_errors.ErrInvalidNumber,
+	"TRACKING.TRACKINGNUMBER.INVALID":   response_errors.ErrInvalidNumber,
+	"TRACKING.TRACKINGNUMBER.NOTFOUND":  response_errors.ErrNotFound,
+	"NOTIFICATION.TRACKINGNBR.NOTFOUND": response_errors.ErrNotFound,
+	"TRACKING.REFERENCENUMBER.NOTFOUND": response_errors.ErrNotFound,
+	"TRACKING.TCN.NOTFOUND":             response_errors.ErrNotFound,
+}
 
 type (
 	Api struct {
@@ -78,6 +90,9 @@ func (api *Api) TrackByTrackingNumber(trackingRequest TrackingRequest) (*Trackin
 	for _, rules := range trackingResponse.Output.CompleteTrackResults {
 		for _, result := range rules.TrackResults {
 			if result.Error.Code != "" {
+				if err := getHandleErrors(result.Error.Code); err != nil {
+					return nil, err
+				}
 				return nil, errors.New(result.Error.Message)
 			}
 		}
@@ -180,6 +195,10 @@ func getErrors(err []Error) error {
 	if lenErrors > 0 {
 		errorMsgs := ""
 		for i, e := range err {
+			if err := getHandleErrors(e.Code); err != nil {
+				return err
+			}
+
 			errorMsgs += e.Message
 			if i < lenErrors-1 {
 				errorMsgs += ", "
@@ -192,4 +211,11 @@ func getErrors(err []Error) error {
 
 func isExpired(t time.Time) bool {
 	return time.Until(t) < tokenExpirationLimit*time.Minute
+}
+
+func getHandleErrors(code string) error {
+	if err, ok := handleErrors[code]; ok {
+		return err
+	}
+	return nil
 }
