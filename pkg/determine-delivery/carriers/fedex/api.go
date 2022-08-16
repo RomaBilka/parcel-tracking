@@ -18,14 +18,14 @@ const (
 )
 
 var handleErrors = map[string]error{
-	"TRACKING.REFRENCEVALUE.INVALID":    response_errors.ErrInvalidNumber,
-	"TRACKING.TCNVALUE.EMPTY":           response_errors.ErrInvalidNumber,
-	"TRACKING.TRACKINGNUMBER.EMPTY":     response_errors.ErrInvalidNumber,
-	"TRACKING.TRACKINGNUMBER.INVALID":   response_errors.ErrInvalidNumber,
-	"TRACKING.TRACKINGNUMBER.NOTFOUND":  response_errors.ErrNotFound,
-	"NOTIFICATION.TRACKINGNBR.NOTFOUND": response_errors.ErrNotFound,
-	"TRACKING.REFERENCENUMBER.NOTFOUND": response_errors.ErrNotFound,
-	"TRACKING.TCN.NOTFOUND":             response_errors.ErrNotFound,
+	"TRACKING.REFRENCEVALUE.INVALID":    response_errors.InvalidNumber,
+	"TRACKING.TCNVALUE.EMPTY":           response_errors.InvalidNumber,
+	"TRACKING.TRACKINGNUMBER.EMPTY":     response_errors.InvalidNumber,
+	"TRACKING.TRACKINGNUMBER.INVALID":   response_errors.InvalidNumber,
+	"TRACKING.TRACKINGNUMBER.NOTFOUND":  response_errors.NotFound,
+	"NOTIFICATION.TRACKINGNBR.NOTFOUND": response_errors.NotFound,
+	"TRACKING.REFERENCENUMBER.NOTFOUND": response_errors.NotFound,
+	"TRACKING.TCN.NOTFOUND":             response_errors.NotFound,
 }
 
 type (
