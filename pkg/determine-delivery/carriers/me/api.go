@@ -51,6 +51,7 @@ func (api *Api) TrackByTrackingNumber(trackNumber string) (*ShipmentsTrackRespon
 	}
 
 	if shipmentsTrackResponse.Errors.Code != statusOk {
+
 		if err, ok := handleErrors[shipmentsTrackResponse.Errors.Code]; ok {
 			return nil, err
 		}

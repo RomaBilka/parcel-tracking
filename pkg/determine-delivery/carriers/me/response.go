@@ -4,7 +4,7 @@ type meestExpressResponse struct {
 	Api        string `xml:"api"`
 	ApiVersion string `xml:"apiversion"`
 	ResultUuid string `xml:"result_uuid"`
-	Errors     Errors `xml:"response-errors"`
+	Errors     Errors `xml:"errors"`
 }
 
 type ShipmentsTrackResponse struct {

@@ -17,7 +17,7 @@ func TestRewriteInternalErrors(t *testing.T) {
 		expResp events.APIGatewayProxyResponse
 	}{
 		{
-			name: "ignore, if no response-errors",
+			name: "ignore, if no errors",
 			prev: func(ctx context.Context, request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
 				return events.APIGatewayProxyResponse{Body: "ok", StatusCode: http.StatusOK}, nil
 			},
