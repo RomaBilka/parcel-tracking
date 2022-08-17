@@ -37,7 +37,7 @@ func TestHandleLambdaEvent(t *testing.T) {
 					Return(carriers.Parcel{}, assert.AnError)
 			},
 			expResp: events.APIGatewayProxyResponse{
-				StatusCode: http.StatusBadRequest,
+				StatusCode: http.StatusInternalServerError,
 				Body:       `{"message":"` + assert.AnError.Error() + `"}`,
 			},
 		},

@@ -60,7 +60,6 @@ func (api *Api) TrackByTrackingNumber(methodProperties TrackingDocuments) (*Trac
 	if err := json.Unmarshal(b, trackingDocumentsResponse); err != nil {
 		return nil, err
 	}
-
 	if !trackingDocumentsResponse.Success {
 		return nil, getErrors(trackingDocumentsResponse)
 	}
