@@ -25,3 +25,6 @@ jobs:
 
       - name: Test Cover
         run: go test ./... -cover
+
+      - name: Fuzz Test
+        run: cd ./pkg/determine-delivery/  &&  go test --fuzz=Fuzz -fuzztime=10s

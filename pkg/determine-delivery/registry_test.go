@@ -1,9 +1,17 @@
 package determine_delivery
 
 import (
+	"errors"
 	"testing"
 
 	"github.com/RomaBilka/parcel-tracking/pkg/determine-delivery/carriers"
+	"github.com/RomaBilka/parcel-tracking/pkg/determine-delivery/carriers/dhl"
+	"github.com/RomaBilka/parcel-tracking/pkg/determine-delivery/carriers/fedex"
+	"github.com/RomaBilka/parcel-tracking/pkg/determine-delivery/carriers/me"
+	"github.com/RomaBilka/parcel-tracking/pkg/determine-delivery/carriers/np"
+	np_shopping "github.com/RomaBilka/parcel-tracking/pkg/determine-delivery/carriers/np-shopping"
+	"github.com/RomaBilka/parcel-tracking/pkg/determine-delivery/carriers/ups"
+	response_errors "github.com/RomaBilka/parcel-tracking/pkg/response-errors"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 )
@@ -21,7 +29,7 @@ func TestDetector_Detect_Fails(t *testing.T) {
 
 	carrier, err := detector.Detect(trackId)
 	assert.Nil(t, carrier, "carrier should be nil")
-	assert.Equal(t, errCarrierNotDetected, err)
+	assert.Equal(t, response_errors.CarrierNotFound, err)
 
 	mock.AssertExpectationsForObjects(t, m)
 }
@@ -61,4 +69,27 @@ func (m *mockCarrier) Track(s string) ([]carriers.Parcel, error) {
 
 func (m *mockCarrier) Detect(s string) bool {
 	return m.Called(s).Bool(0)
+}
+
+func FuzzDetector_Detect(t *testing.F) {
+	detector := NewDetector()
+	npCarrier := np.NewCarrier(np.NewApi("", ""))
+	detector.Registry(npCarrier)
+	meCarrier := me.NewCarrier(me.NewApi("", "", "", ""))
+	detector.Registry(meCarrier)
+	fedexCarrier := fedex.NewCarrier(fedex.NewApi("", "", "", ""))
+	detector.Registry(fedexCarrier)
+	dhlCarrier := dhl.NewCarrier(dhl.NewApi("", ""))
+	detector.Registry(dhlCarrier)
+	upsCarrier := ups.NewCarrier(ups.NewApi("", "", "", ""))
+	detector.Registry(upsCarrier)
+	np_shoppingCarrier := np_shopping.NewCarrier(np_shopping.NewApi(""))
+	detector.Registry(np_shoppingCarrier)
+
+	t.Fuzz(func(t *testing.T, trackId string) {
+		_, err := detector.Detect(trackId)
+		if err != nil && !errors.Is(err, response_errors.CarrierNotFound) {
+			t.Errorf("Error: %v", err)
+		}
+	})
 }

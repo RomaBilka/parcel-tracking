@@ -1,12 +1,9 @@
 package determine_delivery
 
 import (
-	"errors"
-
 	"github.com/RomaBilka/parcel-tracking/pkg/determine-delivery/carriers"
+	response_errors "github.com/RomaBilka/parcel-tracking/pkg/response-errors"
 )
-
-var errCarrierNotDetected = errors.New("carrier not detected")
 
 type Detector struct {
 	carries []carriers.Carrier
@@ -27,5 +24,5 @@ func (d *Detector) Detect(trackId string) (carriers.Carrier, error) {
 		}
 	}
 
-	return nil, errCarrierNotDetected
+	return nil, response_errors.CarrierNotFound
 }
