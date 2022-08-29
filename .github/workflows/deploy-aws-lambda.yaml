@@ -8,6 +8,7 @@ jobs:
 
   deploy_zip:
     needs: test-workflow
+    if: always()
 
     name: deploy lambda function
     runs-on: ubuntu-latest

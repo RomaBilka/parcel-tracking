@@ -13,6 +13,7 @@ jobs:
 
   build-and-push-image:
     needs: test-workflow
+    if: always()
 
     runs-on: ubuntu-latest
     permissions:
