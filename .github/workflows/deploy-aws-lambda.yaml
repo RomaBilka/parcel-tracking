@@ -4,7 +4,7 @@ on:
 jobs:
 
   call-workflow:
-    uses:  RomaBilka/parcel-tracking/.github/workflows/test.yaml
+    uses: RomaBilka/parcel-tracking/.github/workflows/test.yaml@main
 
   deploy_zip:
     name: deploy lambda function
