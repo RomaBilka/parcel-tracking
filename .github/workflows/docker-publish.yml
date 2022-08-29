@@ -7,7 +7,13 @@ env:
   IMAGE_NAME: ${{ github.repository }}
 
 jobs:
+
+  test-workflow:
+    uses: ./.github/workflows/test.yaml
+
   build-and-push-image:
+    needs: test-workflow
+
     runs-on: ubuntu-latest
     permissions:
       contents: read

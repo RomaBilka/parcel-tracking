@@ -8,7 +8,7 @@ jobs:
 
   deploy_zip:
     needs: test-workflow
-    
+
     name: deploy lambda function
     runs-on: ubuntu-latest
     strategy:
