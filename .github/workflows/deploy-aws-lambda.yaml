@@ -3,11 +3,12 @@ on:
   pull_request:
 jobs:
 
-  call-workflow:
+  test-workflow:
     uses: ./.github/workflows/test.yaml
 
   deploy_zip:
-    if: success()
+    needs: test-workflow
+    
     name: deploy lambda function
     runs-on: ubuntu-latest
     strategy:
