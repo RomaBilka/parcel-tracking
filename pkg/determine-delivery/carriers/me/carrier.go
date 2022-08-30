@@ -2,6 +2,7 @@ package me
 
 import (
 	"regexp"
+	"time"
 
 	"github.com/RomaBilka/parcel-tracking/pkg/determine-delivery/carriers"
 )
@@ -15,6 +16,8 @@ var patterns = map[string]*regexp.Regexp{
 	//MYCV999999999ZZ
 	"startMYCV": regexp.MustCompile(`(?i)^MYCV[\d]{9}[a-z]{2}$`),
 }
+
+const layout = "2016-06-30 13: 42: 11"
 
 type api interface {
 	TrackByTrackingNumber(string) (*ShipmentsTrackResponse, error)
@@ -56,4 +59,47 @@ func (c *Carrier) Track(trackingId string) ([]carriers.Parcel, error) {
 	}
 
 	return parcels, nil
+}
+
+func (c *Carrier) Track_draft(trackingId string) ([]carriers.Parcel_draft, error) {
+	response, err := c.api.TrackByTrackingNumber(trackingId)
+	if err != nil {
+		return nil, err
+	}
+
+	if len(response.ResultTable) == 0 {
+		return nil, nil
+	}
+
+	parcels := make([]carriers.Parcel_draft, 1)
+
+	places, err := getPlaces(response.ResultTable)
+	if err != nil {
+		return nil, err
+	}
+
+	parcels[1] = carriers.Parcel_draft{
+		TrackingNumber: response.ResultTable[0].ShipmentNumberSender,
+		Places:         places,
+	}
+
+	return parcels, nil
+}
+
+func getPlaces(result []ShipmentTrackResponse) ([]carriers.Place, error) {
+	places := make([]carriers.Place, len(result))
+
+	for i, s := range result {
+		date, err := time.Parse(layout, s.DateTimeAction)
+		if err != nil {
+			return nil, err
+		}
+		places[i] = carriers.Place{
+			County: s.Country,
+			City:   s.City,
+			Date:   date,
+		}
+	}
+
+	return places, nil
 }

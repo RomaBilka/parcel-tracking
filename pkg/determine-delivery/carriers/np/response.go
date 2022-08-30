@@ -72,4 +72,6 @@ type TrackingDocumentResponse struct {
 	BackwardDeliverySubTypesServices     string `json:"BackwardDeliverySubTypesServices"`     //""
 	UndeliveryReasons                    string `json:"UndeliveryReasons"`                    //""
 	DatePayedKeeping                     string `json:"DatePayedKeeping"`                     //""
+	ActualDeliveryDate                   string `json:"ActualDeliveryDate"`                   //""
+	WarehouseSender                      string `json:"WarehouseSender"`                      //""
 }

@@ -2,6 +2,7 @@ package fedex
 
 import (
 	"regexp"
+	"strings"
 
 	"github.com/RomaBilka/parcel-tracking/pkg/determine-delivery/carriers"
 )
@@ -67,4 +68,49 @@ func (c *Carrier) Track(trackingId string) ([]carriers.Parcel, error) {
 	}
 
 	return parcels, nil
+}
+
+func (c *Carrier) Track_draft(trackingId string) ([]carriers.Parcel_draft, error) {
+	trackingInfo := TrackingInfo{
+		TrackingNumberInfo: TrackingNumberInfo{
+			TrackingNumber: trackingId,
+		},
+	}
+
+	trackingData := TrackingRequest{IncludeDetailedScans: true}
+	trackingData.TrackingInfo = append(trackingData.TrackingInfo, trackingInfo)
+
+	response, err := c.api.TrackByTrackingNumber(trackingData)
+	if err != nil {
+		return nil, err
+	}
+
+	parcels := make([]carriers.Parcel_draft, len(response.Output.CompleteTrackResults))
+	for i, d := range response.Output.CompleteTrackResults {
+		parcels[i] = carriers.Parcel_draft{
+			TrackingNumber: d.TrackingNumber,
+			Places:         getPlaces(d.TrackResults[0]),
+			Status:         d.TrackResults[0].LatestStatusDetail.StatusByLocale,
+			DeliveryDate:   d.TrackResults[0].EstimatedDeliveryTimeWindow.Window.Ends,
+		}
+	}
+
+	return parcels, nil
+}
+
+func getPlaces(result TrackResult) []carriers.Place {
+	address := []carriers.Place{}
+
+	return append(address,
+		preparePlace(result.OriginLocation.LocationContactAndAddress.Address),
+		preparePlace(result.DeliveryDetails.ActualDeliveryAddress),
+		preparePlace(result.RecipientInformation.Address))
+}
+
+func preparePlace(a Address) carriers.Place {
+	return carriers.Place{
+		Street: strings.Join(a.StreetLines, " "),
+		City:   a.City,
+		County: a.CountryName,
+	}
 }

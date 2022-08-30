@@ -168,25 +168,13 @@ type Address struct {
 }
 
 type LatestStatusDetail struct {
-	ScanLocation     ScanLocation      `json:"scanLocation"`
+	ScanLocation     Address           `json:"scanLocation"`
 	Code             string            `json:"code"`
 	DerivedCode      string            `json:"derivedCode"`
 	AncillaryDetails []AncillaryDetail `json:"ancillaryDetails"`
 	StatusByLocale   string            `json:"statusByLocale"`
 	Description      string            `json:"description"`
 	DelayDetail      DelayDetail       `json:"delayDetail"`
-}
-
-type ScanLocation struct {
-	Classification      string   `json:"classification"`
-	Residential         bool     `json:"residential"`
-	StreetLines         []string `json:"streetLines"`
-	City                string   `json:"city"`
-	UrbanizationCode    string   `json:"urbanizationCode"`
-	StateOrProvinceCode string   `json:"stateOrProvinceCode"`
-	PostalCode          string   `json:"postalCode"`
-	CountryCode         string   `json:"countryCode"`
-	CountryName         string   `json:"countryName"`
 }
 
 type AncillaryDetail struct {
@@ -228,25 +216,13 @@ type DeliveryDetails struct {
 	DestinationServiceArea            string                            `json:"destinationServiceArea"`
 	DestinationServiceAreaDescription string                            `json:"destinationServiceAreaDescription"`
 	LocationDescription               string                            `json:"locationDescription"`
-	ActualDeliveryAddress             ActualDeliveryAddress             `json:"actualDeliveryAddress"`
+	ActualDeliveryAddress             Address                           `json:"actualDeliveryAddress"`
 	DeliveryToday                     bool                              `json:"deliveryToday"`
 	LocationType                      string                            `json:"locationType"`
 	SignedByName                      string                            `json:"signedByName"`
 	OfficeOrderDeliveryMethod         string                            `json:"officeOrderDeliveryMethod"`
 	DeliveryAttempts                  string                            `json:"deliveryAttempts"`
 	DeliveryOptionEligibilityDetails  []DeliveryOptionEligibilityDetail `json:"deliveryOptionEligibilityDetails"`
-}
-
-type ActualDeliveryAddress struct {
-	Classification      string   `json:"classification"`
-	Residential         bool     `json:"residential"`
-	StreetLines         []string `json:"streetLines"`
-	City                string   `json:"city"`
-	UrbanizationCode    string   `json:"urbanizationCode"`
-	StateOrProvinceCode string   `json:"stateOrProvinceCode"`
-	PostalCode          string   `json:"postalCode"`
-	CountryCode         string   `json:"countryCode"`
-	CountryName         string   `json:"countryName"`
 }
 
 type DeliveryOptionEligibilityDetail struct {
