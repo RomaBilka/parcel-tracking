@@ -71,16 +71,16 @@ func (c *Carrier) Track_draft(trackingId string) ([]carriers.Parcel_draft, error
 		return nil, nil
 	}
 
-	parcels := make([]carriers.Parcel_draft, 1)
-
 	places, err := getPlaces(response.ResultTable)
 	if err != nil {
 		return nil, err
 	}
 
-	parcels[1] = carriers.Parcel_draft{
-		TrackingNumber: response.ResultTable[0].ShipmentNumberSender,
-		Places:         places,
+	parcels := []carriers.Parcel_draft{
+		carriers.Parcel_draft{
+			TrackingNumber: response.ResultTable[0].ShipmentNumberSender,
+			Places:         places,
+		},
 	}
 
 	return parcels, nil

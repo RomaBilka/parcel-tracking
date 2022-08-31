@@ -82,3 +82,26 @@ func (c *Carrier) Track(trackNumber string) ([]carriers.Parcel, error) {
 
 	return parcels, nil
 }
+
+func (c *Carrier) Track_draft(trackNumber string) ([]carriers.Parcel_draft, error) {
+	resp, err := c.api.TrackByTrackingNumber(trackNumber)
+	if err != nil {
+		return nil, err
+	}
+
+	places := make([]carriers.Place, len(resp.details))
+	for i, d := range resp.details {
+		places[i] = carriers.Place{
+			Comment: d,
+		}
+	}
+
+	parcels := []carriers.Parcel_draft{
+		carriers.Parcel_draft{
+			TrackingNumber: resp.number,
+			Places:         places,
+		},
+	}
+
+	return parcels, nil
+}

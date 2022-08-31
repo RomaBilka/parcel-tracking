@@ -105,15 +105,15 @@ func (c *Carrier) Track_draft(trackingId string) ([]carriers.Parcel_draft, error
 		}
 
 		sender := carriers.Place{
-			City:   d.CitySender,
-			Street: d.WarehouseSender,
-			Date:   recipientDate,
+			City:    d.CitySender,
+			Address: d.WarehouseSender,
+			Date:    recipientDate,
 		}
 
 		recipient := carriers.Place{
-			City:   d.CityRecipient,
-			Street: d.WarehouseRecipient,
-			Date:   scheduledDeliveryDate,
+			City:    d.CityRecipient,
+			Address: d.WarehouseRecipient,
+			Date:    scheduledDeliveryDate,
 		}
 
 		parcels[i] = carriers.Parcel_draft{

@@ -31,6 +31,7 @@ type Place struct {
 	County  string
 	City    string
 	Street  string
+	Address string
 	Comment string
 	Date    time.Time
 }
