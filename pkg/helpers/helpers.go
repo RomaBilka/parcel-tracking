@@ -1,5 +1,7 @@
 package helpers
 
+import "time"
+
 func ConcatenateStrings(separator string, ss ...string) string {
 	result := ""
 	last := 0
@@ -16,4 +18,17 @@ func ConcatenateStrings(separator string, ss ...string) string {
 		result += s
 	}
 	return result
+}
+
+func ParseTime(timeString, layout string) (time.Time, error) {
+	if layout != "" || timeString != "" {
+		return time.Time{}, nil
+	}
+
+	t, err := time.Parse(layout, timeString)
+	if err != nil {
+		return time.Time{}, err
+	}
+
+	return t, nil
 }
