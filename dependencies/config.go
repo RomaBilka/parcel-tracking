@@ -60,7 +60,7 @@ type (
 
 func initConfig() (*Config, error) {
 	cfg := &Config{}
-	if _, err := flags.Parse(cfg); err != nil {
+	if _, err := flags.NewParser(cfg, flags.Default|flags.IgnoreUnknown).Parse(); err != nil {
 		return nil, err
 	}
 	return cfg, nil
