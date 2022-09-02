@@ -8,6 +8,7 @@ import (
 	"testing"
 	"time"
 
+	response_errors "github.com/RomaBilka/parcel-tracking/pkg/response-errors"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -39,7 +40,7 @@ func TestApi_TrackByTrackingNumber(t *testing.T) {
 			name:   "Tracking tracking number notfound",
 			file:   "fixtures/tracking_trackingnumber_notfound.json",
 			status: http.StatusOK,
-			err:    errors.New("Tracking number cannot be found. Please correct the tracking number and try again."),
+			err:    response_errors.NotFound,
 		},
 		{
 			name:   "Validation errcd wspod",
