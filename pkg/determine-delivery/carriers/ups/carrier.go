@@ -2,9 +2,9 @@ package ups
 
 import (
 	"regexp"
-	"time"
 
 	"github.com/RomaBilka/parcel-tracking/pkg/determine-delivery/carriers"
+	"github.com/RomaBilka/parcel-tracking/pkg/helpers"
 )
 
 var patterns = map[string]*regexp.Regexp{
@@ -72,28 +72,6 @@ func (c *Carrier) Track(trackingNumber string) ([]carriers.Parcel, error) {
 
 	parcels := []carriers.Parcel{
 		carriers.Parcel{
-			Number:  response.Shipment.ShipmentIdentificationNumber,
-			Status:  response.Shipment.Package.Activity[0].Status.StatusType.Description,
-			Address: response.Shipment.Package.Activity[0].ActivityLocation.Address.City,
-		},
-	}
-
-	return parcels, nil
-}
-
-func (c *Carrier) Track_draft(trackingNumber string) ([]carriers.Parcel_draft, error) {
-	response, err := c.api.TrackByTrackingNumber(trackingNumber)
-	if err != nil {
-		return nil, err
-	}
-
-	asctualDeliveryDate, err := time.Parse(layout, response.Shipment.DeliveryDetails.DeliveryDate.Date+" "+response.Shipment.DeliveryDetails.DeliveryDate.Time)
-	if err != nil {
-		return nil, err
-	}
-
-	parcels := []carriers.Parcel_draft{
-		carriers.Parcel_draft{
 			TrackingNumber: response.Shipment.ShipmentIdentificationNumber,
 			Places: []carriers.Place{
 				carriers.Place{
@@ -107,8 +85,7 @@ func (c *Carrier) Track_draft(trackingNumber string) ([]carriers.Parcel_draft, e
 					Address: getAddress(response.Shipment.ShipTo.Address),
 				},
 			},
-			Status:       response.Shipment.CurrentStatus.Description,
-			DeliveryDate: asctualDeliveryDate,
+			Status: response.Shipment.CurrentStatus.Description,
 		},
 	}
 
@@ -116,18 +93,7 @@ func (c *Carrier) Track_draft(trackingNumber string) ([]carriers.Parcel_draft, e
 }
 
 func getAddress(a Address) string {
-	address := a.AddressLine1
-	concatenateAddress(&address, a.AddressLine2)
-	concatenateAddress(&address, a.AddressLine3)
+	address := helpers.ConcatenateStrings(", ", a.AddressLine1, a.AddressLine2, a.AddressLine3)
 
 	return address
-}
-
-func concatenateAddress(allAddress *string, a string) {
-	if a != "" {
-		if *allAddress != "" {
-			*allAddress += ", "
-		}
-		*allAddress += a
-	}
 }

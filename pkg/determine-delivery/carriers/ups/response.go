@@ -59,14 +59,9 @@ type Shipment struct {
 		Description string `xml:"Description"`
 	} `xml:"ShipmentType"`
 
-	Shipper struct {
-		ShipperNumber string  `xml:"ShipperNumber"`
-		Address       Address `xml:"Address"`
-	} `xml:"Shipper"`
+	Shipper Shipper `xml:"Shipper"`
 
-	ShipTo struct {
-		Address Address `xml:"Address"`
-	} `xml:"ShipTo"`
+	ShipTo ShipTo `xml:"ShipTo"`
 
 	ShipmentWeight struct {
 		Weight            string `xml:"Weight"`
@@ -217,6 +212,15 @@ type Shipment struct {
 	} `xml:"Appointment"`
 
 	Package Package `xml:"Package"`
+}
+
+type ShipTo struct {
+	Address Address `xml:"Address"`
+}
+
+type Shipper struct {
+	ShipperNumber string  `xml:"ShipperNumber"`
+	Address       Address `xml:"Address"`
 }
 
 type Package struct {
