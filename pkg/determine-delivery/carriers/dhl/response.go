@@ -97,7 +97,7 @@ type shipment struct {
 		} `json:"dgf:placeOfDelivery"`
 	} `json:"details"`
 
-	Events []events `json:"events"`
+	Events []event `json:"events"`
 }
 
 type airport struct {
@@ -118,7 +118,7 @@ type dimensions struct {
 	UnitText string  `json:"unitText"`
 }
 
-type events struct {
+type event struct {
 	Timestamp   string   `json:"timestamp"`
 	StatusCode  string   `json:"statusCode"`
 	Status      string   `json:"status"`
@@ -127,12 +127,9 @@ type events struct {
 	Remark      string   `json:"remark"`
 	NextSteps   string   `json:"nextSteps"`
 
-	Location struct {
-		Address struct {
-			CountryCode     string `json:"countryCode"`
-			PostalCode      string `json:"postalCode"`
-			AddressLocality string `json:"addressLocality"`
-			StreetAddress   string `json:"streetAddress"`
-		} `json:"address"`
-	} `json:"location"`
+	Location location `json:"location"`
+}
+
+type location struct {
+	Address address `json:"address"`
 }

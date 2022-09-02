@@ -15,13 +15,14 @@ type Carrier interface {
 	Detector
 }
 
+/*
 type Parcel struct {
 	Number  string
 	Address string
 	Status  string
 }
-
-type Parcel_draft struct {
+*/
+type Parcel struct {
 	TrackingNumber string
 	Places         []Place
 	Status         string

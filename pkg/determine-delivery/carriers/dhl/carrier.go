@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/RomaBilka/parcel-tracking/pkg/determine-delivery/carriers"
+	"github.com/RomaBilka/parcel-tracking/pkg/helpers"
 )
 
 var patterns = map[string]*regexp.Regexp{
@@ -90,27 +91,10 @@ func (c *Carrier) Track(trackNumber string) ([]carriers.Parcel, error) {
 	}
 
 	parcels := make([]carriers.Parcel, len(response.Shipments))
-	for i, d := range response.Shipments {
-		parcels[i] = carriers.Parcel{
-			Number:  d.Id,
-			Address: d.Status.Location.StreetAddress,
-			Status:  d.Status.Status,
-		}
-	}
 
-	return parcels, nil
-}
-
-func (c *Carrier) Track_draft(trackNumber string) ([]carriers.Parcel_draft, error) {
-	response, err := c.api.TrackByTrackingNumber(trackNumber)
-	if err != nil {
-		return nil, err
-	}
-
-	parcels := make([]carriers.Parcel_draft, len(response.Shipments))
 	for i, s := range response.Shipments {
-		estimatedTimeOfDelivery, err := time.Parse(layout, s.EstimatedTimeOfDelivery)
-		if err != nil {
+		estimatedTimeOfDelivery, err := helpers.ParseTime(layout, s.EstimatedTimeOfDelivery)
+		if err != nil && s.EstimatedTimeOfDelivery != "" {
 			return nil, err
 		}
 
@@ -118,7 +102,7 @@ func (c *Carrier) Track_draft(trackNumber string) ([]carriers.Parcel_draft, erro
 
 		for i, e := range s.Events {
 			date, err := time.Parse(layout, e.Timestamp)
-			if err != nil {
+			if err != nil && e.Timestamp != "" {
 				return nil, err
 			}
 			places[i] = carriers.Place{
@@ -126,11 +110,11 @@ func (c *Carrier) Track_draft(trackNumber string) ([]carriers.Parcel_draft, erro
 				Street:  e.Location.Address.StreetAddress,
 				Address: e.Location.Address.AddressLocality,
 				Date:    date,
-				Comment: e.Description + ", " + e.Remark,
+				Comment: helpers.ConcatenateStrings(", ", e.Description, e.Remark),
 			}
 		}
 
-		parcels[i] = carriers.Parcel_draft{
+		parcels[i] = carriers.Parcel{
 			TrackingNumber: s.Id,
 			DeliveryDate:   estimatedTimeOfDelivery,
 			Status:         s.Status.Status,

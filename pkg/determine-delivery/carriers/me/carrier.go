@@ -2,9 +2,9 @@ package me
 
 import (
 	"regexp"
-	"time"
 
 	"github.com/RomaBilka/parcel-tracking/pkg/determine-delivery/carriers"
+	"github.com/RomaBilka/parcel-tracking/pkg/helpers"
 )
 
 var patterns = map[string]*regexp.Regexp{
@@ -49,24 +49,6 @@ func (c *Carrier) Track(trackingId string) ([]carriers.Parcel, error) {
 		return nil, err
 	}
 
-	parcels := make([]carriers.Parcel, len(response.ResultTable))
-	for i, d := range response.ResultTable {
-		parcels[i] = carriers.Parcel{
-			Number:  d.ShipmentNumberSender,
-			Address: d.CountryDel,
-			Status:  d.ActionMessages_UA + " " + d.DetailMessages_UA,
-		}
-	}
-
-	return parcels, nil
-}
-
-func (c *Carrier) Track_draft(trackingId string) ([]carriers.Parcel_draft, error) {
-	response, err := c.api.TrackByTrackingNumber(trackingId)
-	if err != nil {
-		return nil, err
-	}
-
 	if len(response.ResultTable) == 0 {
 		return nil, nil
 	}
@@ -76,8 +58,8 @@ func (c *Carrier) Track_draft(trackingId string) ([]carriers.Parcel_draft, error
 		return nil, err
 	}
 
-	parcels := []carriers.Parcel_draft{
-		carriers.Parcel_draft{
+	parcels := []carriers.Parcel{
+		carriers.Parcel{
 			TrackingNumber: response.ResultTable[0].ShipmentNumberSender,
 			Places:         places,
 		},
@@ -90,14 +72,15 @@ func getPlaces(result []ShipmentTrackResponse) ([]carriers.Place, error) {
 	places := make([]carriers.Place, len(result))
 
 	for i, s := range result {
-		date, err := time.Parse(layout, s.DateTimeAction)
+		time, err := helpers.ParseTime(layout, s.DateTimeAction)
 		if err != nil {
 			return nil, err
 		}
+
 		places[i] = carriers.Place{
 			County: s.Country,
 			City:   s.City,
-			Date:   date,
+			Date:   time,
 		}
 	}
 

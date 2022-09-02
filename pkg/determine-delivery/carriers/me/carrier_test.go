@@ -43,19 +43,19 @@ func TestCarrier_Track(t *testing.T) {
 		{
 			name: "Ok response",
 			setupApiMock: func(api *apiMock, trackNumber string) {
-				shipment := ShipmentTrackResponse{
-					ShipmentNumberSender: trackNumber,
-					CountryDel:           "UA",
-					ActionMessages_UA:    "Action Messages",
-					DetailMessages_UA:    "Detail Messages",
+				res := &ShipmentsTrackResponse{
+					ResultTable: []ShipmentTrackResponse{
+						ShipmentTrackResponse{
+							ShipmentNumberSender: trackNumber,
+							Country:              "UA",
+							City:                 "City",
+						},
+					},
 				}
-
-				res := &ShipmentsTrackResponse{}
-				res.ResultTable = append(res.ResultTable, shipment)
 
 				api.On("TrackByTrackingNumber", trackNumber).Once().Return(res, nil)
 			},
-			parcels: []carriers.Parcel{{Address: "UA", Status: "Action Messages Detail Messages"}},
+			parcels: []carriers.Parcel{{Places: []carriers.Place{carriers.Place{County: "UA", City: "City"}}}},
 		},
 		{
 			name: "Bad response",

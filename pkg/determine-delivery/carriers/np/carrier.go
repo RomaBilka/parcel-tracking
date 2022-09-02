@@ -2,9 +2,9 @@ package np
 
 import (
 	"regexp"
-	"time"
 
 	"github.com/RomaBilka/parcel-tracking/pkg/determine-delivery/carriers"
+	"github.com/RomaBilka/parcel-tracking/pkg/helpers"
 )
 
 var patterns = map[string]*regexp.Regexp{
@@ -61,45 +61,20 @@ func (c *Carrier) Track(trackingId string) ([]carriers.Parcel, error) {
 	}
 
 	parcels := make([]carriers.Parcel, len(response.Data))
-	for i, d := range response.Data {
-		parcels[i] = carriers.Parcel{
-			Number:  d.Number,
-			Address: d.CityRecipient + " " + d.WarehouseRecipient,
-			Status:  d.Status,
-		}
-	}
-
-	return parcels, nil
-}
-
-func (c *Carrier) Track_draft(trackingId string) ([]carriers.Parcel_draft, error) {
-	document := TrackingDocument{
-		DocumentNumber: trackingId,
-	}
-	methodProperties := TrackingDocuments{}
-	methodProperties.Documents = append(methodProperties.Documents, document)
-	methodProperties.CheckWeightMethod = "3"
-
-	response, err := c.api.TrackByTrackingNumber(methodProperties)
-	if err != nil {
-		return nil, err
-	}
-
-	parcels := make([]carriers.Parcel_draft, len(response.Data))
 
 	for i, d := range response.Data {
 
-		scheduledDeliveryDate, err := time.Parse(layout, d.ScheduledDeliveryDate)
+		scheduledDeliveryDate, err := helpers.ParseTime(layout, d.ScheduledDeliveryDate)
 		if err != nil {
 			return nil, err
 		}
 
-		recipientDate, err := time.Parse(layout, d.RecipientDateTime)
+		recipientDate, err := helpers.ParseTime(layout, d.RecipientDateTime)
 		if err != nil {
 			return nil, err
 		}
 
-		asctualDeliveryDate, err := time.Parse(layout, d.ActualDeliveryDate)
+		asctualDeliveryDate, err := helpers.ParseTime(layout, d.ActualDeliveryDate)
 		if err != nil {
 			return nil, err
 		}
@@ -116,7 +91,7 @@ func (c *Carrier) Track_draft(trackingId string) ([]carriers.Parcel_draft, error
 			Date:    scheduledDeliveryDate,
 		}
 
-		parcels[i] = carriers.Parcel_draft{
+		parcels[i] = carriers.Parcel{
 			TrackingNumber: d.Number,
 			Places: []carriers.Place{
 				sender,

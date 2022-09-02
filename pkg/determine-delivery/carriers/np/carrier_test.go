@@ -53,7 +53,9 @@ func TestCarrier_Track(t *testing.T) {
 				document := TrackingDocumentResponse{
 					Number:             trackNumber,
 					CityRecipient:      "City Recipient",
+					CitySender:         "City Sender",
 					WarehouseRecipient: "Warehouse Recipient",
+					WarehouseSender:    "Warehouse Sender",
 					Status:             "Ok",
 				}
 
@@ -62,7 +64,7 @@ func TestCarrier_Track(t *testing.T) {
 
 				api.On("TrackByTrackingNumber", methodProperties).Once().Return(res, nil)
 			},
-			parcels: []carriers.Parcel{{Address: "City Recipient Warehouse Recipient", Status: "Ok"}},
+			parcels: []carriers.Parcel{{Places: []carriers.Place{carriers.Place{City: "City Sender", Address: "Warehouse Sender"}, carriers.Place{City: "City Recipient", Address: "Warehouse Recipient"}}, Status: "Ok"}},
 		},
 		{
 			name: "Bad response",

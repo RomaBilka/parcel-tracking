@@ -38,20 +38,7 @@ func (c *Carrier) Detect(trackId string) bool {
 	return false
 }
 
-func (c *Carrier) Track(trackId string) ([]carriers.Parcel, error) {
-	doc, err := c.api.TrackByTrackingNumber(trackId)
-	if err != nil {
-		return nil, err
-	}
-
-	return []carriers.Parcel{{
-		Number:  doc.WaybillNumber,
-		Address: doc.PickupAddress.Country,
-		Status:  doc.State,
-	}}, nil
-}
-
-func (c *Carrier) Track_draft(trackingId string) ([]carriers.Parcel_draft, error) {
+func (c *Carrier) Track(trackingId string) ([]carriers.Parcel, error) {
 	response, err := c.api.TrackByTrackingNumber(trackingId)
 	if err != nil {
 		return nil, err
@@ -71,8 +58,8 @@ func (c *Carrier) Track_draft(trackingId string) ([]carriers.Parcel_draft, error
 		}
 	}
 
-	parcels := []carriers.Parcel_draft{
-		carriers.Parcel_draft{
+	parcels := []carriers.Parcel{
+		carriers.Parcel{
 			TrackingNumber: response.WaybillNumber,
 			Status:         response.State,
 			Places:         places,

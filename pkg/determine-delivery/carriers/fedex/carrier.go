@@ -61,33 +61,6 @@ func (c *Carrier) Track(trackingId string) ([]carriers.Parcel, error) {
 	parcels := make([]carriers.Parcel, len(response.Output.CompleteTrackResults))
 	for i, d := range response.Output.CompleteTrackResults {
 		parcels[i] = carriers.Parcel{
-			Number:  d.TrackingNumber,
-			Address: d.TrackResults[0].LatestStatusDetail.ScanLocation.CountryName + " " + d.TrackResults[0].LatestStatusDetail.ScanLocation.City,
-			Status:  d.TrackResults[0].LatestStatusDetail.StatusByLocale,
-		}
-	}
-
-	return parcels, nil
-}
-
-func (c *Carrier) Track_draft(trackingId string) ([]carriers.Parcel_draft, error) {
-	trackingInfo := TrackingInfo{
-		TrackingNumberInfo: TrackingNumberInfo{
-			TrackingNumber: trackingId,
-		},
-	}
-
-	trackingData := TrackingRequest{IncludeDetailedScans: true}
-	trackingData.TrackingInfo = append(trackingData.TrackingInfo, trackingInfo)
-
-	response, err := c.api.TrackByTrackingNumber(trackingData)
-	if err != nil {
-		return nil, err
-	}
-
-	parcels := make([]carriers.Parcel_draft, len(response.Output.CompleteTrackResults))
-	for i, d := range response.Output.CompleteTrackResults {
-		parcels[i] = carriers.Parcel_draft{
 			TrackingNumber: d.TrackingNumber,
 			Places:         getPlaces(d.TrackResults[0]),
 			Status:         d.TrackResults[0].LatestStatusDetail.StatusByLocale,
@@ -101,10 +74,19 @@ func (c *Carrier) Track_draft(trackingId string) ([]carriers.Parcel_draft, error
 func getPlaces(result TrackResult) []carriers.Place {
 	address := []carriers.Place{}
 
-	return append(address,
-		preparePlace(result.OriginLocation.LocationContactAndAddress.Address),
-		preparePlace(result.DeliveryDetails.ActualDeliveryAddress),
-		preparePlace(result.RecipientInformation.Address))
+	if result.OriginLocation.LocationContactAndAddress.Address.City != "" {
+		address = append(address, preparePlace(result.OriginLocation.LocationContactAndAddress.Address))
+	}
+
+	if result.DeliveryDetails.ActualDeliveryAddress.City != "" {
+		address = append(address, preparePlace(result.DeliveryDetails.ActualDeliveryAddress))
+	}
+
+	if result.RecipientInformation.Address.City != "" {
+		address = append(address, preparePlace(result.RecipientInformation.Address))
+	}
+
+	return address
 }
 
 func preparePlace(a Address) carriers.Place {
