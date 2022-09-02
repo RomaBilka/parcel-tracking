@@ -45,7 +45,7 @@ func TestHandleLambdaEvent(t *testing.T) {
 					Return(carriers.Parcel{}, assert.AnError)
 			},
 			expResp: `{"message":"` + assert.AnError.Error() + `"}`,
-			expCode: http.StatusBadRequest,
+			expCode: http.StatusInternalServerError,
 		},
 		{
 			name:    "success",

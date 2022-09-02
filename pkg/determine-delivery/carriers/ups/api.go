@@ -5,8 +5,22 @@ import (
 	"errors"
 
 	"github.com/RomaBilka/parcel-tracking/pkg/http"
+	response_errors "github.com/RomaBilka/parcel-tracking/pkg/response-errors"
 	"github.com/valyala/fasthttp"
 )
+
+var handleErrors = map[string]error{
+	"150022": response_errors.InvalidNumber, //Invalid tracking number
+	"150028": response_errors.InvalidNumber, //Hard Invalid shipper number length
+	"151018": response_errors.InvalidNumber, //Invalid tracking number
+	"151044": response_errors.NotFound,      //No tracking information available
+	"151045": response_errors.NotFound,      //No information found
+	"151062": response_errors.NotFound,      //No tracking information available
+	"151068": response_errors.InvalidNumber, //Invalid Shipper Number
+	"152110": response_errors.NotFound,      //No information found for reference number
+	"154030": response_errors.NotFound,      //No information for this tracking number
+
+}
 
 type Api struct {
 	apiURL              string
@@ -37,6 +51,10 @@ func (api *Api) TrackByTrackingNumber(trackingNumber string) (*TrackResponse, er
 	}
 
 	if trackResponse.Response.Error.ErrorCode != "" {
+		if err, ok := handleErrors[trackResponse.Response.Error.ErrorCode]; ok {
+			return nil, err
+		}
+
 		return nil, errors.New(trackResponse.Response.Error.ErrorDescription)
 	}
 

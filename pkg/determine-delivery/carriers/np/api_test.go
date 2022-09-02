@@ -1,12 +1,12 @@
 package np
 
 import (
-	"errors"
 	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
 	"testing"
 
+	response_errors "github.com/RomaBilka/parcel-tracking/pkg/response-errors"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -42,7 +42,7 @@ func TestApi_TrackByTrackingNumber(t *testing.T) {
 				DocumentNumber: "",
 				Phone:          "",
 			},
-			error: errors.New("Document number is not correct"),
+			error: response_errors.InvalidNumber,
 		},
 	}
 	for _, testCase := range testCases {

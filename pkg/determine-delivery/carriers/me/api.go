@@ -7,10 +7,16 @@ import (
 	"errors"
 
 	"github.com/RomaBilka/parcel-tracking/pkg/http"
+	response_errors "github.com/RomaBilka/parcel-tracking/pkg/response-errors"
 	"github.com/valyala/fasthttp"
 )
 
-const statusOk = "000"
+const statusOk = "000" //Ok
+
+var handleErrors = map[string]error{
+	"103": response_errors.NotFound, //Document not found
+	"104": response_errors.NotFound, //Directory not found
+}
 
 type Api struct {
 	apiURL   string
@@ -45,6 +51,10 @@ func (api *Api) TrackByTrackingNumber(trackNumber string) (*ShipmentsTrackRespon
 	}
 
 	if shipmentsTrackResponse.Errors.Code != statusOk {
+
+		if err, ok := handleErrors[shipmentsTrackResponse.Errors.Code]; ok {
+			return nil, err
+		}
 		return nil, errors.New(shipmentsTrackResponse.Errors.Name)
 	}
 

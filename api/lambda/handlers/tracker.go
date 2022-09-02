@@ -3,10 +3,12 @@ package handlers
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"net/http"
 
 	"github.com/RomaBilka/parcel-tracking/api"
 	"github.com/RomaBilka/parcel-tracking/pkg/determine-delivery/carriers"
+	response_errors "github.com/RomaBilka/parcel-tracking/pkg/response-errors"
 	"github.com/aws/aws-lambda-go/events"
 )
 
@@ -25,9 +27,20 @@ func Tracking(t parcelTracker) Handler {
 
 		p, err := t.TrackParcel(ctx, id)
 		if err != nil {
-			return response(http.StatusBadRequest, api.Error{Message: err.Error()})
+			return handleError(err)
 		}
 		return response(http.StatusOK, p)
+	}
+}
+
+func handleError(err error) (events.APIGatewayProxyResponse, error) {
+	switch {
+	case errors.Is(err, response_errors.NotFound):
+		return response(http.StatusNotFound, api.Error{Message: err.Error()})
+	case errors.Is(err, response_errors.InvalidNumber):
+		return response(http.StatusBadRequest, api.Error{Message: err.Error()})
+	default:
+		return response(http.StatusInternalServerError, api.Error{Message: err.Error()})
 	}
 }
 
