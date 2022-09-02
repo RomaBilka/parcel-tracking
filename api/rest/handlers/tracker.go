@@ -8,6 +8,7 @@ import (
 
 	"github.com/RomaBilka/parcel-tracking/api"
 	"github.com/RomaBilka/parcel-tracking/pkg/determine-delivery/carriers"
+	response_errors "github.com/RomaBilka/parcel-tracking/pkg/response-errors"
 )
 
 type parcelTracker interface {
@@ -30,7 +31,7 @@ func Tracking(t parcelTracker) http.HandlerFunc {
 		ctx := r.Context()
 		parcel, err := t.TrackParcel(ctx, trackingId)
 		if err != nil {
-			writeErrorResponse(w, http.StatusBadRequest, err)
+			handleError(w, err)
 			return
 		}
 
@@ -38,6 +39,17 @@ func Tracking(t parcelTracker) http.HandlerFunc {
 		if err := json.NewEncoder(w).Encode(parcel); err != nil {
 			writeErrorResponse(w, http.StatusInternalServerError, err)
 		}
+	}
+}
+
+func handleError(w http.ResponseWriter, err error) {
+	switch {
+	case errors.Is(err, response_errors.NotFound):
+		writeErrorResponse(w, http.StatusNotFound, err)
+	case errors.Is(err, response_errors.InvalidNumber):
+		writeErrorResponse(w, http.StatusBadRequest, err)
+	default:
+		writeErrorResponse(w, http.StatusInternalServerError, err)
 	}
 }
 
