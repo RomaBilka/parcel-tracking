@@ -58,7 +58,7 @@ var patterns = map[string]*regexp.Regexp{
 	"numbers14":   regexp.MustCompile(`^[\d]{14}$`),
 }
 
-const layout = "2018-08-03T00:00:00Z"
+const layout = "2006-01-02T15:04:05Z"
 
 type api interface {
 	TrackByTrackingNumber(string) (*response, error)

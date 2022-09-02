@@ -38,8 +38,6 @@ var patterns = map[string]*regexp.Regexp{
 	"startCGISH": regexp.MustCompile(`(?i)^cgish[\d]{9}$`),
 }
 
-const layout = "20100608 134211"
-
 type api interface {
 	TrackByTrackingNumber(string) (*TrackResponse, error)
 }
