@@ -23,7 +23,7 @@ type (
 
 	DHL struct {
 		ApiURL string `long:"DHL_URL" description:"DHL API URL" required:"true" default:"https://api-eu.dhl.com" env:"DHL_API_URL"`
-		ApiKey string `long:"DHL_API_Key" description:"DHL API key"  default:"demo-key" env:"DHL_API_KEY"`
+		ApiKey string `long:"DHL_API_KEY" description:"DHL API key" required:"true" default:"demo-key" env:"DHL_API_KEY"`
 	}
 
 	Fedex struct {
@@ -35,8 +35,8 @@ type (
 
 	USPS struct {
 		ApiURL   string `long:"USPS_APIV2_URL" description:"USPS express API TrackV2 URL" required:"true" default:"http://production.shippingapis.com/ShippingAPI.dll?API=TrackV2" env:"USPS_APIV2_URL"`
-		UserID   string `long:"USPS_ID" description:"USPS user ID" required:"true" default:"302ROMAN1277" env:"USPS_ID"`
-		Password string `long:"USPS_Password" description:"USPS password" required:"false" default:"536KD44UF932" env:"USPS_Password"`
+		UserID   string `long:"USPS_ID" description:"USPS user ID" required:"true" env:"USPS_ID"`
+		Password string `long:"USPS_PASSWORD" description:"USPS password" required:"false" env:"USPS_PASSWORD"`
 	}
 
 	UPS struct {
