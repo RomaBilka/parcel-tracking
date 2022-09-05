@@ -37,6 +37,8 @@ func handleError(err error) (events.APIGatewayProxyResponse, error) {
 	switch {
 	case errors.Is(err, response_errors.NotFound):
 		return response(http.StatusNotFound, api.Error{Message: err.Error()})
+	case errors.Is(err, response_errors.CarrierNotFound):
+		return response(http.StatusNotFound, api.Error{Message: err.Error()})
 	case errors.Is(err, response_errors.InvalidNumber):
 		return response(http.StatusBadRequest, api.Error{Message: err.Error()})
 	default:

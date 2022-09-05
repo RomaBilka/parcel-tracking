@@ -46,6 +46,8 @@ func handleError(w http.ResponseWriter, err error) {
 	switch {
 	case errors.Is(err, response_errors.NotFound):
 		writeErrorResponse(w, http.StatusNotFound, err)
+	case errors.Is(err, response_errors.CarrierNotFound):
+		writeErrorResponse(w, http.StatusNotFound, err)
 	case errors.Is(err, response_errors.InvalidNumber):
 		writeErrorResponse(w, http.StatusBadRequest, err)
 	default:
