@@ -1,10 +1,9 @@
 name: Test
-on:
-  push:
-    branches:
-      - '**'
+
+on: [workflow_call]
+
 jobs:
-  build:
+  tests:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -13,6 +12,9 @@ jobs:
         uses: actions/setup-go@v3
         with:
           go-version: 1.18
+
+      - name: Vet
+        run: go vet ./...
 
       - name: Build
         run: go build -v ./...
@@ -25,3 +27,6 @@ jobs:
 
       - name: Test Cover
         run: go test ./... -cover
+
+      - name: Fuzz Test
+        run: cd ./pkg/determine-delivery/  &&  go test --fuzz=Fuzz -fuzztime=10s
