@@ -7,41 +7,6 @@ CV123456789US, MYCV123456789PL, MYCV123456789DE
 ## API URL
 ``https://apii.meest-group.com/T/1C_Query.php``
 
-## Scope
-This API covers services provided by DPDHL under these brand names:
-
-Post & Parcel Germany (incl. mail / letter tracking)
-DHL Global Forwarding (incl. DHL Same Day)
-DHL Freight
-DHL Express
-DHL Supply Chain
-DHL eCommerce Solutions
-Asia-Pacific
-US, Canada
-EU (Belgium, Luxemburg, Netherlands, Poland, Portugal, Spain, United Kingdom)
-It does not cover:
-
-Services that require a login (eg. B2B systems). These are excluded as a backend.
-The API provides users with tracking information on:
-
-Shipment location
-Shipment delivery time*
-Shipment travel history*
-The Proof of Delivery*
-Shipment timestamp
-Origin and destination information
-Shipment number of pieces*
-Shipment piece level events*
-Shipment dimensions*
-Shipment weight*
-Not available for all DPDHL services.
-
-## Authentication
-Every call to the API requires a subscription key. This key needs to be either passed through a query string parameter or specified in the request header (DHL-API-Key).
-
-## API URL
-``https://api-eu.dhl.com/track/shipments``
-
 ## Requesr
 | Поле      | Опис                                                                                                                 |
 |-----------|----------------------------------------------------------------------------------------------------------------------|
