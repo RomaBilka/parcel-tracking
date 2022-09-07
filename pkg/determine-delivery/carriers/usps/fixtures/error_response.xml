@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<TrackResponse>
+    <TrackInfo ID="9400100000000000000000">
+        <Error>
+            <Number>-2147219283</Number>
+            <Description>A status update is not yet available on your Priority Mail Express
+                package. It will be available when the shipper provides an update or the package is delivered to USPS.
+                Check back soon. Sign up for Informed Delivery to receive notifications for
+                packages addressed to you.</Description>
+            <HelpFile/>
+            <HelpContext/>
+        </Error>
+    </TrackInfo>
+</TrackResponse>

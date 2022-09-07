@@ -66,7 +66,11 @@ func (api *Api) makeRequest(r meestExpressRequest, method string) ([]byte, error
 	r.Sign = api.getHash(r)
 	p := param{r}
 
-	xmlString, _ := xml.MarshalIndent(p, "", " ")
+	xmlString, err := xml.MarshalIndent(p, "", " ")
+	if err != nil {
+		return nil, err
+	}
+	
 	data := append([]byte(xml.Header), xmlString...)
 
 	res, err := http.Do(api.apiURL, method, func(req *fasthttp.Request) {
