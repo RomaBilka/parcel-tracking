@@ -70,7 +70,7 @@ func (api *Api) makeRequest(r meestExpressRequest, method string) ([]byte, error
 	if err != nil {
 		return nil, err
 	}
-	
+
 	data := append([]byte(xml.Header), xmlString...)
 
 	res, err := http.Do(api.apiURL, method, func(req *fasthttp.Request) {
