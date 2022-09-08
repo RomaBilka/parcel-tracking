@@ -63,11 +63,40 @@ func TestCarrier_Track(t *testing.T) {
 						Package: Package{
 							Activity: []Activity{{}},
 						},
+						Shipper: Shipper{
+							Address: Address{
+								CountryCode:  "Shipper Country Code",
+								City:         "Shipper City",
+								AddressLine1: "Shipper AddressLine1",
+								AddressLine2: "Shipper AddressLine2",
+								AddressLine3: "Shipper AddressLine3",
+							},
+						},
+						ShipTo: ShipTo{
+							Address: Address{
+								CountryCode:  "ShipTo Country Code",
+								City:         "ShipTo City",
+								AddressLine1: "ShipTo AddressLine1",
+								AddressLine2: "ShipTo AddressLine2",
+								AddressLine3: "ShipTo AddressLine3",
+							},
+						},
 					},
 				}
 				api.On("TrackByTrackingNumber", trackNumber).Once().Return(res, nil)
 			},
-			parcels: []carriers.Parcel{{Number: "1Z12345E0291980793"}},
+			parcels: []carriers.Parcel{{TrackingNumber: "1Z12345E0291980793", Places: []carriers.Place{
+				carriers.Place{
+					County:  "Shipper Country Code",
+					City:    "Shipper City",
+					Address: "Shipper AddressLine1, Shipper AddressLine2, Shipper AddressLine3",
+				},
+				carriers.Place{
+					County:  "ShipTo Country Code",
+					City:    "ShipTo City",
+					Address: "ShipTo AddressLine1, ShipTo AddressLine2, ShipTo AddressLine3",
+				},
+			}}},
 		},
 		{
 			name: "Bad response",

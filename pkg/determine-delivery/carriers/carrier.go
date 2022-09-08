@@ -1,5 +1,7 @@
 package carriers
 
+import "time"
+
 type Tracker interface {
 	Track(string) ([]Parcel, error)
 }
@@ -14,7 +16,16 @@ type Carrier interface {
 }
 
 type Parcel struct {
-	Number  string
-	Address string
-	Status  string
+	TrackingNumber string    `json:"TrackingNumber,omitempty"`
+	Places         []Place   `json:"Places,omitempty"`
+	Status         string    `json:"Status,omitempty"`
+	DeliveryDate   time.Time `json:"DeliveryDate,omitempty"`
+}
+type Place struct {
+	County  string    `json:"County,omitempty"`
+	City    string    `json:"City,omitempty"`
+	Street  string    `json:"Street,omitempty"`
+	Address string    `json:"Address,omitempty"`
+	Comment string    `json:"Comment,omitempty"`
+	Date    time.Time `json:"Date,omitempty"`
 }

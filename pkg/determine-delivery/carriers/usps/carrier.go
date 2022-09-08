@@ -72,12 +72,18 @@ func (c *Carrier) Track(trackNumber string) ([]carriers.Parcel, error) {
 		return nil, err
 	}
 
-	parcels := make([]carriers.Parcel, len(resp.details))
+	places := make([]carriers.Place, len(resp.details))
 	for i, d := range resp.details {
-		parcels[i] = carriers.Parcel{
-			Number: resp.number,
-			Status: d,
+		places[i] = carriers.Place{
+			Comment: d,
 		}
+	}
+
+	parcels := []carriers.Parcel{
+		carriers.Parcel{
+			TrackingNumber: resp.number,
+			Places:         places,
+		},
 	}
 
 	return parcels, nil

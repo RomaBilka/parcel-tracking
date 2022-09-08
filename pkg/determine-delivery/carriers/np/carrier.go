@@ -4,6 +4,7 @@ import (
 	"regexp"
 
 	"github.com/RomaBilka/parcel-tracking/pkg/determine-delivery/carriers"
+	"github.com/RomaBilka/parcel-tracking/pkg/helpers"
 )
 
 var patterns = map[string]*regexp.Regexp{
@@ -19,6 +20,8 @@ var patterns = map[string]*regexp.Regexp{
 	//1*************
 	"start1": regexp.MustCompile(`^1[\d]{13}$`),
 }
+
+const layout = "08.03.2022 15:16:47"
 
 type api interface {
 	TrackByTrackingNumber(TrackingDocuments) (*TrackingDocumentsResponse, error)
@@ -58,11 +61,44 @@ func (c *Carrier) Track(trackingId string) ([]carriers.Parcel, error) {
 	}
 
 	parcels := make([]carriers.Parcel, len(response.Data))
+
 	for i, d := range response.Data {
+
+		scheduledDeliveryDate, err := helpers.ParseTime(layout, d.ScheduledDeliveryDate)
+		if err != nil {
+			return nil, err
+		}
+
+		recipientDate, err := helpers.ParseTime(layout, d.RecipientDateTime)
+		if err != nil {
+			return nil, err
+		}
+
+		asctualDeliveryDate, err := helpers.ParseTime(layout, d.ActualDeliveryDate)
+		if err != nil {
+			return nil, err
+		}
+
+		sender := carriers.Place{
+			City:    d.CitySender,
+			Address: d.WarehouseSender,
+			Date:    recipientDate,
+		}
+
+		recipient := carriers.Place{
+			City:    d.CityRecipient,
+			Address: d.WarehouseRecipient,
+			Date:    scheduledDeliveryDate,
+		}
+
 		parcels[i] = carriers.Parcel{
-			Number:  d.Number,
-			Address: d.CityRecipient + " " + d.WarehouseRecipient,
-			Status:  d.Status,
+			TrackingNumber: d.Number,
+			Places: []carriers.Place{
+				sender,
+				recipient,
+			},
+			Status:       d.Status,
+			DeliveryDate: asctualDeliveryDate,
 		}
 	}
 

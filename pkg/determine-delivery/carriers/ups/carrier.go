@@ -4,6 +4,7 @@ import (
 	"regexp"
 
 	"github.com/RomaBilka/parcel-tracking/pkg/determine-delivery/carriers"
+	"github.com/RomaBilka/parcel-tracking/pkg/helpers"
 )
 
 var patterns = map[string]*regexp.Regexp{
@@ -69,11 +70,28 @@ func (c *Carrier) Track(trackingNumber string) ([]carriers.Parcel, error) {
 
 	parcels := []carriers.Parcel{
 		carriers.Parcel{
-			Number:  response.Shipment.ShipmentIdentificationNumber,
-			Status:  response.Shipment.Package.Activity[0].Status.StatusType.Description,
-			Address: response.Shipment.Package.Activity[0].ActivityLocation.Address.City,
+			TrackingNumber: response.Shipment.ShipmentIdentificationNumber,
+			Places: []carriers.Place{
+				carriers.Place{
+					County:  response.Shipment.Shipper.Address.CountryCode,
+					City:    response.Shipment.Shipper.Address.City,
+					Address: getAddress(response.Shipment.Shipper.Address),
+				},
+				carriers.Place{
+					County:  response.Shipment.ShipTo.Address.CountryCode,
+					City:    response.Shipment.ShipTo.Address.City,
+					Address: getAddress(response.Shipment.ShipTo.Address),
+				},
+			},
+			Status: response.Shipment.CurrentStatus.Description,
 		},
 	}
 
 	return parcels, nil
+}
+
+func getAddress(a Address) string {
+	address := helpers.ConcatenateStrings(", ", a.AddressLine1, a.AddressLine2, a.AddressLine3)
+
+	return address
 }

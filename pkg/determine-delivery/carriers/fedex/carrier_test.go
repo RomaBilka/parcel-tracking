@@ -51,11 +51,17 @@ func TestCarrier_Track(t *testing.T) {
 								TrackResults: []TrackResult{
 									TrackResult{
 										LatestStatusDetail: LatestStatusDetail{
-											ScanLocation: ScanLocation{
+											StatusByLocale: "Ok",
+										},
+										OriginLocation: OriginLocation{
+											LocationContactAndAddress: ContactAndAddress{Address: Address{}},
+										},
+										DeliveryDetails: DeliveryDetails{ActualDeliveryAddress: Address{}},
+										RecipientInformation: ContactAndAddress{
+											Address: Address{
 												CountryName: "Country Name",
 												City:        "City",
 											},
-											StatusByLocale: "Ok",
 										},
 									},
 								},
@@ -66,7 +72,7 @@ func TestCarrier_Track(t *testing.T) {
 
 				api.On("TrackByTrackingNumber", requestData).Once().Return(response, nil)
 			},
-			parcels: []carriers.Parcel{{Address: "Country Name City", Status: "Ok"}},
+			parcels: []carriers.Parcel{{Places: []carriers.Place{carriers.Place{County: "Country Name", City: "City"}}, Status: "Ok"}},
 		},
 		{
 			name: "Bad response",

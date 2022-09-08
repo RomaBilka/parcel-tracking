@@ -58,8 +58,9 @@ func TestCarrier_Track(t *testing.T) {
 					}, nil)
 			},
 			expResp: []carriers.Parcel{{
-				Number: trackId,
-				Status: "Delivered",
+				TrackingNumber: trackId,
+				Status:         "Delivered",
+				Places:         []carriers.Place{},
 			}},
 		},
 	}

@@ -2,8 +2,10 @@ package dhl
 
 import (
 	"regexp"
+	"time"
 
 	"github.com/RomaBilka/parcel-tracking/pkg/determine-delivery/carriers"
+	"github.com/RomaBilka/parcel-tracking/pkg/helpers"
 )
 
 var patterns = map[string]*regexp.Regexp{
@@ -56,6 +58,8 @@ var patterns = map[string]*regexp.Regexp{
 	"numbers14":   regexp.MustCompile(`^[\d]{14}$`),
 }
 
+const layout = "2006-01-02T15:04:05Z"
+
 type api interface {
 	TrackByTrackingNumber(string) (*response, error)
 }
@@ -87,12 +91,36 @@ func (c *Carrier) Track(trackNumber string) ([]carriers.Parcel, error) {
 	}
 
 	parcels := make([]carriers.Parcel, len(response.Shipments))
-	for i, d := range response.Shipments {
-		parcels[i] = carriers.Parcel{
-			Number:  d.Id,
-			Address: d.Status.Location.StreetAddress,
-			Status:  d.Status.Status,
+
+	for i, s := range response.Shipments {
+		estimatedTimeOfDelivery, err := helpers.ParseTime(layout, s.EstimatedTimeOfDelivery)
+		if err != nil && s.EstimatedTimeOfDelivery != "" {
+			return nil, err
 		}
+
+		places := make([]carriers.Place, len(s.Events))
+
+		for i, e := range s.Events {
+			date, err := time.Parse(layout, e.Timestamp)
+			if err != nil && e.Timestamp != "" {
+				return nil, err
+			}
+			places[i] = carriers.Place{
+				County:  e.Location.Address.CountryCode,
+				Street:  e.Location.Address.StreetAddress,
+				Address: e.Location.Address.AddressLocality,
+				Date:    date,
+				Comment: helpers.ConcatenateStrings(", ", e.Description, e.Remark),
+			}
+		}
+
+		parcels[i] = carriers.Parcel{
+			TrackingNumber: s.Id,
+			DeliveryDate:   estimatedTimeOfDelivery,
+			Status:         s.Status.Status,
+			Places:         places,
+		}
+
 	}
 
 	return parcels, nil

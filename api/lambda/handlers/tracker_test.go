@@ -46,11 +46,11 @@ func TestHandleLambdaEvent(t *testing.T) {
 			trackId: testId,
 			setupTrackerMock: func(tracker *parcelTrackerMock) {
 				tracker.On("TrackParcel", mock.Anything, testId).Once().
-					Return(carriers.Parcel{Number: "number", Address: "address", Status: "status"}, nil)
+					Return(carriers.Parcel{TrackingNumber: "number", Places: []carriers.Place{carriers.Place{Address: "address"}}, Status: "status"}, nil)
 			},
 			expResp: events.APIGatewayProxyResponse{
 				StatusCode: http.StatusOK,
-				Body:       `{"Number":"number","Address":"address","Status":"status"}`,
+				Body:       `{"TrackingNumber":"number","Places":[{"Address":"address","Date":"0001-01-01T00:00:00Z"}],"Status":"status","DeliveryDate":"0001-01-01T00:00:00Z"}`,
 			},
 		},
 	}

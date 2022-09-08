@@ -2,6 +2,8 @@ package np_shopping
 
 import (
 	"regexp"
+	"strconv"
+	"time"
 
 	"github.com/RomaBilka/parcel-tracking/pkg/determine-delivery/carriers"
 )
@@ -36,15 +38,33 @@ func (c *Carrier) Detect(trackId string) bool {
 	return false
 }
 
-func (c *Carrier) Track(trackId string) ([]carriers.Parcel, error) {
-	doc, err := c.api.TrackByTrackingNumber(trackId)
+func (c *Carrier) Track(trackingId string) ([]carriers.Parcel, error) {
+	response, err := c.api.TrackByTrackingNumber(trackingId)
 	if err != nil {
 		return nil, err
 	}
 
-	return []carriers.Parcel{{
-		Number:  doc.WaybillNumber,
-		Address: doc.PickupAddress.Country,
-		Status:  doc.State,
-	}}, nil
+	places := make([]carriers.Place, len(response.TrackingHistory))
+	for i, d := range response.TrackingHistory {
+		timestamp, err := strconv.ParseInt(d.Date, 10, 64)
+		if err != nil {
+			panic(err)
+		}
+
+		places[i] = carriers.Place{
+			County:  d.Country,
+			Comment: d.Description,
+			Date:    time.Unix(timestamp, 0),
+		}
+	}
+
+	parcels := []carriers.Parcel{
+		carriers.Parcel{
+			TrackingNumber: response.WaybillNumber,
+			Status:         response.State,
+			Places:         places,
+		},
+	}
+
+	return parcels, nil
 }

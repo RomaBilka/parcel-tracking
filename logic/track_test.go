@@ -55,9 +55,9 @@ func TestParcelsTracker_TrackParcel(t *testing.T) {
 			setupMocks: func(dm *detectorMock, cm *carrierMock) {
 				dm.On("Detect", testId).Once().Return(cm, nil)
 				cm.On("Track", testId).Once().
-					Return([]carriers.Parcel{{Number: "123", Address: "223", Status: "323"}}, nil)
+					Return([]carriers.Parcel{{TrackingNumber: "123", Places: []carriers.Place{carriers.Place{Address: "223"}}, Status: "323"}}, nil)
 			},
-			expParcel: carriers.Parcel{Number: "123", Address: "223", Status: "323"},
+			expParcel: carriers.Parcel{TrackingNumber: "123", Places: []carriers.Place{carriers.Place{Address: "223"}}, Status: "323"},
 		},
 	}
 
