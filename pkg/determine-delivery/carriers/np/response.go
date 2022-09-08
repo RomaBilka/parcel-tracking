@@ -34,7 +34,7 @@ type TrackingDocumentResponse struct {
 	FactualWeight                        string `json:"FactualWeight"`                        //"3"
 	VolumeWeight                         string `json:"VolumeWeight"`                         //"0.1",
 	CheckWeight                          any    `json:"CheckWeight"`                          //""
-	DocumentCost                         string `json:"DocumentCost"`                         //"51"
+	DocumentCost                         any    `json:"DocumentCost"`                         //"51"
 	SumBeforeCheckWeight                 any    `json:"SumBeforeCheckWeight"`                 //""
 	PayerType                            string `json:"PayerType"`                            //"Sender"
 	RecipientFullName                    string `json:"RecipientFullName"`                    //"ПІБ"
