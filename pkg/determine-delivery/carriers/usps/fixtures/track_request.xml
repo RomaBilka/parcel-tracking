@@ -1,5 +1,0 @@
-<!--The request is made by the URL http://production.shippingapis.com/ShippingAPI.dll?API=TrackV2-->
-<!--The "PASSWORD" tag may be optional, USERID(USERNAME) is required-->
-<TrackRequest USERID="XXXXXXX" PASSWORD="xxxxx">
-    <TrackID ID="EJ958083578US"></TrackID>
-</TrackRequest>

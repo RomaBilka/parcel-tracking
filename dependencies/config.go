@@ -36,7 +36,7 @@ type (
 	USPS struct {
 		ApiURL   string `long:"USPS_APIV2_URL" description:"USPS express API TrackV2 URL" required:"true" default:"http://production.shippingapis.com/ShippingAPI.dll?API=TrackV2" env:"USPS_APIV2_URL"`
 		UserID   string `long:"USPS_ID" description:"USPS user ID" env:"USPS_ID"`
-		Password string `long:"USPS_PASSWORD" description:"USPS password" env:"USPS_PASSWORD"`
+		SourceId string `long:"USPS_SOURCE_ID" description:"USPS password" env:"USPS_SOURCE_ID"`
 	}
 
 	UPS struct {

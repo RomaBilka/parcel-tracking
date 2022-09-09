@@ -32,7 +32,7 @@ func InitDeps() (*Deps, error) {
 	meApi := me.NewApi(config.MeestExpress.ApiURL, config.MeestExpress.ID, config.MeestExpress.Login, config.MeestExpress.Password)
 	detector.Registry(me.NewCarrier(meApi))
 
-	uspsApi := usps.NewApi(config.USPS.ApiURL, config.USPS.UserID, config.USPS.Password)
+	uspsApi := usps.NewApi(config.USPS.ApiURL, config.USPS.UserID, config.USPS.SourceId)
 	detector.Registry(usps.NewCarrier(uspsApi))
 
 	upsApi := ups.NewApi(config.UPS.ApiURL, config.UPS.UserID, config.UPS.AccessLicenseNumber, config.UPS.Password)

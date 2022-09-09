@@ -1,0 +1,47 @@
+<?xml version="1.0"?>
+<TrackResponse>
+    <TrackInfo ID="9400100000000000000000">
+        <CarrierRelease>false</CarrierRelease>
+        <Class>Priority Mail Express&lt;SUP&gt;&amp;reg;&lt;/SUP&gt;</Class>
+        <ClassOfMailCode>EX</ClassOfMailCode>
+        <DestinationCity>BIRMINGHAM</DestinationCity>
+        <DestinationState>AL</DestinationState>
+        <DestinationZip>35212</DestinationZip>
+        <EmailEnabled>true</EmailEnabled>
+        <KahalaIndicator>false</KahalaIndicator>
+        <MailTypeCode>DM</MailTypeCode>
+        <MPDATE>2019-08-21 10:44:08.000000</MPDATE>
+        <MPSUFFIX>999999999</MPSUFFIX>
+        <PodEnabled>true</PodEnabled>
+        <TPodEnabled>false</TPodEnabled>
+        <RedeliveryEnabled>false</RedeliveryEnabled>
+        <RestoreEnabled>false</RestoreEnabled>
+        <RramEnabled>false</RramEnabled>
+        <RreEnabled>false</RreEnabled>
+        <Service>PO to Addressee</Service>
+        <Service>Up to $100 insurance included</Service>
+        <ServiceTypeCode>701</ServiceTypeCode>
+        <Status>Delivered</Status>
+        <StatusCategory>Deliverery Attempt, action needed</StatusCategory>
+        <StatusSummary>Your item was delivered at 7:30 am on August 21, 2019 in BIRMINGHAM, AL
+            35212.</StatusSummary>
+        <TABLECODE>T</TABLECODE>
+        <TrackSummary>
+            <EventTime>7:30 am</EventTime>
+            <EventDate>August 21, 2019</EventDate>
+            <Event>CMC1496 SIT testing - Delivered</Event>
+            <EventCity>BIRMINGHAM</EventCity>
+            <EventState>AL</EventState>
+            <EventZIPCode>35212</EventZIPCode>
+            <EventCountry></EventCountry>
+            <FirmName></FirmName>
+            <Name></Name>
+            <AuthorizedAgent>false</AuthorizedAgent>
+            <EventCode>01</EventCode>
+            <EventStatusCategory>CMCXXXX Delivered</EventStatusCategory>
+        </TrackSummary>
+    </TrackInfo>
+</TrackResponse>
+
+
+

@@ -1,8 +1,8 @@
 package usps
 
 import (
+	"encoding/xml"
 	"errors"
-	"fmt"
 
 	"github.com/RomaBilka/parcel-tracking/pkg/http"
 	"github.com/valyala/fasthttp"
@@ -11,41 +11,47 @@ import (
 type Api struct {
 	apiURL   string
 	userId   string
-	password string
+	sourceId string
 }
 
-func NewApi(userId, password, apiURL string) *Api {
+func NewApi(apiURL, userId, SourceId string) *Api {
 	return &Api{
 		apiURL:   apiURL,
 		userId:   userId,
-		password: password,
+		sourceId: SourceId,
 	}
 }
 
-func (api *Api) TrackByTrackingNumber(trackNumber string) (*response, error) {
-	b, err := api.makeRequest(trackNumber, fasthttp.MethodPost, api.apiURL)
+func (api *Api) TrackByTrackingNumber(trackNumbers []TrackID) (*TrackResponse, error) {
+	t := TrackFieldRequest{
+		Revision: 1,
+		TrackID:  trackNumbers,
+	}
+
+	b, err := api.makeRequest(t, fasthttp.MethodPost, api.apiURL)
 	if err != nil {
 		return nil, err
 	}
 
-	r := &response{}
-	if err = r.error(b); err != nil {
+	trackResponse := &TrackResponse{}
+	if err := xml.Unmarshal(b, trackResponse); err != nil {
 		return nil, err
 	}
 
-	if err = r.unmarshalTrackData(b); err != nil {
-		return nil, err
-	}
-	return r, nil
+	return trackResponse, nil
 }
 
-func (api *Api) makeRequest(trackingNum, method, endPoint string) ([]byte, error) {
-	xmlBody := fmt.Sprintf(`&XML=<TrackRequest USERID="%s" PASSWORD="%s"><TrackID ID="%s"></TrackID></TrackRequest>`,
-		api.userId, api.password, trackingNum)
+func (api *Api) makeRequest(t TrackFieldRequest, method, endPoint string) ([]byte, error) {
+	requestByte, err := xml.MarshalIndent(t, "", " ")
+	if err != nil {
+		return nil, err
+	}
+
+	data := append([]byte(xml.Header), requestByte...)
 
 	res, err := http.Do(endPoint, method, func(req *fasthttp.Request) {
 		req.Header.SetContentType(http.XmlContentType)
-		req.AppendBodyString(xmlBody)
+		req.SetBody(data)
 	})
 	if err != nil {
 		return nil, err
