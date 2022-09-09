@@ -166,6 +166,23 @@
 <td></td>
 <td>Yes</td>
 </tr>
+
+<tr>
+<th colspan="4">Ukrposhta</th>
+</tr>
+<tr>
+<td>UKRPOSHTA_API_URL</td>
+<td></td>
+<td>https://www.ukrposhta.ua</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>UKRPOSHTA_API_TOKEN</td>
+<td>Bearer</td>
+<td></td>
+<td>Yes</td>
+</tr>
+
 </tbody>
 </table>
 
