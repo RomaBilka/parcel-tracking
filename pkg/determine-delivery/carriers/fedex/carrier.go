@@ -91,8 +91,8 @@ func getPlaces(result TrackResult) []carriers.Place {
 
 func preparePlace(a Address) carriers.Place {
 	return carriers.Place{
-		Street: strings.Join(a.StreetLines, " "),
-		City:   a.City,
-		County: a.CountryName,
+		Street:  strings.Join(a.StreetLines, " "),
+		City:    a.City,
+		Country: a.CountryName,
 	}
 }

@@ -73,12 +73,12 @@ func (c *Carrier) Track(trackingNumber string) ([]carriers.Parcel, error) {
 			TrackingNumber: response.Shipment.ShipmentIdentificationNumber,
 			Places: []carriers.Place{
 				carriers.Place{
-					County:  response.Shipment.Shipper.Address.CountryCode,
+					Country: response.Shipment.Shipper.Address.CountryCode,
 					City:    response.Shipment.Shipper.Address.City,
 					Address: getAddress(response.Shipment.Shipper.Address),
 				},
 				carriers.Place{
-					County:  response.Shipment.ShipTo.Address.CountryCode,
+					Country: response.Shipment.ShipTo.Address.CountryCode,
 					City:    response.Shipment.ShipTo.Address.City,
 					Address: getAddress(response.Shipment.ShipTo.Address),
 				},

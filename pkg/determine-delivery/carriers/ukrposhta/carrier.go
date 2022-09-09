@@ -58,7 +58,7 @@ func (c *Carrier) Track(trackingId string) ([]carriers.Parcel, error) {
 			}
 
 			place[j] = carriers.Place{
-				County:  item.Country,
+				Country: item.Country,
 				Address: item.Name,
 				Comment: item.EventName,
 				Date:    date,

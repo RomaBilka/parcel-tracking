@@ -64,7 +64,7 @@ func TestCarrier_Track(t *testing.T) {
 
 				api.On("TrackByTrackingNumber", []string{trackNumber}).Once().Return(res, nil)
 			},
-			parcels: []carriers.Parcel{{TrackingNumber: "RA067022878UA", Places: []carriers.Place{carriers.Place{County: "UA", Address: "Lviv"}}}},
+			parcels: []carriers.Parcel{{TrackingNumber: "RA067022878UA", Places: []carriers.Place{carriers.Place{Country: "UA", Address: "Lviv"}}}},
 		},
 	}
 	for _, testCase := range testCases {

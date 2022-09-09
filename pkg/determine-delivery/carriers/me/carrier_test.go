@@ -55,7 +55,7 @@ func TestCarrier_Track(t *testing.T) {
 
 				api.On("TrackByTrackingNumber", trackNumber).Once().Return(res, nil)
 			},
-			parcels: []carriers.Parcel{{Places: []carriers.Place{carriers.Place{County: "UA", City: "City"}}}},
+			parcels: []carriers.Parcel{{Places: []carriers.Place{carriers.Place{Country: "UA", City: "City"}}}},
 		},
 		{
 			name: "Bad response",

@@ -99,7 +99,7 @@ func TestCarrier_Track(t *testing.T) {
 
 				api.On("TrackByTrackingNumber", trackNumber).Once().Return(res, nil)
 			},
-			parcels: []carriers.Parcel{{Places: []carriers.Place{carriers.Place{County: "UA"}}, Status: "Ok"}},
+			parcels: []carriers.Parcel{{Places: []carriers.Place{carriers.Place{Country: "UA"}}, Status: "Ok"}},
 		},
 		{
 			name: "Bad response",
