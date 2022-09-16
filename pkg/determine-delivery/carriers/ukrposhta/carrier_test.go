@@ -2,15 +2,11 @@ package ukrposhta
 
 import (
 	"fmt"
-	//	"errors"
 	"testing"
 
 	"github.com/RomaBilka/parcel-tracking/pkg/determine-delivery/carriers"
-	"github.com/stretchr/testify/mock"
-
-	//	"github.com/RomaBilka/parcel-tracking/pkg/determine-delivery/carriers"
 	"github.com/stretchr/testify/assert"
-	//	"github.com/stretchr/testify/mock"
+	"github.com/stretchr/testify/mock"
 )
 
 func TestCarrier_Detect(t *testing.T) {

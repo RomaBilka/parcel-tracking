@@ -15,6 +15,7 @@ the single api endpoint:
 * [Nova Poshte Sgopping](./pkg/determine-delivery/carriers/np-shopping)
 * [UPS](./pkg/determine-delivery/carriers/ups)
 * [USPS](./pkg/determine-delivery/carriers/usps)
+* [Ukrposhta](./pkg/determine-delivery/carriers/ukrposhta)
 
 ## Config
 [Config](./dependencies)

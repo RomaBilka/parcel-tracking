@@ -1,12 +1,5 @@
 package ukrposhta
 
-type novaPoshtaRequest struct {
-	ApiKey           string      `json:"apiKey,omitempty"`
-	ModelName        string      `json:"modelName,omitempty"`
-	CalledMethod     string      `json:"calledMethod,omitempty"`
-	MethodProperties interface{} `json:"methodProperties,omitempty"`
-}
-
 type TrackingDocuments struct {
 	Documents         []TrackingDocument `json:"Documents,omitempty"`
 	CheckWeightMethod string             `json:"CheckWeightMethod"`

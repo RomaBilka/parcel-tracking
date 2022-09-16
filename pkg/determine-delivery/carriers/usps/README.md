@@ -1,6 +1,4 @@
 # USPS tracking info
-# <span style="color:red">!!! Needs to implement more details response as in the documentation !!!</span>
-[more](https://www.usps.com/business/web-tools-apis/track-and-confirm-api.pdf)
 
 # 3.0 Package Tracking “Fields” API
 ## 3.1 Overview

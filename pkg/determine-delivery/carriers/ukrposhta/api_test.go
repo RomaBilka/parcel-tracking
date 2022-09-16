@@ -1,7 +1,6 @@
 package ukrposhta
 
 import (
-	"fmt"
 	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
@@ -49,7 +48,6 @@ func TestApi_TrackByTrackingNumber(t *testing.T) {
 			for _, b := range testCase.barcodes {
 				assert.NotEmpty(t, res.Found[b])
 			}
-			fmt.Println(res.Found)
 		})
 	}
 }
