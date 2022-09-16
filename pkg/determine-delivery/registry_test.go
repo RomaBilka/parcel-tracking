@@ -10,6 +10,7 @@ import (
 	"github.com/RomaBilka/parcel-tracking/pkg/determine-delivery/carriers/me"
 	"github.com/RomaBilka/parcel-tracking/pkg/determine-delivery/carriers/np"
 	np_shopping "github.com/RomaBilka/parcel-tracking/pkg/determine-delivery/carriers/np-shopping"
+	"github.com/RomaBilka/parcel-tracking/pkg/determine-delivery/carriers/ukrposhta"
 	"github.com/RomaBilka/parcel-tracking/pkg/determine-delivery/carriers/ups"
 	response_errors "github.com/RomaBilka/parcel-tracking/pkg/response-errors"
 	"github.com/stretchr/testify/assert"
@@ -85,6 +86,8 @@ func FuzzDetector_Detect(t *testing.F) {
 	detector.Registry(upsCarrier)
 	np_shoppingCarrier := np_shopping.NewCarrier(np_shopping.NewApi(""))
 	detector.Registry(np_shoppingCarrier)
+	ukrPoshtaCarrier := ukrposhta.NewCarrier(ukrposhta.NewApi("", ""))
+	detector.Registry(ukrPoshtaCarrier)
 
 	t.Fuzz(func(t *testing.T, trackId string) {
 		_, err := detector.Detect(trackId)

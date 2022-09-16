@@ -46,6 +46,11 @@ type (
 		Password            string `long:"UPS_PASSWORD" description:"UPS password" env:"UPS_PASSWORD"`
 	}
 
+	UkrPoshta struct {
+		ApiURL   string `long:"UKRPOSHTA_API_URL" description:"Ukrposhta API URL" required:"true" default:"https://www.ukrposhta.ua" env:"UKRPOSHTA_API_URL"`
+		ApiToken string `long:"UKRPOSHTA_API_TOKEN" description:"Ukrposhta API token" env:"UKRPOSHTA_API_TOKEN"`
+	}
+
 	Config struct {
 		Port               string `short:"p" long:"port" description:"Port" required:"true" default:"8080" env:"PORT"`
 		NovaPoshta         NovaPoshta
@@ -55,6 +60,7 @@ type (
 		Fedex              Fedex
 		USPS               USPS
 		UPS                UPS
+		UkrPoshta          UkrPoshta
 	}
 )
 

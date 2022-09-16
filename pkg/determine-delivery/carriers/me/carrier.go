@@ -9,11 +9,11 @@ import (
 
 var patterns = map[string]*regexp.Regexp{
 	//Starts with CV, 9 numbers and 2 letters at the end
-	//CV999999999ZZ
+	//CV999999999AA
 	"startCV": regexp.MustCompile(`(?i)^CV[\d]{9}[a-z]{2}$`),
 
 	//Starts with MYCV, 9 numbers and 2 letters at the end
-	//MYCV999999999ZZ
+	//MYCV999999999AA
 	"startMYCV": regexp.MustCompile(`(?i)^MYCV[\d]{9}[a-z]{2}$`),
 }
 
