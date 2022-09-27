@@ -22,7 +22,7 @@ type Parcel struct {
 	DeliveryDate   time.Time `json:"DeliveryDate,omitempty"`
 }
 type Place struct {
-	County  string    `json:"County,omitempty"`
+	Country string    `json:"Country,omitempty"`
 	City    string    `json:"City,omitempty"`
 	Street  string    `json:"Street,omitempty"`
 	Address string    `json:"Address,omitempty"`

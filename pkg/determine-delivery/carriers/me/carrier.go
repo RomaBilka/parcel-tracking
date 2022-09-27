@@ -78,9 +78,9 @@ func getPlaces(result []ShipmentTrackResponse) ([]carriers.Place, error) {
 		}
 
 		places[i] = carriers.Place{
-			County: s.Country,
-			City:   s.City,
-			Date:   time,
+			Country: s.Country,
+			City:    s.City,
+			Date:    time,
 		}
 	}
 

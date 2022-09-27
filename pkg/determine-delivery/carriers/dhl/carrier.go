@@ -106,7 +106,7 @@ func (c *Carrier) Track(trackNumber string) ([]carriers.Parcel, error) {
 				return nil, err
 			}
 			places[i] = carriers.Place{
-				County:  e.Location.Address.CountryCode,
+				Country: e.Location.Address.CountryCode,
 				Street:  e.Location.Address.StreetAddress,
 				Address: e.Location.Address.AddressLocality,
 				Date:    date,

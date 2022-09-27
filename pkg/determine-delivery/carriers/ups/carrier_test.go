@@ -87,12 +87,12 @@ func TestCarrier_Track(t *testing.T) {
 			},
 			parcels: []carriers.Parcel{{TrackingNumber: "1Z12345E0291980793", Places: []carriers.Place{
 				carriers.Place{
-					County:  "Shipper Country Code",
+					Country: "Shipper Country Code",
 					City:    "Shipper City",
 					Address: "Shipper AddressLine1, Shipper AddressLine2, Shipper AddressLine3",
 				},
 				carriers.Place{
-					County:  "ShipTo Country Code",
+					Country: "ShipTo Country Code",
 					City:    "ShipTo City",
 					Address: "ShipTo AddressLine1, ShipTo AddressLine2, ShipTo AddressLine3",
 				},

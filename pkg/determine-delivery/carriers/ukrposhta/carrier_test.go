@@ -5,9 +5,8 @@ import (
 	"testing"
 
 	"github.com/RomaBilka/parcel-tracking/pkg/determine-delivery/carriers"
-	"github.com/stretchr/testify/mock"
-
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/mock"
 )
 
 func TestCarrier_Detect(t *testing.T) {
@@ -61,7 +60,7 @@ func TestCarrier_Track(t *testing.T) {
 
 				api.On("TrackByTrackingNumber", []string{trackNumber}).Once().Return(res, nil)
 			},
-			parcels: []carriers.Parcel{{TrackingNumber: "RA067022878UA", Places: []carriers.Place{carriers.Place{County: "UA", Address: "Lviv"}}}},
+			parcels: []carriers.Parcel{{TrackingNumber: "RA067022878UA", Places: []carriers.Place{carriers.Place{Country: "UA", Address: "Lviv"}}}},
 		},
 	}
 	for _, testCase := range testCases {

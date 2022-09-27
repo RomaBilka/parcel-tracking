@@ -52,7 +52,7 @@ func (c *Carrier) Track(trackingId string) ([]carriers.Parcel, error) {
 		}
 
 		places[i] = carriers.Place{
-			County:  d.Country,
+			Country: d.Country,
 			Comment: d.Description,
 			Date:    time.Unix(timestamp, 0),
 		}
