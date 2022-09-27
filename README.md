@@ -13,9 +13,9 @@ the single api endpoint:
 * [Mess Express](./pkg/determine-delivery/carriers/me)
 * [Nova Poshte](./pkg/determine-delivery/carriers/np)
 * [Nova Poshte Sgopping](./pkg/determine-delivery/carriers/np-shopping)
+* [Ukrposhta](./pkg/determine-delivery/carriers/ukrposhta)
 * [UPS](./pkg/determine-delivery/carriers/ups)
 * [USPS](./pkg/determine-delivery/carriers/usps)
-* [Ukrposhta](./pkg/determine-delivery/carriers/ukrposhta)
 
 ## Config
 [Config](./dependencies)
