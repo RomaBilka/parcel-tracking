@@ -3,6 +3,7 @@ package fedex
 import (
 	"regexp"
 	"strings"
+	"sync"
 
 	"github.com/RomaBilka/parcel-tracking/pkg/determine-delivery/carriers"
 )
@@ -43,21 +44,52 @@ func (c *Carrier) Detect(trackId string) bool {
 	return false
 }
 
-func (c *Carrier) Track(trackingId string) ([]carriers.Parcel, error) {
-	trackingInfo := TrackingInfo{
-		TrackingNumberInfo: TrackingNumberInfo{
-			TrackingNumber: trackingId,
-		},
-	}
+func (c *Carrier) Track(trackNumbers []string) ([]carriers.Parcel, error) {
+	var mu sync.Mutex
+	var wg sync.WaitGroup
+	chanErr := make(chan error)
+	defer close(chanErr)
+	var parcels []carriers.Parcel
 
-	trackingData := TrackingRequest{IncludeDetailedScans: true}
-	trackingData.TrackingInfo = append(trackingData.TrackingInfo, trackingInfo)
+	go func() {
+		for _, trackNumber := range trackNumbers {
+			wg.Add(1)
+			go func(trackNumber string) {
+				trackingInfo := TrackingInfo{
+					TrackingNumberInfo: TrackingNumberInfo{
+						TrackingNumber: trackNumber,
+					},
+				}
+				trackingData := TrackingRequest{IncludeDetailedScans: true}
+				trackingData.TrackingInfo = append(trackingData.TrackingInfo, trackingInfo)
 
-	response, err := c.api.TrackByTrackingNumber(trackingData)
-	if err != nil {
+				response, err := c.api.TrackByTrackingNumber(trackingData)
+				if err != nil {
+					chanErr <- err
+					return
+				}
+
+				p, err := prepareResponse(response)
+				if err != nil {
+					chanErr <- err
+					return
+				}
+				mu.Lock()
+				parcels = append(parcels, p...)
+				mu.Lock()
+			}(trackNumber)
+		}
+	}()
+
+	if err := <-chanErr; err != nil {
 		return nil, err
 	}
 
+	wg.Wait()
+	return parcels, nil
+}
+
+func prepareResponse(response *TrackingResponse) ([]carriers.Parcel, error) {
 	parcels := make([]carriers.Parcel, len(response.Output.CompleteTrackResults))
 	for i, d := range response.Output.CompleteTrackResults {
 		parcels[i] = carriers.Parcel{
@@ -67,7 +99,6 @@ func (c *Carrier) Track(trackingId string) ([]carriers.Parcel, error) {
 			DeliveryDate:   d.TrackResults[0].EstimatedDeliveryTimeWindow.Window.Ends,
 		}
 	}
-
 	return parcels, nil
 }
 
