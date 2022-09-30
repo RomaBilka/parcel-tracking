@@ -1,7 +1,9 @@
 package me
 
 import (
+	"errors"
 	"regexp"
+	"sync"
 
 	"github.com/RomaBilka/parcel-tracking/pkg/determine-delivery/carriers"
 	"github.com/RomaBilka/parcel-tracking/pkg/helpers"
@@ -43,36 +45,67 @@ func (c *Carrier) Detect(trackId string) bool {
 	return false
 }
 
-func (c *Carrier) Track(trackingId string) ([]carriers.Parcel, error) {
-	response, err := c.api.TrackByTrackingNumber(trackingId)
-	if err != nil {
+func (c *Carrier) Track(trackNumbers []string) ([]carriers.Parcel, error) {
+	var mu sync.Mutex
+	var wg sync.WaitGroup
+	chanErr := make(chan error)
+	defer close(chanErr)
+	var parcels []carriers.Parcel
+
+	go func() {
+		for _, trackNumber := range trackNumbers {
+			wg.Add(1)
+			go func(trackNumber string) {
+				response, err := c.api.TrackByTrackingNumber(trackNumber)
+				if err != nil {
+					chanErr <- err
+					return
+				}
+
+				if len(response.ResultTable) == 0 {
+					chanErr <- errors.New("empty result")
+					return
+				}
+
+				parcel, err := prepareResponse(response)
+				if err != nil {
+					chanErr <- err
+					return
+				}
+				mu.Lock()
+				parcels = append(parcels, parcel)
+				mu.Lock()
+			}(trackNumber)
+		}
+	}()
+
+	if err := <-chanErr; err != nil {
 		return nil, err
 	}
 
-	if len(response.ResultTable) == 0 {
-		return nil, nil
-	}
+	wg.Wait()
+	return parcels, nil
+}
 
+func prepareResponse(response *ShipmentsTrackResponse) (carriers.Parcel, error) {
 	places, err := getPlaces(response.ResultTable)
 	if err != nil {
-		return nil, err
+		return carriers.Parcel{}, err
 	}
 
-	parcels := []carriers.Parcel{
-		carriers.Parcel{
-			TrackingNumber: response.ResultTable[0].ShipmentNumberSender,
-			Places:         places,
-		},
+	parcel := carriers.Parcel{
+		TrackingNumber: response.ResultTable[0].ShipmentNumberSender,
+		Places:         places,
 	}
 
-	return parcels, nil
+	return parcel, nil
 }
 
 func getPlaces(result []ShipmentTrackResponse) ([]carriers.Place, error) {
 	places := make([]carriers.Place, len(result))
 
 	for i, s := range result {
-		time, err := helpers.ParseTime(layout, s.DateTimeAction)
+		date, err := helpers.ParseTime(layout, s.DateTimeAction)
 		if err != nil {
 			return nil, err
 		}
@@ -80,7 +113,7 @@ func getPlaces(result []ShipmentTrackResponse) ([]carriers.Place, error) {
 		places[i] = carriers.Place{
 			Country: s.Country,
 			City:    s.City,
-			Date:    time,
+			Date:    date,
 		}
 	}
 
