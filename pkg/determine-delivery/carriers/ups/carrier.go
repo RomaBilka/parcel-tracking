@@ -62,8 +62,8 @@ func (c *Carrier) Detect(trackId string) bool {
 	return false
 }
 
-func (c *Carrier) Track(trackingNumber string) ([]carriers.Parcel, error) {
-	response, err := c.api.TrackByTrackingNumber(trackingNumber)
+func (c *Carrier) Track(trackingIds []string) ([]carriers.Parcel, error) {
+	/*response, err := c.api.TrackByTrackingNumber(trackingNumber)
 	if err != nil {
 		return nil, err
 	}
@@ -87,7 +87,8 @@ func (c *Carrier) Track(trackingNumber string) ([]carriers.Parcel, error) {
 		},
 	}
 
-	return parcels, nil
+	return parcels, nil*/
+	return nil, nil
 }
 
 func getAddress(a Address) string {

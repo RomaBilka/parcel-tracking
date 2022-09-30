@@ -2,8 +2,6 @@ package np_shopping
 
 import (
 	"regexp"
-	"strconv"
-	"time"
 
 	"github.com/RomaBilka/parcel-tracking/pkg/determine-delivery/carriers"
 )
@@ -38,8 +36,8 @@ func (c *Carrier) Detect(trackId string) bool {
 	return false
 }
 
-func (c *Carrier) Track(trackingId string) ([]carriers.Parcel, error) {
-	response, err := c.api.TrackByTrackingNumber(trackingId)
+func (c *Carrier) Track(trackingIds []string) ([]carriers.Parcel, error) {
+	/*response, err := c.api.TrackByTrackingNumber(trackingId)
 	if err != nil {
 		return nil, err
 	}
@@ -66,5 +64,6 @@ func (c *Carrier) Track(trackingId string) ([]carriers.Parcel, error) {
 		},
 	}
 
-	return parcels, nil
+	return parcels, nil*/
+	return nil, nil
 }
