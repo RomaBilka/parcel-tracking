@@ -2,6 +2,7 @@ package dhl
 
 import (
 	"regexp"
+	"sync"
 	"time"
 
 	"github.com/RomaBilka/parcel-tracking/pkg/determine-delivery/carriers"
@@ -84,14 +85,47 @@ func (c *Carrier) Detect(trackId string) bool {
 	return false
 }
 
-func (c *Carrier) Track(trackNumber string) ([]carriers.Parcel, error) {
-	response, err := c.api.TrackByTrackingNumber(trackNumber)
-	if err != nil {
+func (c *Carrier) Track(trackNumbers []string) ([]carriers.Parcel, error) {
+	var mu sync.Mutex
+	var wg sync.WaitGroup
+	chanErr := make(chan error)
+	defer close(chanErr)
+	var parcels []carriers.Parcel
+
+	go func() {
+		for _, trackNumber := range trackNumbers {
+			wg.Add(1)
+			go func(trackNumber string) {
+				response, err := c.api.TrackByTrackingNumber(trackNumber)
+				if err != nil {
+					chanErr <- err
+					return
+				}
+				p, err := prepareResponse(response)
+				if err != nil {
+					chanErr <- err
+					return
+				}
+				mu.Lock()
+				parcels = append(parcels, p...)
+				mu.Lock()
+			}(trackNumber)
+
+			//from the documentation, 1 request per second
+			time.Sleep(time.Second)
+		}
+	}()
+
+	if err := <-chanErr; err != nil {
 		return nil, err
 	}
 
-	parcels := make([]carriers.Parcel, len(response.Shipments))
+	wg.Wait()
+	return parcels, nil
+}
 
+func prepareResponse(response *response) ([]carriers.Parcel, error) {
+	parcels := make([]carriers.Parcel, len(response.Shipments))
 	for i, s := range response.Shipments {
 		estimatedTimeOfDelivery, err := helpers.ParseTime(layout, s.EstimatedTimeOfDelivery)
 		if err != nil && s.EstimatedTimeOfDelivery != "" {
@@ -120,8 +154,6 @@ func (c *Carrier) Track(trackNumber string) ([]carriers.Parcel, error) {
 			Status:         s.Status.Status,
 			Places:         places,
 		}
-
 	}
-
 	return parcels, nil
 }
