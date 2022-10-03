@@ -4,6 +4,7 @@ import (
 	"regexp"
 
 	"github.com/RomaBilka/parcel-tracking/pkg/determine-delivery/carriers"
+	"github.com/RomaBilka/parcel-tracking/pkg/helpers"
 )
 
 var patterns = map[string]*regexp.Regexp{
@@ -40,8 +41,8 @@ func (c *Carrier) Detect(trackId string) bool {
 	return false
 }
 
-func (c *Carrier) Track(trackingIds []string) ([]carriers.Parcel, error) {
-	/*response, err := c.api.TrackByTrackingNumber([]string{trackingId})
+func (c *Carrier) Track(trackNumbers []string) ([]carriers.Parcel, error) {
+	response, err := c.api.TrackByTrackingNumber(trackNumbers)
 	if err != nil {
 		return nil, err
 	}
@@ -71,6 +72,5 @@ func (c *Carrier) Track(trackingIds []string) ([]carriers.Parcel, error) {
 		i++
 	}
 
-	return parcels, nil*/
-	return nil, nil
+	return parcels, nil
 }
