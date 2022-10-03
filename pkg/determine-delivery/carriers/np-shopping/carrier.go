@@ -57,25 +57,10 @@ func (c *Carrier) Track(trackNumbers []string) ([]carriers.Parcel, error) {
 					return
 				}
 
-				places := make([]carriers.Place, len(response.TrackingHistory))
-				for i, d := range response.TrackingHistory {
-					timestamp, err := strconv.ParseInt(d.Date, 10, 64)
-					if err != nil {
-						chanErr <- err
-						return
-					}
-
-					places[i] = carriers.Place{
-						Country: d.Country,
-						Comment: d.Description,
-						Date:    time.Unix(timestamp, 0),
-					}
-				}
-
-				parcel := carriers.Parcel{
-					TrackingNumber: response.WaybillNumber,
-					Status:         response.State,
-					Places:         places,
+				parcel, err := prepareResponse(response)
+				if err != nil {
+					chanErr <- err
+					return
 				}
 
 				mu.Lock()
@@ -90,5 +75,30 @@ func (c *Carrier) Track(trackNumbers []string) ([]carriers.Parcel, error) {
 	}
 
 	wg.Wait()
+
 	return parcels, nil
+}
+
+func prepareResponse(response *TrackingDocumentResponse) (carriers.Parcel, error) {
+	places := make([]carriers.Place, len(response.TrackingHistory))
+	for i, d := range response.TrackingHistory {
+		timestamp, err := strconv.ParseInt(d.Date, 10, 64)
+		if err != nil {
+			return carriers.Parcel{}, err
+		}
+
+		places[i] = carriers.Place{
+			Country: d.Country,
+			Comment: d.Description,
+			Date:    time.Unix(timestamp, 0),
+		}
+	}
+
+	parcel := carriers.Parcel{
+		TrackingNumber: response.WaybillNumber,
+		Status:         response.State,
+		Places:         places,
+	}
+
+	return parcel, nil
 }
