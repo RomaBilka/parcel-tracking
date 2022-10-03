@@ -96,6 +96,8 @@ func (c *Carrier) Track(trackNumbers []string) ([]carriers.Parcel, error) {
 		for _, trackNumber := range trackNumbers {
 			wg.Add(1)
 			go func(trackNumber string) {
+				defer wg.Done()
+
 				response, err := c.api.TrackByTrackingNumber(trackNumber)
 				if err != nil {
 					chanErr <- err
