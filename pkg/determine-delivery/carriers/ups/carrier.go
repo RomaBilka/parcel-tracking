@@ -2,6 +2,7 @@ package ups
 
 import (
 	"regexp"
+	"sync"
 
 	"github.com/RomaBilka/parcel-tracking/pkg/determine-delivery/carriers"
 	"github.com/RomaBilka/parcel-tracking/pkg/helpers"
@@ -62,33 +63,62 @@ func (c *Carrier) Detect(trackId string) bool {
 	return false
 }
 
-func (c *Carrier) Track(trackingIds []string) ([]carriers.Parcel, error) {
-	/*response, err := c.api.TrackByTrackingNumber(trackingNumber)
-	if err != nil {
+func (c *Carrier) Track(trackNumbers []string) ([]carriers.Parcel, error) {
+	var mu sync.Mutex
+	var wg sync.WaitGroup
+	chanErr := make(chan error)
+	defer close(chanErr)
+	var parcels []carriers.Parcel
+
+	go func() {
+		for _, trackNumber := range trackNumbers {
+			wg.Add(1)
+			go func(trackNumber string) {
+				defer wg.Done()
+
+				response, err := c.api.TrackByTrackingNumber(trackNumber)
+				if err != nil {
+					chanErr <- err
+					return
+				}
+
+				parcel := prepareResponse(response)
+
+				mu.Lock()
+				parcels = append(parcels, parcel)
+				mu.Lock()
+
+			}(trackNumber)
+		}
+	}()
+
+	if err := <-chanErr; err != nil {
 		return nil, err
 	}
 
-	parcels := []carriers.Parcel{
-		carriers.Parcel{
-			TrackingNumber: response.Shipment.ShipmentIdentificationNumber,
-			Places: []carriers.Place{
-				carriers.Place{
-					Country: response.Shipment.Shipper.Address.CountryCode,
-					City:    response.Shipment.Shipper.Address.City,
-					Address: getAddress(response.Shipment.Shipper.Address),
-				},
-				carriers.Place{
-					Country: response.Shipment.ShipTo.Address.CountryCode,
-					City:    response.Shipment.ShipTo.Address.City,
-					Address: getAddress(response.Shipment.ShipTo.Address),
-				},
+	wg.Wait()
+	return parcels, nil
+}
+
+func prepareResponse(response *TrackResponse) carriers.Parcel {
+	parcel := carriers.Parcel{
+		TrackingNumber: response.Shipment.ShipmentIdentificationNumber,
+		Places: []carriers.Place{
+			carriers.Place{
+				Country: response.Shipment.Shipper.Address.CountryCode,
+				City:    response.Shipment.Shipper.Address.City,
+				Address: getAddress(response.Shipment.Shipper.Address),
 			},
-			Status: response.Shipment.CurrentStatus.Description,
+			carriers.Place{
+				Country: response.Shipment.ShipTo.Address.CountryCode,
+				City:    response.Shipment.ShipTo.Address.City,
+				Address: getAddress(response.Shipment.ShipTo.Address),
+			},
 		},
+		Status: response.Shipment.CurrentStatus.Description,
 	}
 
-	return parcels, nil*/
-	return nil, nil
+	return parcel
 }
 
 func getAddress(a Address) string {
