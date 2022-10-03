@@ -110,9 +110,6 @@ func (c *Carrier) Track(trackNumbers []string) ([]carriers.Parcel, error) {
 				parcels = append(parcels, p...)
 				mu.Lock()
 			}(trackNumber)
-
-			//from the documentation, 1 request per second
-			time.Sleep(time.Second)
 		}
 	}()
 
