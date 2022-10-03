@@ -66,9 +66,14 @@ func (c *Carrier) Detect(trackId string) bool {
 	return false
 }
 
-func (c *Carrier) Track(trackingIds []string) ([]carriers.Parcel, error) {
-	/*trackNumbers := []TrackID{TrackID{Id: trackNumber}}
-	resp, err := c.api.TrackByTrackingNumber(trackNumbers)
+func (c *Carrier) Track(trackNumbers []string) ([]carriers.Parcel, error) {
+	trackIDs := make([]TrackID, len(trackNumbers))
+
+	for i, trackNumber := range trackNumbers {
+		trackIDs[i].Id = trackNumber
+	}
+
+	resp, err := c.api.TrackByTrackingNumber(trackIDs)
 	if err != nil {
 		return nil, err
 	}
@@ -81,6 +86,5 @@ func (c *Carrier) Track(trackingIds []string) ([]carriers.Parcel, error) {
 		}
 	}
 
-	return parcels, nil*/
-	return nil, nil
+	return parcels, nil
 }
