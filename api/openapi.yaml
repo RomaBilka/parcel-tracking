@@ -7,16 +7,15 @@ tags:
   - name: Tracker
 paths:
   /tracking:
-    get:
+    post:
       tags:
         - "Tracker"
       summary: "Track а parcel by tracking Id"
-      parameters:
-        - in: query
-          name: "track_id"
-          required: true
-          schema:
-            type: "string"
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TrackId'
       responses:
         "200":
           description: "Successful operation"
@@ -46,6 +45,13 @@ paths:
                 $ref: '#/components/schemas/Error'
 components:
   schemas:
+    TrackId:
+      type: object
+      properties:
+        track_id:
+          type: array
+          items:
+            type: string
     Parcel:
       type: object
       properties:
