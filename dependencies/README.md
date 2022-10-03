@@ -20,6 +20,13 @@
 </tr>
 
 <tr>
+<td>n/MAXIMUM_NUMBER_TRACKING_ID</td>
+<td>Maximum number of tracking IDs per request</td>
+<td>10</td>
+<td>No</td>
+</tr>
+
+<tr>
 <th colspan="4">Nova Poshta</th>
 </tr>
 <tr>

@@ -1,11 +1,12 @@
 # Parcel Tracking
 
 Open-source program that developed to simplify parcel tracking.
-You can find you parcel from UPS, Ukrposhta, USPS, Nova Poshta, MeestExpress, Amazaon and much others just by calling
+You can find you parcel from UPS, Ukrposhta, USPS, Nova Poshta, MeestExpress and much others just by calling
 the single api endpoint:
 
+You must use the ```POST``` method, and parameters array ```track_id```
 ```bash
-/tracking?track_id=[Your parcel number]
+curl -d 'track_id=*********&track_id=*********' -H 'application/x-www-form-urlencoded' /tracking
 ```
 ## Carriers
 * [DHL](./pkg/determine-delivery/carriers/dhl)
