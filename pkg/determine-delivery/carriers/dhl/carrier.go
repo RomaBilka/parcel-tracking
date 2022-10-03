@@ -120,6 +120,7 @@ func (c *Carrier) Track(trackNumbers []string) ([]carriers.Parcel, error) {
 	}
 
 	wg.Wait()
+
 	return parcels, nil
 }
 
