@@ -46,10 +46,11 @@ func (c *Carrier) Detect(trackId string) bool {
 }
 
 func (c *Carrier) Track(trackNumbers []string) ([]carriers.Parcel, error) {
-	var mu sync.Mutex
 	var wg sync.WaitGroup
 	chanErr := make(chan error)
+	chanParcel := make(chan carriers.Parcel)
 	defer close(chanErr)
+	defer close(chanParcel)
 	var parcels []carriers.Parcel
 
 	go func() {
@@ -73,15 +74,17 @@ func (c *Carrier) Track(trackNumbers []string) ([]carriers.Parcel, error) {
 					chanErr <- err
 					return
 				}
-				mu.Lock()
-				parcels = append(parcels, parcel)
-				mu.Lock()
+
+				chanParcel <- parcel
 			}(trackNumber)
 		}
 	}()
 
-	if err := <-chanErr; err != nil {
+	select {
+	case err := <-chanErr:
 		return nil, err
+	case p := <-chanParcel:
+		parcels = append(parcels, p)
 	}
 
 	wg.Wait()

@@ -72,7 +72,7 @@ func TestCarrier_Track(t *testing.T) {
 			testCase.setupApiMock(api, testCase.trackNumber)
 
 			c := NewCarrier(api)
-			parcels, err := c.Track(testCase.trackNumber)
+			parcels, err := c.Track([]string{testCase.trackNumber})
 
 			assert.Equal(t, testCase.err, err)
 			assert.Equal(t, testCase.parcels, parcels)
