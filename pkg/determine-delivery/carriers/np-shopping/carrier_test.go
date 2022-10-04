@@ -71,7 +71,7 @@ func TestCarrier_Track(t *testing.T) {
 			tc.apiMock(m)
 
 			n := NewCarrier(m)
-			resp, err := n.Track(trackId)
+			resp, err := n.Track([]string{trackId})
 
 			assert.Equal(t, tc.expResp, resp)
 			assert.Equal(t, tc.expErr, err)
