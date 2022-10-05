@@ -32,7 +32,7 @@ func Tracking(t parcelTracker, maximumNumberTrackingId int) http.HandlerFunc {
 			writeErrorResponse(w, http.StatusBadRequest, errors.New("track_id cannot be empty"))
 			return
 		}
-		
+
 		for _, id := range trackingIds {
 			if id == "" {
 				writeErrorResponse(w, http.StatusBadRequest, errors.New("track_id cannot be empty"))
