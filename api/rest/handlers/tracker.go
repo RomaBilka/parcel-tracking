@@ -22,7 +22,11 @@ func Tracking(t parcelTracker, maximumNumberTrackingId int) http.HandlerFunc {
 			return
 		}
 
-		r.ParseForm()
+		if err := r.ParseForm(); err != nil {
+			writeErrorResponse(w, http.StatusBadRequest, err)
+			return
+		}
+
 		trackingIds := r.Form["track_id"]
 		if len(trackingIds) < 1 {
 			writeErrorResponse(w, http.StatusBadRequest, errors.New("track_id cannot be empty"))
