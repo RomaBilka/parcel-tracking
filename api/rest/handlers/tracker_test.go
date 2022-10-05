@@ -18,8 +18,8 @@ func TestHandleRest(t *testing.T) {
 
 	tests := []struct {
 		name             string
-		trackId          string
 		method           string
+		testId           string
 		setupTrackerMock func(tracker *parcelTrackerMock)
 		expResp          string
 		expCode          int
@@ -38,9 +38,9 @@ func TestHandleRest(t *testing.T) {
 			expResp:          `{"message":"track_id cannot be empty"}`,
 		},
 		{
-			name:    "failed to track parcel",
-			trackId: testId,
-			method:  http.MethodPost,
+			name:   "failed to track parcel",
+			method: http.MethodPost,
+			testId: testId,
 			setupTrackerMock: func(tracker *parcelTrackerMock) {
 				tracker.On("TrackParcels", mock.Anything, []string{testId}).Once().
 					Return(map[string]carriers.Parcel{}, assert.AnError)
@@ -49,9 +49,9 @@ func TestHandleRest(t *testing.T) {
 			expCode: http.StatusInternalServerError,
 		},
 		{
-			name:    "success",
-			method:  http.MethodPost,
-			trackId: testId,
+			name:   "success",
+			method: http.MethodPost,
+			testId: testId,
 			setupTrackerMock: func(tracker *parcelTrackerMock) {
 				data := map[string]carriers.Parcel{}
 				data["testId-string"] = carriers.Parcel{
@@ -73,7 +73,7 @@ func TestHandleRest(t *testing.T) {
 			tracker := &parcelTrackerMock{}
 			tc.setupTrackerMock(tracker)
 
-			data := strings.NewReader("track_id=" + testId)
+			data := strings.NewReader("track_id=" + tc.testId)
 
 			req, err := http.NewRequest(tc.method, "", data)
 			assert.NoError(t, err)
