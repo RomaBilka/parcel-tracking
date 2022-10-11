@@ -50,9 +50,6 @@ func (p ParcelsTracker) TrackParcels(_ context.Context, parcelIds []string) (map
 	chanErr := make(chan error)
 	chanIdsToCarriers := make(chan map[carriers.Carrier][]string)
 	chanParcels := make(chan map[string]carriers.Parcel)
-	defer close(chanErr)
-	defer close(chanIdsToCarriers)
-	defer close(chanParcels)
 
 	go p.matchParcelIdsToCarriers(parcelIds, chanIdsToCarriers, chanErr)
 	for {
