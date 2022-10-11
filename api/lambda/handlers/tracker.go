@@ -11,10 +11,10 @@ import (
 type Handler func(ctx context.Context, request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error)
 
 type parcelTracker interface {
-	TrackParcel(ctx context.Context, parcelId []string) (carriers.Parcel, error)
+	TrackParcels(ctx context.Context, parcelIds []string) (map[string]carriers.Parcel, error)
 }
 
-func Tracking(t parcelTracker) Handler {
+func Tracking(t parcelTracker, maximumNumberTrackingId int) Handler {
 	return func(ctx context.Context, request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
 
 		fmt.Println(request.Body)
