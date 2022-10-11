@@ -2,7 +2,6 @@ package logic
 
 import (
 	"context"
-	"fmt"
 	"sync"
 
 	"github.com/RomaBilka/parcel-tracking/pkg/determine-delivery/carriers"
@@ -20,7 +19,7 @@ func NewParcelsTracker(detector Detector) *ParcelsTracker {
 	return &ParcelsTracker{detector: detector}
 }
 
-func track(idsToCarriers map[carriers.Carrier][]string, chanErr chan error) {
+func track(idsToCarriers map[carriers.Carrier][]string, chanParcels chan map[string]carriers.Parcel, chanErr chan error) {
 	mapParcels := make(map[string]carriers.Parcel)
 	var mu sync.Mutex
 	var wg sync.WaitGroup
@@ -43,33 +42,33 @@ func track(idsToCarriers map[carriers.Carrier][]string, chanErr chan error) {
 		}(carrier, ids)
 	}
 	wg.Wait()
+
+	chanParcels <- mapParcels
 }
 
 func (p ParcelsTracker) TrackParcels(_ context.Context, parcelIds []string) (map[string]carriers.Parcel, error) {
 	chanErr := make(chan error)
 	chanIdsToCarriers := make(chan map[carriers.Carrier][]string)
-	chanParcels := make(chan []carriers.Parcel)
-	//defer close(chanErr)
-	//defer close(chanIdsToCarriers)
+	chanParcels := make(chan map[string]carriers.Parcel)
+	defer close(chanErr)
+	defer close(chanIdsToCarriers)
+	defer close(chanParcels)
 
 	go p.matchParcelIdsToCarriers(parcelIds, chanIdsToCarriers, chanErr)
-
-	select {
-	case err := <-chanErr:
-		{
-			return nil, err
-		}
-	case idsToCarriers := <-chanIdsToCarriers:
-		{
-			go track(idsToCarriers, chanErr)
-		}
-	case parcels := <-chanParcels:
-		{
-			fmt.Println(parcels)
+	for {
+		select {
+		case err := <-chanErr:
+			{
+				return nil, err
+			}
+		case idsToCarriers := <-chanIdsToCarriers:
+			{
+				go track(idsToCarriers, chanParcels, chanErr)
+			}
+		case parcels := <-chanParcels:
+			return parcels, nil
 		}
 	}
-
-	return nil, nil
 }
 
 func (p ParcelsTracker) matchParcelIdsToCarriers(parcelIds []string, chanIdsToCarriers chan map[carriers.Carrier][]string, chanErr chan error) {
@@ -82,7 +81,6 @@ func (p ParcelsTracker) matchParcelIdsToCarriers(parcelIds []string, chanIdsToCa
 		go func(parcelId string) {
 			defer wg.Done()
 			carrier, err := p.detector.Detect(parcelId)
-
 			if err != nil {
 				chanErr <- err
 				return

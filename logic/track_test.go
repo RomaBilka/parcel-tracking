@@ -2,7 +2,6 @@ package logic
 
 import (
 	"context"
-	"errors"
 	"testing"
 
 	"github.com/RomaBilka/parcel-tracking/pkg/determine-delivery/carriers"
@@ -16,7 +15,7 @@ func TestParcelsTracker_TrackParcel(t *testing.T) {
 	tests := []struct {
 		name       string
 		setupMocks func(dm *detectorMock, cm *carrierMock)
-		expParcel  carriers.Parcel
+		expParcel  map[string]carriers.Parcel
 		expErr     error
 	}{
 		{
@@ -30,34 +29,18 @@ func TestParcelsTracker_TrackParcel(t *testing.T) {
 			name: "failed to track parcel",
 			setupMocks: func(dm *detectorMock, cm *carrierMock) {
 				dm.On("Detect", testId).Once().Return(cm, nil)
-				cm.On("Track", testId).Once().Return(nil, assert.AnError)
+				cm.On("Track", []string{testId}).Once().Return([]carriers.Parcel{}, nil)
 			},
-			expErr: assert.AnError,
-		},
-		{
-			name: "invalid number of parcels, more than 1",
-			setupMocks: func(dm *detectorMock, cm *carrierMock) {
-				dm.On("Detect", testId).Once().Return(cm, nil)
-				cm.On("Track", testId).Once().Return([]carriers.Parcel{{}, {}}, nil)
-			},
-			expErr: errors.New("invalid number of parcels, expected 1 - got 2"),
-		},
-		{
-			name: "invalid number of parcels, less than 1",
-			setupMocks: func(dm *detectorMock, cm *carrierMock) {
-				dm.On("Detect", testId).Once().Return(cm, nil)
-				cm.On("Track", testId).Once().Return([]carriers.Parcel{}, nil)
-			},
-			expErr: errors.New("invalid number of parcels, expected 1 - got 0"),
+			expParcel: make(map[string]carriers.Parcel),
 		},
 		{
 			name: "success",
 			setupMocks: func(dm *detectorMock, cm *carrierMock) {
 				dm.On("Detect", testId).Once().Return(cm, nil)
-				cm.On("Track", testId).Once().
+				cm.On("Track", []string{testId}).Once().
 					Return([]carriers.Parcel{{TrackingNumber: "123", Places: []carriers.Place{carriers.Place{Address: "223"}}, Status: "323"}}, nil)
 			},
-			expParcel: carriers.Parcel{TrackingNumber: "123", Places: []carriers.Place{carriers.Place{Address: "223"}}, Status: "323"},
+			expParcel: map[string]carriers.Parcel{"123": carriers.Parcel{TrackingNumber: "123", Places: []carriers.Place{carriers.Place{Address: "223"}}, Status: "323"}},
 		},
 	}
 
@@ -69,7 +52,7 @@ func TestParcelsTracker_TrackParcel(t *testing.T) {
 			tc.setupMocks(dm, cm)
 
 			tr := NewParcelsTracker(dm)
-			gotParcel, gotErr := tr.TrackParcel(context.Background(), testId)
+			gotParcel, gotErr := tr.TrackParcels(context.Background(), []string{testId})
 
 			assert.Equal(t, tc.expParcel, gotParcel)
 			assert.Equal(t, tc.expErr, gotErr)
@@ -93,7 +76,7 @@ type carrierMock struct {
 	mock.Mock
 }
 
-func (m *carrierMock) Track(trackId string) ([]carriers.Parcel, error) {
+func (m *carrierMock) Track(trackId []string) ([]carriers.Parcel, error) {
 	ret := m.Called(trackId)
 	if ret.Get(0) == nil {
 		return nil, ret.Error(1)

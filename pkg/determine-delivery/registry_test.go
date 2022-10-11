@@ -60,7 +60,7 @@ type mockCarrier struct {
 	mock.Mock
 }
 
-func (m *mockCarrier) Track(s string) ([]carriers.Parcel, error) {
+func (m *mockCarrier) Track(s []string) ([]carriers.Parcel, error) {
 	args := m.Called(s)
 	if args.Get(0) != nil {
 		return args.Get(0).([]carriers.Parcel), args.Error(1)

@@ -2,42 +2,39 @@ package handlers
 
 import (
 	"context"
-	"encoding/json"
-	"errors"
 	"fmt"
-	"net/http"
 
-	"github.com/RomaBilka/parcel-tracking/api"
 	"github.com/RomaBilka/parcel-tracking/pkg/determine-delivery/carriers"
-	response_errors "github.com/RomaBilka/parcel-tracking/pkg/response-errors"
 	"github.com/aws/aws-lambda-go/events"
 )
 
 type Handler func(ctx context.Context, request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error)
 
 type parcelTracker interface {
-	TrackParcel(ctx context.Context, parcelId string) (carriers.Parcel, error)
+	TrackParcel(ctx context.Context, parcelId []string) (carriers.Parcel, error)
 }
 
 func Tracking(t parcelTracker) Handler {
 	return func(ctx context.Context, request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
 
 		fmt.Println(request.Body)
+		/*
+			id := request.QueryStringParameters["track_id"]
 
-		id := request.QueryStringParameters["track_id"]
+			if id == "" {
+				return response(http.StatusBadRequest, api.Error{Message: "track_id cannot be empty"})
+			}
 
-		if id == "" {
-			return response(http.StatusBadRequest, api.Error{Message: "track_id cannot be empty"})
-		}
-
-		p, err := t.TrackParcel(ctx, id)
-		if err != nil {
-			return handleError(err)
-		}
-		return response(http.StatusOK, p)
+			p, err := t.TrackParcel(ctx, id)
+			if err != nil {
+				return handleError(err)
+			}
+			return response(http.StatusOK, p)*/
+		return events.APIGatewayProxyResponse{}, nil
 	}
 }
 
+/*
 func handleError(err error) (events.APIGatewayProxyResponse, error) {
 	switch {
 	case errors.Is(err, response_errors.NotFound):
@@ -62,3 +59,4 @@ func response(status int, body interface{}) (events.APIGatewayProxyResponse, err
 		Body:       string(resp),
 	}, nil
 }
+*/
