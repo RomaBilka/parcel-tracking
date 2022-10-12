@@ -2,7 +2,9 @@ package handlers
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
+	"net/http"
 
 	"github.com/RomaBilka/parcel-tracking/pkg/determine-delivery/carriers"
 	"github.com/aws/aws-lambda-go/events"
@@ -29,8 +31,8 @@ func Tracking(t parcelTracker, maximumNumberTrackingId int) Handler {
 			if err != nil {
 				return handleError(err)
 			}
-			return response(http.StatusOK, p)*/
-		return events.APIGatewayProxyResponse{}, nil
+		*/
+		return response(http.StatusOK, request.Body)
 	}
 }
 
@@ -47,7 +49,7 @@ func handleError(err error) (events.APIGatewayProxyResponse, error) {
 		return response(http.StatusInternalServerError, api.Error{Message: err.Error()})
 	}
 }
-
+*/
 func response(status int, body interface{}) (events.APIGatewayProxyResponse, error) {
 	resp, err := json.Marshal(body)
 	if err != nil {
@@ -59,4 +61,3 @@ func response(status int, body interface{}) (events.APIGatewayProxyResponse, err
 		Body:       string(resp),
 	}, nil
 }
-*/
