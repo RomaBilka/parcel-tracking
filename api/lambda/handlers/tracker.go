@@ -32,8 +32,8 @@ func Tracking(t parcelTracker, maximumNumberTrackingId int) Handler {
 				return handleError(err)
 			}
 		*/
-		_, s := base64.StdEncoding.DecodeString(request.Body)
-		return response(http.StatusOK, s)
+		s, _ := base64.StdEncoding.DecodeString(request.Body)
+		return response(http.StatusOK, string(s))
 	}
 }
 
