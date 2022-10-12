@@ -6,7 +6,6 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"errors"
-	"mime/multipart"
 	"net/http"
 
 	"github.com/RomaBilka/parcel-tracking/api"
@@ -30,7 +29,7 @@ func Tracking(t parcelTracker, maximumNumberTrackingId int) Handler {
 		}
 
 		reader := bytes.NewReader(b)
-		r := multipart.NewReader(reader, "")
+		//r := multipart.NewReader(reader, "")
 		/*_, err = r.ReadForm(1)
 		if err != nil {
 			return handleError(err)
@@ -50,7 +49,7 @@ func Tracking(t parcelTracker, maximumNumberTrackingId int) Handler {
 			}
 		*/
 
-		return response(http.StatusOK, r)
+		return response(http.StatusOK, reader)
 	}
 }
 
