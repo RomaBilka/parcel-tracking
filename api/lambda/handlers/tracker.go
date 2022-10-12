@@ -32,7 +32,7 @@ func Tracking(t parcelTracker, maximumNumberTrackingId int) Handler {
 				return handleError(err)
 			}
 		*/
-		return response(http.StatusOK, request.Body)
+		return response(http.StatusOK, request)
 	}
 }
 
