@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"context"
+	"encoding/base64"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -32,7 +33,8 @@ func Tracking(t parcelTracker, maximumNumberTrackingId int) Handler {
 				return handleError(err)
 			}
 		*/
-		return response(http.StatusOK, request)
+		s, _ := base64.StdEncoding.DecodeString(request.Body)
+		return response(http.StatusOK, s)
 	}
 }
 
