@@ -1,12 +1,17 @@
 package handlers
 
 import (
+	"bytes"
 	"context"
 	"encoding/base64"
 	"encoding/json"
+	"errors"
+	"mime/multipart"
 	"net/http"
 
+	"github.com/RomaBilka/parcel-tracking/api"
 	"github.com/RomaBilka/parcel-tracking/pkg/determine-delivery/carriers"
+	response_errors "github.com/RomaBilka/parcel-tracking/pkg/response-errors"
 	"github.com/aws/aws-lambda-go/events"
 )
 
@@ -18,6 +23,15 @@ type parcelTracker interface {
 
 func Tracking(t parcelTracker, maximumNumberTrackingId int) Handler {
 	return func(ctx context.Context, request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
+
+		b, err := base64.StdEncoding.DecodeString(request.Body)
+		if err != nil {
+			return handleError(err)
+		}
+
+		reader := bytes.NewReader(b)
+		r := multipart.NewReader(reader, "")
+		f, _ := r.ReadForm(0)
 
 		//fmt.Println(request.Body)
 		/*
@@ -32,12 +46,11 @@ func Tracking(t parcelTracker, maximumNumberTrackingId int) Handler {
 				return handleError(err)
 			}
 		*/
-		s, _ := base64.StdEncoding.DecodeString(request.Body)
-		return response(http.StatusOK, string(s))
+
+		return response(http.StatusOK, f)
 	}
 }
 
-/*
 func handleError(err error) (events.APIGatewayProxyResponse, error) {
 	switch {
 	case errors.Is(err, response_errors.NotFound):
@@ -50,7 +63,7 @@ func handleError(err error) (events.APIGatewayProxyResponse, error) {
 		return response(http.StatusInternalServerError, api.Error{Message: err.Error()})
 	}
 }
-*/
+
 func response(status int, body interface{}) (events.APIGatewayProxyResponse, error) {
 	resp, err := json.Marshal(body)
 	if err != nil {
