@@ -31,11 +31,11 @@ func Tracking(t parcelTracker, maximumNumberTrackingId int) Handler {
 
 		reader := bytes.NewReader(b)
 		r := multipart.NewReader(reader, "")
-		_, err = r.ReadForm(1)
+		/*_, err = r.ReadForm(1)
 		if err != nil {
 			return handleError(err)
 		}
-
+		*/
 		//fmt.Println(request.Body)
 		/*
 			id := request.QueryStringParameters["track_id"]
