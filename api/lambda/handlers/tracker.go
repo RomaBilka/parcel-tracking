@@ -29,6 +29,7 @@ func Tracking(t parcelTracker, maximumNumberTrackingId int) Handler {
 		}
 
 		reader := bytes.NewReader(b)
+		return response(http.StatusOK, b)
 		//r := multipart.NewReader(reader, "")
 		/*_, err = r.ReadForm(1)
 		if err != nil {
