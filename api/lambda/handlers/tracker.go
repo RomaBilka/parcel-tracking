@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/base64"
 	"encoding/json"
-	"fmt"
 	"net/http"
 
 	"github.com/RomaBilka/parcel-tracking/pkg/determine-delivery/carriers"
@@ -20,7 +19,7 @@ type parcelTracker interface {
 func Tracking(t parcelTracker, maximumNumberTrackingId int) Handler {
 	return func(ctx context.Context, request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
 
-		fmt.Println(request.Body)
+		//fmt.Println(request.Body)
 		/*
 			id := request.QueryStringParameters["track_id"]
 
