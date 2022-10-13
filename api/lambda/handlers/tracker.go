@@ -25,7 +25,7 @@ type trackData struct {
 func Tracking(t parcelTracker, maximumNumberTrackingId int) Handler {
 	return func(ctx context.Context, request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
 		data := &trackData{}
-		if err := json.Unmarshal([]byte(request.Body), t); err != nil {
+		if err := json.Unmarshal([]byte(request.Body), data); err != nil {
 			return handleError(err)
 		}
 
