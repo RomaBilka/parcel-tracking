@@ -4,9 +4,11 @@ Open-source program that developed to simplify parcel tracking.
 You can find you parcel from UPS, Ukrposhta, USPS, Nova Poshta, MeestExpress and much others just by calling
 the single api endpoint:
 
-You must use the ```POST``` method, and parameters array ```track_id```
+You must use the ```POST``` method, and JSON array ```track_id```
 ```bash
-curl -d 'track_id=*********&track_id=*********' -H 'application/x-www-form-urlencoded' /tracking
+curl -X POST /tracking
+   -H 'Content-Type: application/json'
+   -d '{"track_id":["******************", "******************"]}'
 ```
 ## Carriers
 * [DHL](./pkg/determine-delivery/carriers/dhl)

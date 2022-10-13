@@ -13,7 +13,7 @@ paths:
       summary: "Track а parcel by tracking Id"
       requestBody:
         content:
-          application/x-www-form-urlencoded:
+          application/json:
             schema:
               $ref: '#/components/schemas/TrackId'
       responses:
@@ -24,7 +24,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Parcel'
+                  $ref: '#/components/schemas/Parcels'
         "400":
           description: "Bad Request"
           content:
@@ -52,15 +52,38 @@ components:
           type: array
           items:
             type: string
+    Parcels:
+      type: object
+      properties:
+        trackingNumber:
+          $ref: '#/components/schemas/Parcel'
     Parcel:
       type: object
       properties:
+        trackingNumber:
+          type: "string"
+        places:
+          type: array
+          items:
+            $ref: '#/components/schemas/Place'
         status:
           type: "string"
-        track_id:
+        deliveryDate:
+          type: "string"
+    Place:
+      type: object
+      properties:
+        country:
+          type: "string"
+        city:
+          type: "string"
+        street:
           type: "string"
         address:
-          description: "Delivery address"
+          type: "string"
+        comment:
+          type: "string"
+        date:
           type: "string"
     Error:
       type: object
