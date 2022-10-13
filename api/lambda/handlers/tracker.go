@@ -2,7 +2,6 @@ package handlers
 
 import (
 	"context"
-	"encoding/base64"
 	"encoding/json"
 	"errors"
 	"net/http"
@@ -21,14 +20,14 @@ type parcelTracker interface {
 
 func Tracking(t parcelTracker, maximumNumberTrackingId int) Handler {
 	return func(ctx context.Context, request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
-
-		b, err := base64.StdEncoding.DecodeString(request.Body)
-		if err != nil {
-			return handleError(err)
-		}
-
+		/*
+			b, err := base64.StdEncoding.DecodeString(request.Body)
+			if err != nil {
+				return handleError(err)
+			}
+		*/
 		//reader := bytes.NewReader(b)
-		return response(http.StatusOK, string(b))
+		return response(http.StatusOK, request)
 		/*	r := multipart.NewReader(reader, "")
 			_, err = r.ReadForm(1)
 			if err != nil {
