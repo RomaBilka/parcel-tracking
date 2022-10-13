@@ -1,7 +1,6 @@
 package handlers
 
 import (
-	"bytes"
 	"context"
 	"encoding/base64"
 	"encoding/json"
@@ -28,13 +27,13 @@ func Tracking(t parcelTracker, maximumNumberTrackingId int) Handler {
 			return handleError(err)
 		}
 
-		reader := bytes.NewReader(b)
-		return response(http.StatusOK, b)
-		//r := multipart.NewReader(reader, "")
-		/*_, err = r.ReadForm(1)
-		if err != nil {
-			return handleError(err)
-		}
+		//reader := bytes.NewReader(b)
+		return response(http.StatusOK, string(b))
+		/*	r := multipart.NewReader(reader, "")
+			_, err = r.ReadForm(1)
+			if err != nil {
+				return handleError(err)
+			}
 		*/
 		//fmt.Println(request.Body)
 		/*
@@ -50,7 +49,7 @@ func Tracking(t parcelTracker, maximumNumberTrackingId int) Handler {
 			}
 		*/
 
-		return response(http.StatusOK, reader)
+		return response(http.StatusOK, r)
 	}
 }
 
