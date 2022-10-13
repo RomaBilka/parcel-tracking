@@ -15,6 +15,10 @@ type parcelTracker interface {
 	TrackParcels(ctx context.Context, parcelIds []string) (map[string]carriers.Parcel, error)
 }
 
+type trackData struct {
+	Ids []string `json:"track_id"`
+}
+
 func Tracking(t parcelTracker, maximumNumberTrackingId int) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		if r.Method != http.MethodPost {
@@ -22,31 +26,31 @@ func Tracking(t parcelTracker, maximumNumberTrackingId int) http.HandlerFunc {
 			return
 		}
 
-		if err := r.ParseForm(); err != nil {
+		data := &trackData{}
+		if err := json.NewDecoder(r.Body).Decode(data); err != nil {
 			writeErrorResponse(w, http.StatusBadRequest, err)
 			return
 		}
 
-		trackingIds := r.Form["track_id"]
-		if len(trackingIds) < 1 {
+		if len(data.Ids) < 1 {
 			writeErrorResponse(w, http.StatusBadRequest, errors.New("track_id cannot be empty"))
 			return
 		}
 
-		for _, id := range trackingIds {
+		for _, id := range data.Ids {
 			if id == "" {
 				writeErrorResponse(w, http.StatusBadRequest, errors.New("track_id cannot be empty"))
 				return
 			}
 		}
 
-		if len(trackingIds) > maximumNumberTrackingId {
+		if len(data.Ids) > maximumNumberTrackingId {
 			writeErrorResponse(w, http.StatusBadRequest, errors.New("too many track numbers"))
 			return
 		}
 
 		ctx := r.Context()
-		parcels, err := t.TrackParcels(ctx, trackingIds)
+		parcels, err := t.TrackParcels(ctx, data.Ids)
 		if err != nil {
 			handleError(w, err)
 			return
