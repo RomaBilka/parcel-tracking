@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"context"
+	"fmt"
 	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
@@ -73,12 +74,12 @@ func TestHandleRest(t *testing.T) {
 			tracker := &parcelTrackerMock{}
 			tc.setupTrackerMock(tracker)
 
-			data := strings.NewReader("track_id=" + tc.testId)
+			data := strings.NewReader(fmt.Sprintf(`{"track_id":["%s"]}`, tc.testId))
 
 			req, err := http.NewRequest(tc.method, "", data)
 			assert.NoError(t, err)
 
-			req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+			req.Header.Set("Content-Type", "application/json")
 			rec := httptest.NewRecorder()
 
 			Tracking(tracker, 10)(rec, req)
