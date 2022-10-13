@@ -18,6 +18,10 @@ type parcelTracker interface {
 	TrackParcels(ctx context.Context, parcelIds []string) (map[string]carriers.Parcel, error)
 }
 
+type trackData struct {
+	Id []string `json:"track_id"`
+}
+
 func Tracking(t parcelTracker, maximumNumberTrackingId int) Handler {
 	return func(ctx context.Context, request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
 		/*
@@ -27,7 +31,11 @@ func Tracking(t parcelTracker, maximumNumberTrackingId int) Handler {
 			}
 		*/
 		//reader := bytes.NewReader(b)
-		return response(http.StatusOK, request)
+		t := &trackData{}
+		if err := json.Unmarshal([]byte(request.Body), t); err != nil {
+			return handleError(err)
+		}
+		return response(http.StatusOK, t)
 		/*	r := multipart.NewReader(reader, "")
 			_, err = r.ReadForm(1)
 			if err != nil {
