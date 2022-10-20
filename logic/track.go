@@ -35,10 +35,10 @@ func track(idsToCarriers map[carriers.Carrier][]string, chanParcels chan map[str
 			}
 
 			mu.Lock()
+			defer mu.Unlock()
 			for _, p := range parcels {
 				mapParcels[p.TrackingNumber] = p
 			}
-			mu.Unlock()
 		}(carrier, ids)
 	}
 	wg.Wait()
@@ -84,8 +84,8 @@ func (p ParcelsTracker) matchParcelIdsToCarriers(parcelIds []string, chanIdsToCa
 			}
 
 			mu.Lock()
+			defer mu.Unlock()
 			idsToCarriers[carrier] = append(idsToCarriers[carrier], parcelId)
-			mu.Unlock()
 		}(parcelId)
 
 	}

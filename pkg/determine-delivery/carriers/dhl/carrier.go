@@ -93,34 +93,34 @@ func (c *Carrier) Track(trackNumbers []string) ([]carriers.Parcel, error) {
 	defer close(chanParcels)
 	var parcels []carriers.Parcel
 
-	go func() {
-		for _, trackNumber := range trackNumbers {
-			wg.Add(1)
-			go func(trackNumber string) {
-				defer wg.Done()
+	for _, trackNumber := range trackNumbers {
+		wg.Add(1)
+		go func(trackNumber string) {
+			defer wg.Done()
 
-				response, err := c.api.TrackByTrackingNumber(trackNumber)
-				if err != nil {
-					chanErr <- err
-					return
-				}
-				p, err := prepareResponse(response)
-				if err != nil {
-					chanErr <- err
-					return
-				}
+			response, err := c.api.TrackByTrackingNumber(trackNumber)
+			if err != nil {
+				chanErr <- err
+				return
+			}
+			p, err := prepareResponse(response)
+			if err != nil {
+				chanErr <- err
+				return
+			}
 
-				chanParcels <- p
-			}(trackNumber)
-		}
-	}()
-
+			chanParcels <- p
+		}(trackNumber)
+	}
+	//==========================
+	//for {
 	select {
 	case err := <-chanErr:
 		return nil, err
 	case p := <-chanParcels:
 		parcels = append(parcels, p...)
 	}
+	//}
 
 	wg.Wait()
 
