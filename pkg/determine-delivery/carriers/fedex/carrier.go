@@ -45,54 +45,55 @@ func (c *Carrier) Detect(trackId string) bool {
 }
 
 func (c *Carrier) Track(trackNumbers []string) ([]carriers.Parcel, error) {
-	var wg sync.WaitGroup
 	chanErr := make(chan error)
 	chanParcels := make(chan []carriers.Parcel)
-	defer close(chanErr)
-	defer close(chanParcels)
-	var parcels []carriers.Parcel
 
-	go func() {
-		for _, trackNumber := range trackNumbers {
-			wg.Add(1)
-			go func(trackNumber string) {
-				defer wg.Done()
+	go c.track(trackNumbers, chanParcels, chanErr)
 
-				trackingInfo := TrackingInfo{
-					TrackingNumberInfo: TrackingNumberInfo{
-						TrackingNumber: trackNumber,
-					},
-				}
-				trackingData := TrackingRequest{IncludeDetailedScans: true}
-				trackingData.TrackingInfo = append(trackingData.TrackingInfo, trackingInfo)
-
-				response, err := c.api.TrackByTrackingNumber(trackingData)
-				if err != nil {
-					chanErr <- err
-					return
-				}
-
-				p, err := prepareResponse(response)
-				if err != nil {
-					chanErr <- err
-					return
-				}
-
-				chanParcels <- p
-			}(trackNumber)
+	for {
+		select {
+		case err := <-chanErr:
+			return nil, err
+		case p := <-chanParcels:
+			return p, nil
 		}
-	}()
+	}
+}
 
-	select {
-	case err := <-chanErr:
-		return nil, err
-	case p := <-chanParcels:
-		parcels = append(parcels, p...)
+func (c *Carrier) track(trackNumbers []string, chanParcels chan []carriers.Parcel, chanErr chan error) {
+	var wg sync.WaitGroup
+	var parcels []carriers.Parcel
+	for _, trackNumber := range trackNumbers {
+		wg.Add(1)
+		go func(trackNumber string) {
+			defer wg.Done()
+
+			trackingInfo := TrackingInfo{
+				TrackingNumberInfo: TrackingNumberInfo{
+					TrackingNumber: trackNumber,
+				},
+			}
+			trackingData := TrackingRequest{IncludeDetailedScans: true}
+			trackingData.TrackingInfo = append(trackingData.TrackingInfo, trackingInfo)
+
+			response, err := c.api.TrackByTrackingNumber(trackingData)
+			if err != nil {
+				chanErr <- err
+				return
+			}
+
+			p, err := prepareResponse(response)
+			if err != nil {
+				chanErr <- err
+				return
+			}
+
+			parcels = append(parcels, p...)
+		}(trackNumber)
 	}
 
 	wg.Wait()
-
-	return parcels, nil
+	chanParcels <- parcels
 }
 
 func prepareResponse(response *TrackingResponse) ([]carriers.Parcel, error) {

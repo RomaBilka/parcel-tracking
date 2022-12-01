@@ -80,7 +80,7 @@ func TestCarrier_Track(t *testing.T) {
 	}{
 		{
 			name:         "Ok response",
-			trackNumbers: []string{"12A12345", "12A12345"},
+			trackNumbers: []string{"12A12345", "12A12346"},
 			setupApiMock: func(api *apiMock, trackNumbers []string) {
 				s := shipment{
 					Id: trackNumbers[0],
@@ -96,12 +96,19 @@ func TestCarrier_Track(t *testing.T) {
 				}
 				s.Status.Status = "Ok"
 
-				res := &response{}
-				res.Shipments = append(res.Shipments, s)
+				res1 := &response{}
+				res1.Shipments = append(res1.Shipments, s)
 
-				api.On("TrackByTrackingNumber", trackNumbers[0]).Twice().Return(res, nil)
+				s.Id = trackNumbers[1]
+				res2 := &response{}
+				res2.Shipments = append(res2.Shipments, s)
+
+				api.On("TrackByTrackingNumber", trackNumbers[0]).Once().Return(res1, nil).On("TrackByTrackingNumber", trackNumbers[1]).Once().Return(res2, nil)
 			},
-			parcels: []carriers.Parcel{{TrackingNumber: "12A12345", Places: []carriers.Place{carriers.Place{Country: "UA"}}, Status: "Ok"}},
+			parcels: []carriers.Parcel{
+				carriers.Parcel{TrackingNumber: "12A12345", Places: []carriers.Place{carriers.Place{Country: "UA"}}, Status: "Ok"},
+				carriers.Parcel{TrackingNumber: "12A12346", Places: []carriers.Place{carriers.Place{Country: "UA"}}, Status: "Ok"},
+			},
 		},
 		{
 			name:         "Bad response",

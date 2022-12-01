@@ -40,45 +40,46 @@ func (c *Carrier) Detect(trackId string) bool {
 }
 
 func (c *Carrier) Track(trackNumbers []string) ([]carriers.Parcel, error) {
-	var wg sync.WaitGroup
 	chanErr := make(chan error)
-	chanParcel := make(chan carriers.Parcel)
-	defer close(chanErr)
-	defer close(chanParcel)
-	var parcels []carriers.Parcel
+	chanParcels := make(chan []carriers.Parcel)
 
-	go func() {
-		for _, trackNumber := range trackNumbers {
-			wg.Add(1)
-			go func(trackNumber string) {
-				defer wg.Done()
-				response, err := c.api.TrackByTrackingNumber(trackNumber)
-				if err != nil {
-					chanErr <- err
-					return
-				}
+	go c.track(trackNumbers, chanParcels, chanErr)
 
-				parcel, err := prepareResponse(response)
-				if err != nil {
-					chanErr <- err
-					return
-				}
-
-				chanParcel <- parcel
-			}(trackNumber)
+	for {
+		select {
+		case err := <-chanErr:
+			return nil, err
+		case p := <-chanParcels:
+			return p, nil
 		}
-	}()
+	}
+}
 
-	select {
-	case err := <-chanErr:
-		return nil, err
-	case p := <-chanParcel:
-		parcels = append(parcels, p)
+func (c *Carrier) track(trackNumbers []string, chanParcels chan []carriers.Parcel, chanErr chan error) {
+	var wg sync.WaitGroup
+	parcels := make([]carriers.Parcel, len(trackNumbers))
+	for i := range trackNumbers {
+		wg.Add(1)
+		go func(trackNumber string, i int) {
+			defer wg.Done()
+			response, err := c.api.TrackByTrackingNumber(trackNumber)
+			if err != nil {
+				chanErr <- err
+				return
+			}
+
+			parcel, err := prepareResponse(response)
+			if err != nil {
+				chanErr <- err
+				return
+			}
+
+			parcels[i] = parcel
+		}(trackNumbers[i], i)
 	}
 
 	wg.Wait()
-
-	return parcels, nil
+	chanParcels <- parcels
 }
 
 func prepareResponse(response *TrackingDocumentResponse) (carriers.Parcel, error) {

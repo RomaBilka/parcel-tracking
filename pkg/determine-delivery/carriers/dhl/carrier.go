@@ -86,13 +86,24 @@ func (c *Carrier) Detect(trackId string) bool {
 }
 
 func (c *Carrier) Track(trackNumbers []string) ([]carriers.Parcel, error) {
-	var wg sync.WaitGroup
 	chanErr := make(chan error)
 	chanParcels := make(chan []carriers.Parcel)
-	defer close(chanErr)
-	defer close(chanParcels)
-	var parcels []carriers.Parcel
 
+	go c.track(trackNumbers, chanParcels, chanErr)
+
+	for {
+		select {
+		case err := <-chanErr:
+			return nil, err
+		case p := <-chanParcels:
+			return p, nil
+		}
+	}
+}
+
+func (c *Carrier) track(trackNumbers []string, chanParcels chan []carriers.Parcel, chanErr chan error) {
+	var wg sync.WaitGroup
+	var parcels []carriers.Parcel
 	for _, trackNumber := range trackNumbers {
 		wg.Add(1)
 		go func(trackNumber string) {
@@ -109,22 +120,12 @@ func (c *Carrier) Track(trackNumbers []string) ([]carriers.Parcel, error) {
 				return
 			}
 
-			chanParcels <- p
+			parcels = append(parcels, p...)
 		}(trackNumber)
 	}
-	//==========================
-	//for {
-	select {
-	case err := <-chanErr:
-		return nil, err
-	case p := <-chanParcels:
-		parcels = append(parcels, p...)
-	}
-	//}
 
 	wg.Wait()
-
-	return parcels, nil
+	chanParcels <- parcels
 }
 
 func prepareResponse(response *response) ([]carriers.Parcel, error) {
