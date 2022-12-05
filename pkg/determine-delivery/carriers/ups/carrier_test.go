@@ -46,16 +46,17 @@ func TestCarrier_Detect(t *testing.T) {
 }
 
 func TestCarrier_Track(t *testing.T) {
-	trackIds := []string{"1Z12345E0291980793", "1Z12345E0291980794"}
 	testCases := []struct {
 		name         string
-		setupApiMock func(api *apiMock)
+		trackIds     []string
+		setupApiMock func(api *apiMock, trackIds []string)
 		parcels      []carriers.Parcel
 		err          error
 	}{
 		{
-			name: "Ok response",
-			setupApiMock: func(api *apiMock) {
+			name:     "Ok response",
+			trackIds: []string{"1Z12345E0291980793", "1Z12345E0291980794"},
+			setupApiMock: func(api *apiMock, trackIds []string) {
 				res1 := &TrackResponse{
 					Shipment: Shipment{
 						ShipmentIdentificationNumber: trackIds[0],
@@ -142,11 +143,10 @@ func TestCarrier_Track(t *testing.T) {
 			},
 		},
 		{
-			name: "Bad response",
-			setupApiMock: func(api *apiMock) {
+			name:     "Bad response",
+			trackIds: []string{"1Z12345E0291980793"},
+			setupApiMock: func(api *apiMock, trackIds []string) {
 				api.On("TrackByTrackingNumber", trackIds[0]).
-					Once().Return(nil, errors.New("Invalid tracking number")).
-					On("TrackByTrackingNumber", trackIds[1]).
 					Once().Return(nil, errors.New("Invalid tracking number"))
 			},
 			err: errors.New("Invalid tracking number"),
@@ -156,10 +156,10 @@ func TestCarrier_Track(t *testing.T) {
 	for _, testCase := range testCases {
 		t.Run(testCase.name, func(t *testing.T) {
 			api := &apiMock{}
-			testCase.setupApiMock(api)
+			testCase.setupApiMock(api, testCase.trackIds)
 
 			c := NewCarrier(api)
-			parcels, err := c.Track(trackIds)
+			parcels, err := c.Track(testCase.trackIds)
 
 			assert.Equal(t, testCase.err, err)
 			assert.ElementsMatch(t, testCase.parcels, parcels)

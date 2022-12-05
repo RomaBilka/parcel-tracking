@@ -32,27 +32,26 @@ func TestCarrier_Detect(t *testing.T) {
 }
 
 func TestCarrier_Track(t *testing.T) {
-	trackIds := []string{"NPMD000000001455NPI", "NPMD000000001456NPI"}
-
 	testCases := []struct {
-		name    string
-		apiMock func(m *apiMock)
-		expResp []carriers.Parcel
-		expErr  error
+		name     string
+		apiMock  func(m *apiMock, trackIds []string)
+		expResp  []carriers.Parcel
+		expErr   error
+		trackIds []string
 	}{
 		{
 			name: "failed to track by number",
-			apiMock: func(m *apiMock) {
+			apiMock: func(m *apiMock, trackIds []string) {
 				m.On("TrackByTrackingNumber", trackIds[0]).Once().
-					Return(nil, assert.AnError).
-					On("TrackByTrackingNumber", trackIds[1]).Once().
 					Return(nil, assert.AnError)
 			},
-			expErr: assert.AnError,
+			expErr:   assert.AnError,
+			trackIds: []string{"NPMD000000001455NPI"},
 		},
 		{
-			name: "successful track by number",
-			apiMock: func(m *apiMock) {
+			name:     "successful track by number",
+			trackIds: []string{"NPMD000000001455NPI", "NPMD000000001456NPI"},
+			apiMock: func(m *apiMock, trackIds []string) {
 				m.On("TrackByTrackingNumber", trackIds[0]).Once().
 					Return(&TrackingDocumentResponse{
 						WaybillNumber: trackIds[0],
@@ -66,12 +65,12 @@ func TestCarrier_Track(t *testing.T) {
 			},
 			expResp: []carriers.Parcel{
 				{
-					TrackingNumber: trackIds[0],
+					TrackingNumber: "NPMD000000001455NPI",
 					Status:         "Delivered",
 					Places:         []carriers.Place{},
 				},
 				{
-					TrackingNumber: trackIds[1],
+					TrackingNumber: "NPMD000000001456NPI",
 					Status:         "Delivered",
 					Places:         []carriers.Place{},
 				},
@@ -82,10 +81,10 @@ func TestCarrier_Track(t *testing.T) {
 	for _, testCase := range testCases {
 		t.Run(testCase.name, func(t *testing.T) {
 			m := &apiMock{}
-			testCase.apiMock(m)
+			testCase.apiMock(m, testCase.trackIds)
 
 			n := NewCarrier(m)
-			parcels, err := n.Track(trackIds)
+			parcels, err := n.Track(testCase.trackIds)
 
 			assert.Equal(t, testCase.expErr, err)
 			assert.ElementsMatch(t, testCase.expResp, parcels)
