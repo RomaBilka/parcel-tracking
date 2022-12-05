@@ -46,20 +46,19 @@ func TestCarrier_Detect(t *testing.T) {
 }
 
 func TestCarrier_Track(t *testing.T) {
+	trackIds := []string{"1Z12345E0291980793", "1Z12345E0291980794"}
 	testCases := []struct {
 		name         string
-		trackNumber  string
-		setupApiMock func(api *apiMock, trackNumber string)
+		setupApiMock func(api *apiMock)
 		parcels      []carriers.Parcel
 		err          error
 	}{
 		{
-			name:        "Ok response",
-			trackNumber: "1Z12345E0291980793",
-			setupApiMock: func(api *apiMock, trackNumber string) {
-				res := &TrackResponse{
+			name: "Ok response",
+			setupApiMock: func(api *apiMock) {
+				res1 := &TrackResponse{
 					Shipment: Shipment{
-						ShipmentIdentificationNumber: trackNumber,
+						ShipmentIdentificationNumber: trackIds[0],
 						Package: Package{
 							Activity: []Activity{{}},
 						},
@@ -83,25 +82,72 @@ func TestCarrier_Track(t *testing.T) {
 						},
 					},
 				}
-				api.On("TrackByTrackingNumber", trackNumber).Once().Return(res, nil)
+
+				res2 := &TrackResponse{
+					Shipment: Shipment{
+						ShipmentIdentificationNumber: trackIds[1],
+						Package: Package{
+							Activity: []Activity{{}},
+						},
+						Shipper: Shipper{
+							Address: Address{
+								CountryCode:  "Shipper Country Code",
+								City:         "Shipper City",
+								AddressLine1: "Shipper AddressLine1",
+								AddressLine2: "Shipper AddressLine2",
+								AddressLine3: "Shipper AddressLine3",
+							},
+						},
+						ShipTo: ShipTo{
+							Address: Address{
+								CountryCode:  "ShipTo Country Code",
+								City:         "ShipTo City",
+								AddressLine1: "ShipTo AddressLine1",
+								AddressLine2: "ShipTo AddressLine2",
+								AddressLine3: "ShipTo AddressLine3",
+							},
+						},
+					},
+				}
+				api.On("TrackByTrackingNumber", trackIds[0]).
+					Once().Return(res1, nil).
+					On("TrackByTrackingNumber", trackIds[1]).
+					Once().Return(res2, nil)
 			},
-			parcels: []carriers.Parcel{{TrackingNumber: "1Z12345E0291980793", Places: []carriers.Place{
-				carriers.Place{
-					Country: "Shipper Country Code",
-					City:    "Shipper City",
-					Address: "Shipper AddressLine1, Shipper AddressLine2, Shipper AddressLine3",
-				},
-				carriers.Place{
-					Country: "ShipTo Country Code",
-					City:    "ShipTo City",
-					Address: "ShipTo AddressLine1, ShipTo AddressLine2, ShipTo AddressLine3",
-				},
-			}}},
+			parcels: []carriers.Parcel{
+				{TrackingNumber: "1Z12345E0291980793", Places: []carriers.Place{
+					carriers.Place{
+						Country: "Shipper Country Code",
+						City:    "Shipper City",
+						Address: "Shipper AddressLine1, Shipper AddressLine2, Shipper AddressLine3",
+					},
+					carriers.Place{
+						Country: "ShipTo Country Code",
+						City:    "ShipTo City",
+						Address: "ShipTo AddressLine1, ShipTo AddressLine2, ShipTo AddressLine3",
+					},
+				}},
+				{TrackingNumber: "1Z12345E0291980794", Places: []carriers.Place{
+					carriers.Place{
+						Country: "Shipper Country Code",
+						City:    "Shipper City",
+						Address: "Shipper AddressLine1, Shipper AddressLine2, Shipper AddressLine3",
+					},
+					carriers.Place{
+						Country: "ShipTo Country Code",
+						City:    "ShipTo City",
+						Address: "ShipTo AddressLine1, ShipTo AddressLine2, ShipTo AddressLine3",
+					},
+				}},
+			},
 		},
 		{
 			name: "Bad response",
-			setupApiMock: func(api *apiMock, trackNumber string) {
-				api.On("TrackByTrackingNumber", trackNumber).Once().Return(nil, errors.New("Invalid tracking number"))
+			setupApiMock: func(api *apiMock) {
+				api.On("TrackByTrackingNumber", trackIds[0]).
+					Once().Return(nil, errors.New("Invalid tracking number")).
+					On("TrackByTrackingNumber", trackIds[1]).
+					Once().Return(nil, errors.New("Invalid tracking number"))
 			},
 			err: errors.New("Invalid tracking number"),
 		},
@@ -110,13 +156,13 @@ func TestCarrier_Track(t *testing.T) {
 	for _, testCase := range testCases {
 		t.Run(testCase.name, func(t *testing.T) {
 			api := &apiMock{}
-			testCase.setupApiMock(api, testCase.trackNumber)
+			testCase.setupApiMock(api)
 
 			c := NewCarrier(api)
-			parcels, err := c.Track([]string{testCase.trackNumber})
+			parcels, err := c.Track(trackIds)
 
 			assert.Equal(t, testCase.err, err)
-			assert.Equal(t, testCase.parcels, parcels)
+			assert.ElementsMatch(t, testCase.parcels, parcels)
 			api.AssertExpectations(t)
 		})
 	}

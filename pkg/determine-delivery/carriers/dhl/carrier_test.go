@@ -103,7 +103,11 @@ func TestCarrier_Track(t *testing.T) {
 				res2 := &response{}
 				res2.Shipments = append(res2.Shipments, s)
 
-				api.On("TrackByTrackingNumber", trackNumbers[0]).Once().Return(res1, nil).On("TrackByTrackingNumber", trackNumbers[1]).Once().Return(res2, nil)
+				api.
+					On("TrackByTrackingNumber", trackNumbers[0]).
+					Once().Return(res1, nil).
+					On("TrackByTrackingNumber", trackNumbers[1]).
+					Once().Return(res2, nil)
 			},
 			parcels: []carriers.Parcel{
 				carriers.Parcel{TrackingNumber: "12A12345", Places: []carriers.Place{carriers.Place{Country: "UA"}}, Status: "Ok"},
@@ -129,7 +133,7 @@ func TestCarrier_Track(t *testing.T) {
 			parcels, err := c.Track(testCase.trackNumbers)
 
 			assert.Equal(t, testCase.err, err)
-			assert.Equal(t, testCase.parcels, parcels)
+			assert.ElementsMatch(t, testCase.parcels, parcels)
 			api.AssertExpectations(t)
 		})
 	}

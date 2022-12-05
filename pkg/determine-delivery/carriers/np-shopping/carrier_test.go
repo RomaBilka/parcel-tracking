@@ -32,7 +32,7 @@ func TestCarrier_Detect(t *testing.T) {
 }
 
 func TestCarrier_Track(t *testing.T) {
-	trackId := "NPMD000000001456NPI"
+	trackIds := []string{"NPMD000000001455NPI", "NPMD000000001456NPI"}
 
 	testCases := []struct {
 		name    string
@@ -43,7 +43,9 @@ func TestCarrier_Track(t *testing.T) {
 		{
 			name: "failed to track by number",
 			apiMock: func(m *apiMock) {
-				m.On("TrackByTrackingNumber", trackId).Once().
+				m.On("TrackByTrackingNumber", trackIds[0]).Once().
+					Return(nil, assert.AnError).
+					On("TrackByTrackingNumber", trackIds[1]).Once().
 					Return(nil, assert.AnError)
 			},
 			expErr: assert.AnError,
@@ -51,31 +53,42 @@ func TestCarrier_Track(t *testing.T) {
 		{
 			name: "successful track by number",
 			apiMock: func(m *apiMock) {
-				m.On("TrackByTrackingNumber", trackId).Once().
+				m.On("TrackByTrackingNumber", trackIds[0]).Once().
 					Return(&TrackingDocumentResponse{
-						WaybillNumber: trackId,
+						WaybillNumber: trackIds[0],
+						State:         "Delivered",
+					}, nil).
+					On("TrackByTrackingNumber", trackIds[1]).Once().
+					Return(&TrackingDocumentResponse{
+						WaybillNumber: trackIds[1],
 						State:         "Delivered",
 					}, nil)
 			},
-			expResp: []carriers.Parcel{{
-				TrackingNumber: trackId,
-				Status:         "Delivered",
-				Places:         []carriers.Place{},
-			}},
+			expResp: []carriers.Parcel{
+				{
+					TrackingNumber: trackIds[0],
+					Status:         "Delivered",
+					Places:         []carriers.Place{},
+				},
+				{
+					TrackingNumber: trackIds[1],
+					Status:         "Delivered",
+					Places:         []carriers.Place{},
+				},
+			},
 		},
 	}
 
-	for _, tc := range testCases {
-		t.Run(tc.name, func(t *testing.T) {
+	for _, testCase := range testCases {
+		t.Run(testCase.name, func(t *testing.T) {
 			m := &apiMock{}
-			tc.apiMock(m)
+			testCase.apiMock(m)
 
 			n := NewCarrier(m)
-			resp, err := n.Track([]string{trackId})
+			parcels, err := n.Track(trackIds)
 
-			assert.Equal(t, tc.expResp, resp)
-			assert.Equal(t, tc.expErr, err)
-
+			assert.Equal(t, testCase.expErr, err)
+			assert.ElementsMatch(t, testCase.expResp, parcels)
 			m.AssertExpectations(t)
 		})
 	}
