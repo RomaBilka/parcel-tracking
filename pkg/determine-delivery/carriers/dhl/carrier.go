@@ -104,6 +104,7 @@ func (c *Carrier) Track(trackNumbers []string) ([]carriers.Parcel, error) {
 func (c *Carrier) track(trackNumbers []string, chanParcels chan []carriers.Parcel, chanErr chan error) {
 	var wg sync.WaitGroup
 	var parcels []carriers.Parcel
+	var mu sync.Mutex
 	for _, trackNumber := range trackNumbers {
 		wg.Add(1)
 		go func(trackNumber string) {
@@ -119,7 +120,8 @@ func (c *Carrier) track(trackNumbers []string, chanParcels chan []carriers.Parce
 				chanErr <- err
 				return
 			}
-
+			mu.Lock()
+			defer mu.Unlock()
 			parcels = append(parcels, p...)
 		}(trackNumber)
 	}
