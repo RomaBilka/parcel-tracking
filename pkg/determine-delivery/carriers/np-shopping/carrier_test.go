@@ -32,50 +32,62 @@ func TestCarrier_Detect(t *testing.T) {
 }
 
 func TestCarrier_Track(t *testing.T) {
-	trackId := "NPMD000000001456NPI"
-
 	testCases := []struct {
-		name    string
-		apiMock func(m *apiMock)
-		expResp []carriers.Parcel
-		expErr  error
+		name     string
+		apiMock  func(m *apiMock, trackIds []string)
+		expResp  []carriers.Parcel
+		expErr   error
+		trackIds []string
 	}{
 		{
 			name: "failed to track by number",
-			apiMock: func(m *apiMock) {
-				m.On("TrackByTrackingNumber", trackId).Once().
+			apiMock: func(m *apiMock, trackIds []string) {
+				m.On("TrackByTrackingNumber", trackIds[0]).Once().
 					Return(nil, assert.AnError)
 			},
-			expErr: assert.AnError,
+			expErr:   assert.AnError,
+			trackIds: []string{"NPMD000000001455NPI"},
 		},
 		{
-			name: "successful track by number",
-			apiMock: func(m *apiMock) {
-				m.On("TrackByTrackingNumber", trackId).Once().
+			name:     "successful track by number",
+			trackIds: []string{"NPMD000000001455NPI", "NPMD000000001456NPI"},
+			apiMock: func(m *apiMock, trackIds []string) {
+				m.On("TrackByTrackingNumber", trackIds[0]).Once().
 					Return(&TrackingDocumentResponse{
-						WaybillNumber: trackId,
+						WaybillNumber: trackIds[0],
+						State:         "Delivered",
+					}, nil).
+					On("TrackByTrackingNumber", trackIds[1]).Once().
+					Return(&TrackingDocumentResponse{
+						WaybillNumber: trackIds[1],
 						State:         "Delivered",
 					}, nil)
 			},
-			expResp: []carriers.Parcel{{
-				TrackingNumber: trackId,
-				Status:         "Delivered",
-				Places:         []carriers.Place{},
-			}},
+			expResp: []carriers.Parcel{
+				{
+					TrackingNumber: "NPMD000000001455NPI",
+					Status:         "Delivered",
+					Places:         []carriers.Place{},
+				},
+				{
+					TrackingNumber: "NPMD000000001456NPI",
+					Status:         "Delivered",
+					Places:         []carriers.Place{},
+				},
+			},
 		},
 	}
 
-	for _, tc := range testCases {
-		t.Run(tc.name, func(t *testing.T) {
+	for _, testCase := range testCases {
+		t.Run(testCase.name, func(t *testing.T) {
 			m := &apiMock{}
-			tc.apiMock(m)
+			testCase.apiMock(m, testCase.trackIds)
 
 			n := NewCarrier(m)
-			resp, err := n.Track(trackId)
+			parcels, err := n.Track(testCase.trackIds)
 
-			assert.Equal(t, tc.expResp, resp)
-			assert.Equal(t, tc.expErr, err)
-
+			assert.Equal(t, testCase.expErr, err)
+			assert.ElementsMatch(t, testCase.expResp, parcels)
 			m.AssertExpectations(t)
 		})
 	}

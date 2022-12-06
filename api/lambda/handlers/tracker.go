@@ -15,21 +15,40 @@ import (
 type Handler func(ctx context.Context, request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error)
 
 type parcelTracker interface {
-	TrackParcel(ctx context.Context, parcelId string) (carriers.Parcel, error)
+	TrackParcels(ctx context.Context, parcelIds []string) (map[string]carriers.Parcel, error)
 }
 
-func Tracking(t parcelTracker) Handler {
+type trackData struct {
+	Ids []string `json:"track_id"`
+}
+
+func Tracking(t parcelTracker, maximumNumberTrackingId int) Handler {
 	return func(ctx context.Context, request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
-		id := request.QueryStringParameters["track_id"]
-		if id == "" {
+		data := &trackData{}
+		if err := json.Unmarshal([]byte(request.Body), data); err != nil {
+			return handleError(err)
+		}
+
+		if len(data.Ids) < 1 {
 			return response(http.StatusBadRequest, api.Error{Message: "track_id cannot be empty"})
 		}
 
-		p, err := t.TrackParcel(ctx, id)
+		for _, id := range data.Ids {
+			if id == "" {
+				return response(http.StatusBadRequest, api.Error{Message: "track_id cannot be empty"})
+			}
+		}
+
+		if len(data.Ids) > maximumNumberTrackingId {
+			return response(http.StatusBadRequest, api.Error{Message: "too many track numbers"})
+		}
+
+		parcels, err := t.TrackParcels(ctx, data.Ids)
 		if err != nil {
 			return handleError(err)
 		}
-		return response(http.StatusOK, p)
+
+		return response(http.StatusOK, parcels)
 	}
 }
 

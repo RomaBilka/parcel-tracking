@@ -3,6 +3,7 @@ package fedex
 import (
 	"regexp"
 	"strings"
+	"sync"
 
 	"github.com/RomaBilka/parcel-tracking/pkg/determine-delivery/carriers"
 )
@@ -43,21 +44,61 @@ func (c *Carrier) Detect(trackId string) bool {
 	return false
 }
 
-func (c *Carrier) Track(trackingId string) ([]carriers.Parcel, error) {
-	trackingInfo := TrackingInfo{
-		TrackingNumberInfo: TrackingNumberInfo{
-			TrackingNumber: trackingId,
-		},
+func (c *Carrier) Track(trackNumbers []string) ([]carriers.Parcel, error) {
+	chanErr := make(chan error)
+	chanParcels := make(chan []carriers.Parcel)
+
+	go c.track(trackNumbers, chanParcels, chanErr)
+
+	for {
+		select {
+		case err := <-chanErr:
+			return nil, err
+		case p := <-chanParcels:
+			return p, nil
+		}
+	}
+}
+
+func (c *Carrier) track(trackNumbers []string, chanParcels chan []carriers.Parcel, chanErr chan error) {
+	var wg sync.WaitGroup
+	var parcels []carriers.Parcel
+	var mu sync.Mutex
+	for _, trackNumber := range trackNumbers {
+		wg.Add(1)
+		go func(trackNumber string) {
+			defer wg.Done()
+
+			trackingInfo := TrackingInfo{
+				TrackingNumberInfo: TrackingNumberInfo{
+					TrackingNumber: trackNumber,
+				},
+			}
+			trackingData := TrackingRequest{IncludeDetailedScans: true}
+			trackingData.TrackingInfo = append(trackingData.TrackingInfo, trackingInfo)
+
+			response, err := c.api.TrackByTrackingNumber(trackingData)
+			if err != nil {
+				chanErr <- err
+				return
+			}
+
+			p, err := prepareResponse(response)
+			if err != nil {
+				chanErr <- err
+				return
+			}
+			mu.Lock()
+			defer mu.Unlock()
+			parcels = append(parcels, p...)
+		}(trackNumber)
 	}
 
-	trackingData := TrackingRequest{IncludeDetailedScans: true}
-	trackingData.TrackingInfo = append(trackingData.TrackingInfo, trackingInfo)
+	wg.Wait()
+	chanParcels <- parcels
+}
 
-	response, err := c.api.TrackByTrackingNumber(trackingData)
-	if err != nil {
-		return nil, err
-	}
-
+func prepareResponse(response *TrackingResponse) ([]carriers.Parcel, error) {
 	parcels := make([]carriers.Parcel, len(response.Output.CompleteTrackResults))
 	for i, d := range response.Output.CompleteTrackResults {
 		parcels[i] = carriers.Parcel{
@@ -67,7 +108,6 @@ func (c *Carrier) Track(trackingId string) ([]carriers.Parcel, error) {
 			DeliveryDate:   d.TrackResults[0].EstimatedDeliveryTimeWindow.Window.Ends,
 		}
 	}
-
 	return parcels, nil
 }
 

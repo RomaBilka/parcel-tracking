@@ -1,3 +1,11 @@
 run:
   timeout: 3m
 go: '1.18'
+linters-settings:
+  forbidigo:
+    # Forbid the following identifiers (list of regexp).
+    # Default: ["^(fmt\\.Print(|f|ln)|print|println)$"]
+    forbid:
+      - ^print.*$
+      - 'fmt\.Print.*'
+    exclude_godoc_examples: false

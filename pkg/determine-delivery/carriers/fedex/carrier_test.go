@@ -35,19 +35,38 @@ func TestCarrier_Detect(t *testing.T) {
 func TestCarrier_Track(t *testing.T) {
 	testCases := []struct {
 		name         string
-		trackNumber  string
-		setupApiMock func(api *apiMock, requestData TrackingRequest)
+		trackNumbers []string
+		setupApiMock func(api *apiMock, trackNumbers []string)
 		parcels      []carriers.Parcel
 		err          error
 	}{
 		{
-			name:        "Ok response",
-			trackNumber: "123456789012",
-			setupApiMock: func(api *apiMock, requestData TrackingRequest) {
-				response := &TrackingResponse{
+			name:         "Ok response",
+			trackNumbers: []string{"12A12345", "12A12346"},
+			setupApiMock: func(api *apiMock, trackNumbers []string) {
+
+				trackingInfo := TrackingInfo{
+					TrackingNumberInfo: TrackingNumberInfo{
+						TrackingNumber: trackNumbers[0],
+					},
+				}
+
+				requestData1 := TrackingRequest{IncludeDetailedScans: true}
+				requestData1.TrackingInfo = append(requestData1.TrackingInfo, trackingInfo)
+
+				trackingInfo = TrackingInfo{
+					TrackingNumberInfo: TrackingNumberInfo{
+						TrackingNumber: trackNumbers[1],
+					},
+				}
+				requestData2 := TrackingRequest{IncludeDetailedScans: true}
+				requestData2.TrackingInfo = append(requestData2.TrackingInfo, trackingInfo)
+
+				response1 := &TrackingResponse{
 					Output: Output{
 						CompleteTrackResults: []CompleteTrackResult{
 							CompleteTrackResult{
+								TrackingNumber: trackNumbers[0],
 								TrackResults: []TrackResult{
 									TrackResult{
 										LatestStatusDetail: LatestStatusDetail{
@@ -70,13 +89,56 @@ func TestCarrier_Track(t *testing.T) {
 					},
 				}
 
-				api.On("TrackByTrackingNumber", requestData).Once().Return(response, nil)
+				response2 := &TrackingResponse{
+					Output: Output{
+						CompleteTrackResults: []CompleteTrackResult{
+							CompleteTrackResult{
+								TrackingNumber: trackNumbers[1],
+								TrackResults: []TrackResult{
+									TrackResult{
+										LatestStatusDetail: LatestStatusDetail{
+											StatusByLocale: "Ok",
+										},
+										OriginLocation: OriginLocation{
+											LocationContactAndAddress: ContactAndAddress{Address: Address{}},
+										},
+										DeliveryDetails: DeliveryDetails{ActualDeliveryAddress: Address{}},
+										RecipientInformation: ContactAndAddress{
+											Address: Address{
+												CountryName: "Country Name",
+												City:        "City",
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+				}
+
+				api.
+					On("TrackByTrackingNumber", requestData1).
+					Once().Return(response1, nil).
+					On("TrackByTrackingNumber", requestData2).
+					Once().Return(response2, nil)
 			},
-			parcels: []carriers.Parcel{{Places: []carriers.Place{carriers.Place{Country: "Country Name", City: "City"}}, Status: "Ok"}},
+			parcels: []carriers.Parcel{
+				carriers.Parcel{TrackingNumber: "12A12345", Places: []carriers.Place{carriers.Place{Country: "Country Name", City: "City"}}, Status: "Ok"},
+				carriers.Parcel{TrackingNumber: "12A12346", Places: []carriers.Place{carriers.Place{Country: "Country Name", City: "City"}}, Status: "Ok"},
+			},
 		},
 		{
-			name: "Bad response",
-			setupApiMock: func(api *apiMock, requestData TrackingRequest) {
+			name:         "Bad response",
+			trackNumbers: []string{""},
+			setupApiMock: func(api *apiMock, trackNumbers []string) {
+				trackingInfo := TrackingInfo{
+					TrackingNumberInfo: TrackingNumberInfo{
+						TrackingNumber: trackNumbers[0],
+					},
+				}
+
+				requestData := TrackingRequest{IncludeDetailedScans: true}
+				requestData.TrackingInfo = append(requestData.TrackingInfo, trackingInfo)
 				api.On("TrackByTrackingNumber", requestData).Once().Return(nil, errors.New("bad request"))
 			},
 			err: errors.New("bad request"),
@@ -86,23 +148,14 @@ func TestCarrier_Track(t *testing.T) {
 	for _, testCase := range testCases {
 		t.Run(testCase.name, func(t *testing.T) {
 			api := &apiMock{}
-
-			trackingInfo := TrackingInfo{
-				TrackingNumberInfo: TrackingNumberInfo{
-					TrackingNumber: testCase.trackNumber,
-				},
-			}
-
-			requestData := TrackingRequest{IncludeDetailedScans: true}
-			requestData.TrackingInfo = append(requestData.TrackingInfo, trackingInfo)
-
-			testCase.setupApiMock(api, requestData)
+			testCase.setupApiMock(api, testCase.trackNumbers)
 
 			c := NewCarrier(api)
-			parcels, err := c.Track(testCase.trackNumber)
+			parcels, err := c.Track(testCase.trackNumbers)
 
 			assert.Equal(t, testCase.err, err)
-			assert.Equal(t, testCase.parcels, parcels)
+			assert.ElementsMatch(t, testCase.parcels, parcels)
+
 			api.AssertExpectations(t)
 		})
 	}

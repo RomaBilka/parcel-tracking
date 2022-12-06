@@ -3,7 +3,7 @@ package carriers
 import "time"
 
 type Tracker interface {
-	Track(string) ([]Parcel, error)
+	Track([]string) ([]Parcel, error)
 }
 
 type Detector interface {

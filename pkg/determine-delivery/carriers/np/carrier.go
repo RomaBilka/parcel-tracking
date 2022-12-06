@@ -47,12 +47,15 @@ func (c *Carrier) Detect(trackId string) bool {
 	return false
 }
 
-func (c *Carrier) Track(trackingId string) ([]carriers.Parcel, error) {
-	document := TrackingDocument{
-		DocumentNumber: trackingId,
+func (c *Carrier) Track(trackingIds []string) ([]carriers.Parcel, error) {
+	documents := make([]TrackingDocument, len(trackingIds))
+	for i, id := range trackingIds {
+		documents[i] = TrackingDocument{
+			DocumentNumber: id,
+		}
 	}
 	methodProperties := TrackingDocuments{}
-	methodProperties.Documents = append(methodProperties.Documents, document)
+	methodProperties.Documents = documents
 	methodProperties.CheckWeightMethod = "3"
 
 	response, err := c.api.TrackByTrackingNumber(methodProperties)

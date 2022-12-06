@@ -2,6 +2,7 @@ package dhl
 
 import (
 	"regexp"
+	"sync"
 	"time"
 
 	"github.com/RomaBilka/parcel-tracking/pkg/determine-delivery/carriers"
@@ -84,14 +85,53 @@ func (c *Carrier) Detect(trackId string) bool {
 	return false
 }
 
-func (c *Carrier) Track(trackNumber string) ([]carriers.Parcel, error) {
-	response, err := c.api.TrackByTrackingNumber(trackNumber)
-	if err != nil {
-		return nil, err
+func (c *Carrier) Track(trackNumbers []string) ([]carriers.Parcel, error) {
+	chanErr := make(chan error)
+	chanParcels := make(chan []carriers.Parcel)
+
+	go c.track(trackNumbers, chanParcels, chanErr)
+
+	for {
+		select {
+		case err := <-chanErr:
+			return nil, err
+		case p := <-chanParcels:
+			return p, nil
+		}
+	}
+}
+
+func (c *Carrier) track(trackNumbers []string, chanParcels chan []carriers.Parcel, chanErr chan error) {
+	var wg sync.WaitGroup
+	var parcels []carriers.Parcel
+	var mu sync.Mutex
+	for _, trackNumber := range trackNumbers {
+		wg.Add(1)
+		go func(trackNumber string) {
+			defer wg.Done()
+
+			response, err := c.api.TrackByTrackingNumber(trackNumber)
+			if err != nil {
+				chanErr <- err
+				return
+			}
+			p, err := prepareResponse(response)
+			if err != nil {
+				chanErr <- err
+				return
+			}
+			mu.Lock()
+			defer mu.Unlock()
+			parcels = append(parcels, p...)
+		}(trackNumber)
 	}
 
-	parcels := make([]carriers.Parcel, len(response.Shipments))
+	wg.Wait()
+	chanParcels <- parcels
+}
 
+func prepareResponse(response *response) ([]carriers.Parcel, error) {
+	parcels := make([]carriers.Parcel, len(response.Shipments))
 	for i, s := range response.Shipments {
 		estimatedTimeOfDelivery, err := helpers.ParseTime(layout, s.EstimatedTimeOfDelivery)
 		if err != nil && s.EstimatedTimeOfDelivery != "" {
@@ -120,8 +160,6 @@ func (c *Carrier) Track(trackNumber string) ([]carriers.Parcel, error) {
 			Status:         s.Status.Status,
 			Places:         places,
 		}
-
 	}
-
 	return parcels, nil
 }

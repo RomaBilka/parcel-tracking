@@ -2,10 +2,11 @@ package handlers
 
 import (
 	"context"
+	"fmt"
 	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
-	"net/url"
+	"strings"
 	"testing"
 
 	"github.com/RomaBilka/parcel-tracking/pkg/determine-delivery/carriers"
@@ -13,13 +14,13 @@ import (
 	"github.com/stretchr/testify/mock"
 )
 
-func TestHandleLambdaEvent(t *testing.T) {
+func TestHandleRest(t *testing.T) {
 	testId := "testId-string"
 
 	tests := []struct {
 		name             string
-		trackId          string
 		method           string
+		testId           string
 		setupTrackerMock func(tracker *parcelTrackerMock)
 		expResp          string
 		expCode          int
@@ -28,34 +29,42 @@ func TestHandleLambdaEvent(t *testing.T) {
 			name:             "invalid http method",
 			setupTrackerMock: func(tracker *parcelTrackerMock) {},
 			expCode:          http.StatusMethodNotAllowed,
+			method:           http.MethodGet,
 		},
 		{
 			name:             "failed: empty track id",
-			method:           http.MethodGet,
+			method:           http.MethodPost,
 			setupTrackerMock: func(tracker *parcelTrackerMock) {},
 			expCode:          http.StatusBadRequest,
 			expResp:          `{"message":"track_id cannot be empty"}`,
 		},
 		{
-			name:    "failed to track parcel",
-			trackId: testId,
-			method:  http.MethodGet,
+			name:   "failed to track parcel",
+			method: http.MethodPost,
+			testId: testId,
 			setupTrackerMock: func(tracker *parcelTrackerMock) {
-				tracker.On("TrackParcel", mock.Anything, testId).Once().
-					Return(carriers.Parcel{}, assert.AnError)
+				tracker.On("TrackParcels", mock.Anything, []string{testId}).Once().
+					Return(map[string]carriers.Parcel{}, assert.AnError)
 			},
 			expResp: `{"message":"` + assert.AnError.Error() + `"}`,
 			expCode: http.StatusInternalServerError,
 		},
 		{
-			name:    "success",
-			method:  http.MethodGet,
-			trackId: testId,
+			name:   "success",
+			method: http.MethodPost,
+			testId: testId,
 			setupTrackerMock: func(tracker *parcelTrackerMock) {
-				tracker.On("TrackParcel", mock.Anything, testId).Once().
-					Return(carriers.Parcel{TrackingNumber: "number", Places: []carriers.Place{carriers.Place{Address: "address"}}, Status: "status"}, nil)
+				data := map[string]carriers.Parcel{}
+				data["testId-string"] = carriers.Parcel{
+					TrackingNumber: "number",
+					Places:         []carriers.Place{carriers.Place{Address: "address"}},
+					Status:         "status",
+				}
+
+				tracker.On("TrackParcels", mock.Anything, []string{testId}).Once().
+					Return(data, nil)
 			},
-			expResp: `{"TrackingNumber":"number","Places":[{"Address":"address","Date":"0001-01-01T00:00:00Z"}],"Status":"status","DeliveryDate":"0001-01-01T00:00:00Z"}` + "\n",
+			expResp: `{"testId-string":{"TrackingNumber":"number","Places":[{"Address":"address","Date":"0001-01-01T00:00:00Z"}],"Status":"status","DeliveryDate":"0001-01-01T00:00:00Z"}}` + "\n",
 			expCode: http.StatusOK,
 		},
 	}
@@ -65,13 +74,15 @@ func TestHandleLambdaEvent(t *testing.T) {
 			tracker := &parcelTrackerMock{}
 			tc.setupTrackerMock(tracker)
 
-			req := &http.Request{
-				Method: tc.method,
-				URL:    &url.URL{RawQuery: "track_id=" + tc.trackId},
-			}
+			data := strings.NewReader(fmt.Sprintf(`{"track_id":["%s"]}`, tc.testId))
+
+			req, err := http.NewRequest(tc.method, "", data)
+			assert.NoError(t, err)
+
+			req.Header.Set("Content-Type", "application/json")
 			rec := httptest.NewRecorder()
 
-			Tracking(tracker)(rec, req)
+			Tracking(tracker, 10)(rec, req)
 
 			res := rec.Result()
 			defer res.Body.Close()
@@ -89,7 +100,7 @@ type parcelTrackerMock struct {
 	mock.Mock
 }
 
-func (m *parcelTrackerMock) TrackParcel(ctx context.Context, parcelId string) (carriers.Parcel, error) {
-	ret := m.Called(ctx, parcelId)
-	return ret.Get(0).(carriers.Parcel), ret.Error(1)
+func (m *parcelTrackerMock) TrackParcels(ctx context.Context, parcelIds []string) (map[string]carriers.Parcel, error) {
+	ret := m.Called(ctx, parcelIds)
+	return ret.Get(0).(map[string]carriers.Parcel), ret.Error(1)
 }

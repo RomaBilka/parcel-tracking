@@ -52,15 +52,16 @@ type (
 	}
 
 	Config struct {
-		Port               string `short:"p" long:"port" description:"Port" required:"true" default:"8080" env:"PORT"`
-		NovaPoshta         NovaPoshta
-		NovaPoshtaShopping NovaPoshtaShopping
-		MeestExpress       MeestExpress
-		DHL                DHL
-		Fedex              Fedex
-		USPS               USPS
-		UPS                UPS
-		UkrPoshta          UkrPoshta
+		Port                    string `short:"p" long:"port" description:"Port" required:"true" default:"8080" env:"PORT"`
+		MaximumNumberTrackingId string `short:"n" long:"MAXIMUM_NUMBER_TRACKING_ID" description:"Maximum of number tracking Id" required:"true" default:"10" env:"MAXIMUM_NUMBER_TRACKING_ID"`
+		NovaPoshta              NovaPoshta
+		NovaPoshtaShopping      NovaPoshtaShopping
+		MeestExpress            MeestExpress
+		DHL                     DHL
+		Fedex                   Fedex
+		USPS                    USPS
+		UPS                     UPS
+		UkrPoshta               UkrPoshta
 	}
 )
 

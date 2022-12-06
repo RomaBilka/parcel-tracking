@@ -1,7 +1,6 @@
 package ukrposhta
 
 import (
-	"fmt"
 	"testing"
 
 	"github.com/RomaBilka/parcel-tracking/pkg/determine-delivery/carriers"
@@ -69,8 +68,8 @@ func TestCarrier_Track(t *testing.T) {
 			testCase.setupApiMock(api, testCase.trackNumber)
 
 			c := NewCarrier(api)
-			parcels, err := c.Track(testCase.trackNumber)
-			fmt.Println(parcels)
+			parcels, err := c.Track([]string{testCase.trackNumber})
+
 			assert.Equal(t, testCase.err, err)
 			assert.Equal(t, testCase.parcels, parcels)
 			api.AssertExpectations(t)

@@ -3,6 +3,7 @@ package np_shopping
 import (
 	"regexp"
 	"strconv"
+	"sync"
 	"time"
 
 	"github.com/RomaBilka/parcel-tracking/pkg/determine-delivery/carriers"
@@ -38,17 +39,57 @@ func (c *Carrier) Detect(trackId string) bool {
 	return false
 }
 
-func (c *Carrier) Track(trackingId string) ([]carriers.Parcel, error) {
-	response, err := c.api.TrackByTrackingNumber(trackingId)
-	if err != nil {
-		return nil, err
+func (c *Carrier) Track(trackNumbers []string) ([]carriers.Parcel, error) {
+	chanErr := make(chan error)
+	chanParcels := make(chan []carriers.Parcel)
+
+	go c.track(trackNumbers, chanParcels, chanErr)
+
+	for {
+		select {
+		case err := <-chanErr:
+			return nil, err
+		case p := <-chanParcels:
+			return p, nil
+		}
+	}
+}
+
+func (c *Carrier) track(trackNumbers []string, chanParcels chan []carriers.Parcel, chanErr chan error) {
+	var wg sync.WaitGroup
+	var mu sync.Mutex
+	parcels := make([]carriers.Parcel, len(trackNumbers))
+	for i := range trackNumbers {
+		wg.Add(1)
+		go func(trackNumber string, i int) {
+			defer wg.Done()
+			response, err := c.api.TrackByTrackingNumber(trackNumber)
+			if err != nil {
+				chanErr <- err
+				return
+			}
+
+			parcel, err := prepareResponse(response)
+			if err != nil {
+				chanErr <- err
+				return
+			}
+			mu.Lock()
+			defer mu.Unlock()
+			parcels[i] = parcel
+		}(trackNumbers[i], i)
 	}
 
+	wg.Wait()
+	chanParcels <- parcels
+}
+
+func prepareResponse(response *TrackingDocumentResponse) (carriers.Parcel, error) {
 	places := make([]carriers.Place, len(response.TrackingHistory))
 	for i, d := range response.TrackingHistory {
 		timestamp, err := strconv.ParseInt(d.Date, 10, 64)
 		if err != nil {
-			panic(err)
+			return carriers.Parcel{}, err
 		}
 
 		places[i] = carriers.Place{
@@ -58,13 +99,11 @@ func (c *Carrier) Track(trackingId string) ([]carriers.Parcel, error) {
 		}
 	}
 
-	parcels := []carriers.Parcel{
-		carriers.Parcel{
-			TrackingNumber: response.WaybillNumber,
-			Status:         response.State,
-			Places:         places,
-		},
+	parcel := carriers.Parcel{
+		TrackingNumber: response.WaybillNumber,
+		Status:         response.State,
+		Places:         places,
 	}
 
-	return parcels, nil
+	return parcel, nil
 }

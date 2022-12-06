@@ -12,31 +12,52 @@ import (
 )
 
 type parcelTracker interface {
-	TrackParcel(ctx context.Context, parcelId string) (carriers.Parcel, error)
+	TrackParcels(ctx context.Context, parcelIds []string) (map[string]carriers.Parcel, error)
 }
 
-func Tracking(t parcelTracker) http.HandlerFunc {
+type trackData struct {
+	Ids []string `json:"track_id"`
+}
+
+func Tracking(t parcelTracker, maximumNumberTrackingId int) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != http.MethodGet {
+		if r.Method != http.MethodPost {
 			w.WriteHeader(http.StatusMethodNotAllowed)
 			return
 		}
 
-		trackingId := r.URL.Query().Get("track_id")
-		if trackingId == "" {
+		data := &trackData{}
+		if err := json.NewDecoder(r.Body).Decode(data); err != nil {
+			writeErrorResponse(w, http.StatusBadRequest, err)
+			return
+		}
+
+		if len(data.Ids) < 1 {
 			writeErrorResponse(w, http.StatusBadRequest, errors.New("track_id cannot be empty"))
 			return
 		}
 
+		for _, id := range data.Ids {
+			if id == "" {
+				writeErrorResponse(w, http.StatusBadRequest, errors.New("track_id cannot be empty"))
+				return
+			}
+		}
+
+		if len(data.Ids) > maximumNumberTrackingId {
+			writeErrorResponse(w, http.StatusBadRequest, errors.New("too many track numbers"))
+			return
+		}
+
 		ctx := r.Context()
-		parcel, err := t.TrackParcel(ctx, trackingId)
+		parcels, err := t.TrackParcels(ctx, data.Ids)
 		if err != nil {
 			handleError(w, err)
 			return
 		}
 
 		w.WriteHeader(http.StatusOK)
-		if err := json.NewEncoder(w).Encode(parcel); err != nil {
+		if err := json.NewEncoder(w).Encode(parcels); err != nil {
 			writeErrorResponse(w, http.StatusInternalServerError, err)
 		}
 	}
