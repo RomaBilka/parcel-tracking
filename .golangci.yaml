@@ -1,6 +1,17 @@
 run:
   timeout: 3m
 go: '1.18'
+skip-dirs:
+  skip-files:
+    - "./*_test.go$"
+linters:
+  enable:
+    - whitespace
+    - gocritic
+    - prealloc
+    - unparam
+    - usestdlibvars
+    - goimports
 linters-settings:
   forbidigo:
     # Forbid the following identifiers (list of regexp).
@@ -9,3 +20,9 @@ linters-settings:
       - ^print.*$
       - 'fmt\.Print.*'
     exclude_godoc_examples: false
+  gocritic:
+    enabled-tags:
+      - diagnostic
+      - style
+      - opinionated
+      - experimental

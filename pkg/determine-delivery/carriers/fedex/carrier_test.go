@@ -44,7 +44,6 @@ func TestCarrier_Track(t *testing.T) {
 			name:         "Ok response",
 			trackNumbers: []string{"12A12345", "12A12346"},
 			setupApiMock: func(api *apiMock, trackNumbers []string) {
-
 				trackingInfo := TrackingInfo{
 					TrackingNumberInfo: TrackingNumberInfo{
 						TrackingNumber: trackNumbers[0],

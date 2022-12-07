@@ -2,9 +2,9 @@ package dhl
 
 import (
 	"errors"
-	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
+	"os"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -43,7 +43,7 @@ func TestApi_TrackByTrackingNumber(t *testing.T) {
 			server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 				w.WriteHeader(testCase.status)
 
-				b, err := ioutil.ReadFile(testCase.file)
+				b, err := os.ReadFile(testCase.file)
 				if err != nil {
 					t.Fatal(err)
 				}

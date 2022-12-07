@@ -8,17 +8,17 @@ import (
 )
 
 var patterns = map[string]*regexp.Regexp{
-	//Starts with 59, length 14, only numbers
-	//59************
-	"start59": regexp.MustCompile(`^59[\d]{12}$`),
+	// Starts with 59, length 14, only numbers
+	// 59************
+	"start59": regexp.MustCompile(`^59\d{12}$`),
 
-	//Starts with 20, length 14, only numbers
-	//20************
-	"start20": regexp.MustCompile(`^20[\d]{12}$`),
+	// Starts with 20, length 14, only numbers
+	// 20************
+	"start20": regexp.MustCompile(`^20\d{12}$`),
 
-	//Starts with 1, length 14, only numbers
-	//1*************
-	"start1": regexp.MustCompile(`^1[\d]{13}$`),
+	// Starts with 1, length 14, only numbers
+	// 1*************
+	"start1": regexp.MustCompile(`^1\d{13}$`),
 }
 
 const layout = "08.03.2022 15:16:47"
@@ -66,7 +66,6 @@ func (c *Carrier) Track(trackingIds []string) ([]carriers.Parcel, error) {
 	parcels := make([]carriers.Parcel, len(response.Data))
 
 	for i, d := range response.Data {
-
 		scheduledDeliveryDate, err := helpers.ParseTime(layout, d.ScheduledDeliveryDate)
 		if err != nil {
 			return nil, err

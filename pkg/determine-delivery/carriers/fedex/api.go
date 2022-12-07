@@ -83,7 +83,7 @@ func (api *Api) TrackByTrackingNumber(trackingRequest TrackingRequest) (*Trackin
 		return nil, err
 	}
 
-	if err = getErrors(trackingResponse.Errors); err != nil {
+	if err := getErrors(trackingResponse.Errors); err != nil {
 		return nil, err
 	}
 
@@ -142,7 +142,7 @@ func (api *Api) authorize() (string, error) {
 		if err := json.Unmarshal(response, res); err != nil {
 			return "", err
 		}
-		if err = getErrors(res.Errors); err != nil {
+		if err := getErrors(res.Errors); err != nil {
 			return "", err
 		}
 	}

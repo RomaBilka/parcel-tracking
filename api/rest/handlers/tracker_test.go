@@ -3,7 +3,7 @@ package handlers
 import (
 	"context"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"net/http/httptest"
 	"strings"
@@ -74,7 +74,7 @@ func TestHandleRest(t *testing.T) {
 			tracker := &parcelTrackerMock{}
 			tc.setupTrackerMock(tracker)
 
-			data := strings.NewReader(fmt.Sprintf(`{"track_id":["%s"]}`, tc.testId))
+			data := strings.NewReader(fmt.Sprintf(`{"track_id":[%q]}`, tc.testId))
 
 			req, err := http.NewRequest(tc.method, "", data)
 			assert.NoError(t, err)
@@ -87,7 +87,7 @@ func TestHandleRest(t *testing.T) {
 			res := rec.Result()
 			defer res.Body.Close()
 
-			gotResp, err := ioutil.ReadAll(res.Body)
+			gotResp, err := io.ReadAll(res.Body)
 
 			assert.NoError(t, err)
 			assert.Equal(t, tc.expResp, string(gotResp))
