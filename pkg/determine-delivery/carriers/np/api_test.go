@@ -1,9 +1,9 @@
 package np
 
 import (
-	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
+	"os"
 	"testing"
 
 	response_errors "github.com/RomaBilka/parcel-tracking/pkg/response-errors"
@@ -50,7 +50,7 @@ func TestApi_TrackByTrackingNumber(t *testing.T) {
 			server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 				w.WriteHeader(http.StatusOK)
 
-				b, err := ioutil.ReadFile(testCase.file)
+				b, err := os.ReadFile(testCase.file)
 				if err != nil {
 					t.Fatal(err)
 				}
@@ -71,7 +71,6 @@ func TestApi_TrackByTrackingNumber(t *testing.T) {
 			if res != nil {
 				assert.Equal(t, testCase.document.DocumentNumber, res.Data[0].Number)
 			}
-
 		})
 	}
 }

@@ -9,15 +9,15 @@ import (
 )
 
 var patterns = map[string]*regexp.Regexp{
-	//Numeric only with the length 12
-	"numbers12": regexp.MustCompile(`^[\d]{12}$`),
-	//Numeric only with the length 15
-	"numbers15": regexp.MustCompile(`^[\d]{15}$`),
-	//Numeric only with the length 20
-	"numbers20": regexp.MustCompile(`^[\d]{20}$`),
-	//Numeric only with the length 22
-	//22 in UPS as well !!!
-	"numbers22": regexp.MustCompile(`^[\d]{22}$`),
+	// Numeric only with the length 12
+	"numbers12": regexp.MustCompile(`^\d{12}$`),
+	// Numeric only with the length 15
+	"numbers15": regexp.MustCompile(`^\d{15}$`),
+	// Numeric only with the length 20
+	"numbers20": regexp.MustCompile(`^\d{20}$`),
+	// Numeric only with the length 22
+	// 22 in UPS as well !!!
+	"numbers22": regexp.MustCompile(`^\d{22}$`),
 }
 
 type api interface {
@@ -83,14 +83,9 @@ func (c *Carrier) track(trackNumbers []string, chanParcels chan []carriers.Parce
 				return
 			}
 
-			p, err := prepareResponse(response)
-			if err != nil {
-				chanErr <- err
-				return
-			}
 			mu.Lock()
 			defer mu.Unlock()
-			parcels = append(parcels, p...)
+			parcels = append(parcels, prepareResponse(response)...)
 		}(trackNumber)
 	}
 
@@ -98,7 +93,7 @@ func (c *Carrier) track(trackNumbers []string, chanParcels chan []carriers.Parce
 	chanParcels <- parcels
 }
 
-func prepareResponse(response *TrackingResponse) ([]carriers.Parcel, error) {
+func prepareResponse(response *TrackingResponse) []carriers.Parcel {
 	parcels := make([]carriers.Parcel, len(response.Output.CompleteTrackResults))
 	for i, d := range response.Output.CompleteTrackResults {
 		parcels[i] = carriers.Parcel{
@@ -108,7 +103,7 @@ func prepareResponse(response *TrackingResponse) ([]carriers.Parcel, error) {
 			DeliveryDate:   d.TrackResults[0].EstimatedDeliveryTimeWindow.Window.Ends,
 		}
 	}
-	return parcels, nil
+	return parcels
 }
 
 func getPlaces(result TrackResult) []carriers.Place {

@@ -55,13 +55,9 @@ func (p ParcelsTracker) TrackParcels(_ context.Context, parcelIds []string) (map
 	for {
 		select {
 		case err := <-chanErr:
-			{
-				return nil, err
-			}
+			return nil, err
 		case idsToCarriers := <-chanIdsToCarriers:
-			{
-				go track(idsToCarriers, chanParcels, chanErr)
-			}
+			go track(idsToCarriers, chanParcels, chanErr)
 		case parcels := <-chanParcels:
 			return parcels, nil
 		}
@@ -87,7 +83,6 @@ func (p ParcelsTracker) matchParcelIdsToCarriers(parcelIds []string, chanIdsToCa
 			defer mu.Unlock()
 			idsToCarriers[carrier] = append(idsToCarriers[carrier], parcelId)
 		}(parcelId)
-
 	}
 
 	wg.Wait()

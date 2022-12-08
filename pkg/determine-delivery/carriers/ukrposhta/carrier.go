@@ -8,11 +8,11 @@ import (
 )
 
 var patterns = map[string]*regexp.Regexp{
-	//Starts with 2 letters 9 numbers and ends with 2 letters
-	"pattern1": regexp.MustCompile(`(?i)^[a-z]{2}[\d]{9}[a-z]{2}$`),
+	// Starts with 2 letters 9 numbers and ends with 2 letters
+	"pattern1": regexp.MustCompile(`(?i)^[a-z]{2}\d{9}[a-z]{2}$`),
 
-	//Numeric only with the length 13
-	"numbers13": regexp.MustCompile(`^[\d]{13}$`),
+	// Numeric only with the length 13
+	"numbers13": regexp.MustCompile(`^\d{13}$`),
 }
 
 const layout = "2019-02-07T16:36:00"

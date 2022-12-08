@@ -31,7 +31,7 @@ func main() {
 
 	g, gCtx := errgroup.WithContext(ctx)
 	g.Go(func() error {
-		fmt.Println("Server is listening...")
+		fmt.Print("Server is listening...")
 		return httpServer.ListenAndServe()
 	})
 	g.Go(func() error {

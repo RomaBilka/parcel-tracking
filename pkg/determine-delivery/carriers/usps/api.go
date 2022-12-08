@@ -14,11 +14,11 @@ type Api struct {
 	sourceId string
 }
 
-func NewApi(apiURL, userId, SourceId string) *Api {
+func NewApi(apiURL, userId, sourceId string) *Api {
 	return &Api{
 		apiURL:   apiURL,
 		userId:   userId,
-		sourceId: SourceId,
+		sourceId: sourceId,
 	}
 }
 

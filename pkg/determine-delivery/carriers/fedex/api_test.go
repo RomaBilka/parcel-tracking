@@ -2,9 +2,9 @@ package fedex
 
 import (
 	"errors"
-	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
+	"os"
 	"testing"
 	"time"
 
@@ -54,7 +54,7 @@ func TestApi_TrackByTrackingNumber(t *testing.T) {
 			server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 				w.WriteHeader(testCase.status)
 
-				b, err := ioutil.ReadFile(testCase.file)
+				b, err := os.ReadFile(testCase.file)
 				if err != nil {
 					t.Fatal(err)
 				}
@@ -106,7 +106,7 @@ func TestApi_authorize(t *testing.T) {
 	for _, testCase := range testCases {
 		t.Run(testCase.name, func(t *testing.T) {
 			server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-				b, err := ioutil.ReadFile(testCase.file)
+				b, err := os.ReadFile(testCase.file)
 				if err != nil {
 					t.Fatal(err)
 				}

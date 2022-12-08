@@ -11,11 +11,11 @@ import (
 	"github.com/valyala/fasthttp"
 )
 
-const statusOk = "000" //Ok
+const statusOk = "000" // Ok
 
 var handleErrors = map[string]error{
-	"103": response_errors.NotFound, //Document not found
-	"104": response_errors.NotFound, //Directory not found
+	"103": response_errors.NotFound, // Document not found
+	"104": response_errors.NotFound, // Directory not found
 }
 
 type Api struct {
@@ -51,7 +51,6 @@ func (api *Api) TrackByTrackingNumber(trackNumber string) (*ShipmentsTrackRespon
 	}
 
 	if shipmentsTrackResponse.Errors.Code != statusOk {
-
 		if err, ok := handleErrors[shipmentsTrackResponse.Errors.Code]; ok {
 			return nil, err
 		}

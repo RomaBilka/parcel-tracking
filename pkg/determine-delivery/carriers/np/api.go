@@ -12,24 +12,24 @@ import (
 const URL = "/v2.0/json/"
 
 var handleErrors = map[string]error{
-	"20000500603": response_errors.NotFound,      //Not found
-	"20000300415": response_errors.NotFound,      //Document not found
-	"20000200161": response_errors.NotFound,      //Documents not found
-	"20000200157": response_errors.InvalidNumber, //Document number empty
-	"20000200158": response_errors.InvalidNumber, //Document number incorrect
-	"20001401442": response_errors.InvalidNumber, //Document number is not correct
-	"20001401158": response_errors.InvalidNumber, //Error: wrong format of the document number
-	"20000202391": response_errors.InvalidNumber, //Invalid document number
-	"20000401614": response_errors.InvalidNumber, //Wrong DocumentNumber
-	"20000401620": response_errors.InvalidNumber, //DocumentNumber is invalid
-	"20000201873": response_errors.InvalidNumber, //DocumentNumber invalid
-	"20000201994": response_errors.InvalidNumber, //Invalid DocumentNumber
-	"20002102188": response_errors.InvalidNumber, //DocumentNumber is incorrect
-	"20001402465": response_errors.InvalidNumber, //DocumentNumber invalid format
-	"20002102542": response_errors.InvalidNumber, //Invalid DocumentNumber format
-	"20002102543": response_errors.InvalidNumber, //Document not found by DocumentNumber
-	"20001402806": response_errors.InvalidNumber, //DocumentNumber invalid format.
-	"20002502852": response_errors.InvalidNumber, //DocumentNumber is empty
+	"20000500603": response_errors.NotFound,      // Not found
+	"20000300415": response_errors.NotFound,      // Document not found
+	"20000200161": response_errors.NotFound,      // Documents not found
+	"20000200157": response_errors.InvalidNumber, // Document number empty
+	"20000200158": response_errors.InvalidNumber, // Document number incorrect
+	"20001401442": response_errors.InvalidNumber, // Document number is not correct
+	"20001401158": response_errors.InvalidNumber, // Error: wrong format of the document number
+	"20000202391": response_errors.InvalidNumber, // Invalid document number
+	"20000401614": response_errors.InvalidNumber, // Wrong DocumentNumber
+	"20000401620": response_errors.InvalidNumber, // DocumentNumber is invalid
+	"20000201873": response_errors.InvalidNumber, // DocumentNumber invalid
+	"20000201994": response_errors.InvalidNumber, // Invalid DocumentNumber
+	"20002102188": response_errors.InvalidNumber, // DocumentNumber is incorrect
+	"20001402465": response_errors.InvalidNumber, // DocumentNumber invalid format
+	"20002102542": response_errors.InvalidNumber, // Invalid DocumentNumber format
+	"20002102543": response_errors.InvalidNumber, // Document not found by DocumentNumber
+	"20001402806": response_errors.InvalidNumber, // DocumentNumber invalid format.
+	"20002502852": response_errors.InvalidNumber, // DocumentNumber is empty
 }
 
 type Api struct {
@@ -86,17 +86,17 @@ func (api *Api) makeRequest(r novaPoshtaRequest, method string) ([]byte, error) 
 	return res.Body(), nil
 }
 
-func getErrors(TrackingDocumentsResponse *TrackingDocumentsResponse) error {
-	for _, code := range TrackingDocumentsResponse.ErrorCodes {
+func getErrors(trackingDocumentsResponse *TrackingDocumentsResponse) error {
+	for _, code := range trackingDocumentsResponse.ErrorCodes {
 		if err, ok := handleErrors[code]; ok {
 			return err
 		}
 	}
 
-	lenErrors := len(TrackingDocumentsResponse.Errors)
+	lenErrors := len(trackingDocumentsResponse.Errors)
 	if lenErrors > 0 {
 		errorMsgs := ""
-		for i, e := range TrackingDocumentsResponse.Errors {
+		for i, e := range trackingDocumentsResponse.Errors {
 			errorMsgs += e
 			if i < -1 {
 				errorMsgs += ", "

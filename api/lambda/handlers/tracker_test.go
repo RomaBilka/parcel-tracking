@@ -68,7 +68,7 @@ func TestHandleLambdaEvent(t *testing.T) {
 			tracker := &parcelTrackerMock{}
 			tc.setupTrackerMock(tracker)
 
-			req := events.APIGatewayProxyRequest{Body: fmt.Sprintf(`{"track_id":["%s"]}`, tc.trackId)}
+			req := events.APIGatewayProxyRequest{Body: fmt.Sprintf(`{"track_id":[%q]}`, tc.trackId)}
 			gotResp, gotErr := Tracking(tracker, 10)(context.Background(), req)
 
 			assert.Equal(t, tc.expResp, gotResp)
